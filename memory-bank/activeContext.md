@@ -6,6 +6,8 @@ The active work implemented a V1 execution framework for a book-only scalper on 
 
 ## Recently Added
 
+- console `[trade]` logs from `OrderManager` (order lifecycle + cancel-by-external-id + cancel-all on emergency flatten)
+- on SIGINT/SIGTERM after `Run` returns `context.Canceled`, `main` calls `Bot.ShutdownFlattenAll`: `cancel_all` then market-close every row from `open_positions` (parsed in `mexcfutures.ParseOpenPositionsResponse`), only when scalper mode is enabled (trade REST client)
 - runtime mode parsing in config (`capture`, `scalper`, `replay`)
 - extended trading port methods for order submit/cancel/query/positions
 - in-memory `BookState` with short-window microstructure features

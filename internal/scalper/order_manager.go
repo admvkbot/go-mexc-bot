@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 	"strconv"
 	"strings"
 	"time"
@@ -148,7 +149,11 @@ func (m *OrderManager) EmergencyFlatten(ctx context.Context, ladder *LadderConte
 	if ladder == nil || ladder.NetQuantity <= 0 {
 		return nil, nil
 	}
-	_, _ = m.trader.CancelAllOrders(ctx, mexcfutures.CancelAllOrdersRequest{Symbol: m.cfg.Symbol})
+	if _, cerr := m.trader.CancelAllOrders(ctx, mexcfutures.CancelAllOrdersRequest{Symbol: m.cfg.Symbol}); cerr != nil {
+		log.Printf("[trade] cancel_all_orders symbol=%s err=%v", m.cfg.Symbol, cerr)
+	} else {
+		log.Printf("[trade] cancel_all_orders ok symbol=%s", m.cfg.Symbol)
+	}
 	if !m.cfg.AllowEmergencyMarket {
 		return nil, fmt.Errorf("scalper: emergency market disabled")
 	}
@@ -278,7 +283,17 @@ func (m *OrderManager) FlushRoundTrip(ctx context.Context, ladder *LadderContext
 }
 
 func (m *OrderManager) emitOrderEvent(ctx context.Context, ladder *LadderContext, order *ManagedOrder, eventType, reason, raw string) {
-	if m == nil || m.journal == nil || order == nil {
+	if m == nil || order == nil {
+		return
+	}
+	ladderID := ""
+	if ladder != nil {
+		ladderID = ladder.LadderID
+	}
+	log.Printf("[trade] %s symbol=%s class=%s side=%s ext_oid=%s order_id=%s vol=%.8f fill=%.8f avg_px=%.6f state=%d reason=%s ladder=%s",
+		eventType, m.cfg.Symbol, order.Class, sideToString(order.Side), order.ExternalOID, order.OrderID,
+		order.Quantity, order.FilledQty, order.AvgFillPx, order.StateCode, reason, ladderID)
+	if m.journal == nil {
 		return
 	}
 	row := OrderEvent{
@@ -298,9 +313,7 @@ func (m *OrderManager) emitOrderEvent(ctx context.Context, ladder *LadderContext
 		Reason:      reason,
 		RawJSON:     raw,
 	}
-	if ladder != nil {
-		row.LadderID = ladder.LadderID
-	}
+	row.LadderID = ladderID
 	_ = m.journal.InsertScalperOrderEvents(ctx, []OrderEvent{row})
 }
 
@@ -358,7 +371,12 @@ func (m *OrderManager) cancelByExternalID(ctx context.Context, externalOID strin
 		Symbol:      m.cfg.Symbol,
 		ExternalOid: externalOID,
 	})
-	return err
+	if err != nil {
+		log.Printf("[trade] cancel_by_ext_oid symbol=%s ext_oid=%s err=%v", m.cfg.Symbol, externalOID, err)
+		return err
+	}
+	log.Printf("[trade] cancel_by_ext_oid ok symbol=%s ext_oid=%s", m.cfg.Symbol, externalOID)
+	return nil
 }
 
 type apiEnvelope struct {

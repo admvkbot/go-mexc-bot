@@ -16,8 +16,11 @@ The `mexcfutures` package is **not** importable from outside this module (under 
 
 | Path | Role |
 |------|------|
-| `cmd/mexc-bot/main.go` | Loads `internal/config`, builds `internal/app.Bot`, runs until SIGINT/SIGTERM |
+| `cmd/mexc-bot/main.go` | Loads `internal/config`, builds `internal/app.Bot`, runs until SIGINT/SIGTERM; on cancel, `ShutdownFlattenAll` (45s timeout) before exit when scalper is on |
 | `internal/app/bot.go` | `Bot`, `New`, `NewFromConfig`, `Run` (REST check, then WS market capture → ClickHouse until shutdown) |
+| `internal/app/shutdown_flatten.go` | `ShutdownFlattenAll`: cancel all futures orders, parse `open_positions`, submit market closes |
+| `internal/infrastructure/mexc/mexcfutures/positions_parse.go` | Typed parse of open_positions `data[]` for shutdown flatten |
+| `internal/scalper/order_manager.go` | Emits `[trade]` stdout logs alongside ClickHouse order events |
 | `internal/app/ws_market_clickhouse.go` | Contract WS per symbol in `MEXC_WS_SYMBOLS`: `sub.depth`, `sub.depth.full` 5/10/20, `sub.deal`; persists `push.depth*`, `push.deal` JSON to ClickHouse |
 | `internal/infrastructure/chstore` | ClickHouse native client: raw `futures_ws_market`; normalized `futures_depth_top`, `futures_deal_tick`, `futures_book_level`; MV `mv_futures_ws_hourly_stats` → `futures_ws_hourly_stats`; analytical views `v_futures_depth_1s`, `v_futures_deal_1s`, `v_futures_signal_1s`; dual-write on flush after parsing WS JSON |
 | `internal/config/config.go` | `Bot`, `Load()`, `ParseWSSymbols()` |
