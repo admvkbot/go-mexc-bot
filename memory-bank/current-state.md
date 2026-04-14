@@ -12,6 +12,7 @@ A Go module (`github.com/mexc-bot/go-mexc-bot`) with one importable package:
 |------|------|
 | `mexcfutures/` | Client, config, signing, env helpers, request types, market/order/account APIs, Python-compat helpers |
 | `mexcfutures/compat_test.go` | Unit test for `ParseContractDetailSummary` |
+| `mexcfutures/open_positions_integration_test.go` | Integration test: `OpenPositionsFutures` with `MEXC_SOURCE_WEB_KEY` (loads `../.env` because `go test` cwd is the package dir) |
 | `docs/` | Human-oriented documentation of MEXC-related capabilities and usage |
 | `memory-bank/` | Historical and situational notes (no roadmap) |
 
