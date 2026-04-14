@@ -1,0 +1,44 @@
+services:
+  clickhouse:
+    image: clickhouse/clickhouse-server:26.1.1
+    container_name: go-mexc-bot-clickhouse
+    env_file:
+      - .env
+    environment:
+      CLICKHOUSE_DB: ${CLICKHOUSE_DATABASE:-mexc_bot}
+      CLICKHOUSE_USER: ${CLICKHOUSE_USER:-default}
+      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD:-}
+    ports:
+      - "127.0.0.1:8123:8123"
+      # Host 9000 is often busy; use 19000 on host to reach native 9000 inside the container.
+      - "127.0.0.1:19000:9000"
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+    volumes:
+      - ./db/clickhouse:/var/lib/clickhouse
+    healthcheck:
+      test: ["CMD", "clickhouse-client", "--query", "SELECT 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 15s
+
+  mexc-bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: go-mexc-bot
+    env_file:
+      - .env
+    environment:
+      CLICKHOUSE_ADDR: clickhouse:9000
+    depends_on:
+      clickhouse:
+        condition: service_healthy
+    restart: unless-stopped
+
+# Linux bind mount: ClickHouse runs as UID 101 inside the image. If the server
+# fails to start with permission errors, run once:
+#   mkdir -p db/clickhouse && sudo chown -R 101:101 db/clickhouse

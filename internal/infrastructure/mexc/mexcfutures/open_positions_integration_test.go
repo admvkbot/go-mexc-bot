@@ -13,12 +13,12 @@ import (
 // and requests GET /private/position/open_positions on the futures host.
 // Skips when the key is unset so CI and local runs without credentials stay green.
 //
-// go test sets the working directory to this package folder, so we load ../.env
-// in addition to ./.env to pick up a project-root .env like NewClientFromEnv would
-// when run from the repository root.
+// go test sets the working directory to this package folder, so we load
+// ../../../../.env in addition to ./.env to pick up a project-root .env like
+// NewClientFromEnv would when run from the repository root.
 func TestOpenPositionsFuturesFromEnv(t *testing.T) {
 	_ = godotenv.Load()
-	_ = godotenv.Load(filepath.Join("..", ".env"))
+	_ = godotenv.Load(filepath.Join("..", "..", "..", "..", ".env"))
 	if _, err := WebKeyFromEnv(false); err != nil {
 		t.Skipf("skip: %v", err)
 	}

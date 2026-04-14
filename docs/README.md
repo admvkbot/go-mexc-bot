@@ -1,6 +1,16 @@
 # Документация: работа с MEXC через `mexcfutures`
 
-Пакет `github.com/mexc-bot/go-mexc-bot/mexcfutures` — это HTTP-клиент для части REST API **MEXC Futures**, ориентированный на сценарий **браузерной сессии**: в запросах используется WEB-токен (значение cookie / строка авторизации), а не пара API Key + секрет с HMAC, как в официальной биржевой документации для ключей.
+Пакет `github.com/mexc-bot/go-mexc-bot/internal/infrastructure/mexc/mexcfutures` — HTTP-клиент для части REST API **MEXC Futures** и контрактного WebSocket edge, ориентированный на сценарий **браузерной сессии**: в запросах используется WEB-токен (значение cookie / строка авторизации), а не пара API Key + секрет с HMAC, как в официальной биржевой документации для ключей.
+
+## Структура репозитория
+
+| Путь | Назначение |
+|------|------------|
+| `cmd/mexc-bot/` | Точка входа процесса бота |
+| `internal/app/` | Сборка зависимостей и жизненный цикл приложения |
+| `internal/config/` | Загрузка конфигурации процесса из окружения |
+| `internal/ports/` | Интерфейсы (порты), от которых зависит `app` |
+| `internal/infrastructure/mexc/mexcfutures/` | Реализация клиента MEXC (REST, подпись, WS) |
 
 ## Оглавление
 
@@ -31,7 +41,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/mexc-bot/go-mexc-bot/mexcfutures"
+	"github.com/mexc-bot/go-mexc-bot/internal/infrastructure/mexc/mexcfutures"
 )
 
 func main() {

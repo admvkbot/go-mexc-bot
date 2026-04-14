@@ -1,0 +1,5 @@
+.git
+.env
+db/clickhouse
+memory-bank
+docs

@@ -1,0 +1,2243 @@
+Open Time
+Close Time
+Margin Mode
+Avg Entry Price
+Avg Close Price
+Liquidation Price
+Direction
+Margin Adjustment History
+Closing Quantity
+Realised PNL
+Status
+TAOUSDT Perpetual
+‎2026-04-14 08:35:57	‎2026-04-14 08:36:00	Isolated	256.86	256.88	--	Long	View History	7,875.9408 USDT	
+0.8974 USDT (+1.01%)
+≈ 0.89 USD
+Fees saved: 5.9069 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:35:36	‎2026-04-14 08:35:41	Isolated	256.84	256.84	--	Short	View History	8,991.9684 USDT	
+0.0000 USDT (0.00%)
+≈ 0.00 USD
+Fees saved: 9.8911 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:35:18	‎2026-04-14 08:35:20	Isolated	256.55	256.56	--	Short	View History	8,982.1656 USDT	
+-0.3501 USDT (-0.34%)
+≈ -0.35 USD
+Fees saved: 9.8801 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:35:01	‎2026-04-14 08:35:06	Isolated	256.62	256.59	--	Short	View History	8,983.2159 USDT	
+1.0503 USDT (+1.04%)
+≈ 1.05 USD
+Fees saved: 9.8821 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:34:33	‎2026-04-14 08:34:47	Isolated	256.52	256.47	--	Short	View History	8,979.0147 USDT	
+1.7505 USDT (+1.73%)
+≈ 1.75 USD
+Fees saved: 9.8778 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:34:05	‎2026-04-14 08:34:13	Isolated	256.63	256.50	--	Short	View History	8,980.0650 USDT	
+4.5439 USDT (+4.50%)
+≈ 4.54 USD
+Fees saved: 6.8428 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:33:59	‎2026-04-14 08:34:01	Isolated	256.66	256.67	--	Short	View History	8,986.0167 USDT	
+-0.3501 USDT (-0.34%)
+≈ -0.35 USD
+Fees saved: 9.8844 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:33:48	‎2026-04-14 08:33:55	Isolated	256.65	256.67	--	Long	View History	8,986.0167 USDT	
+0.7002 USDT (+0.69%)
+≈ 0.70 USD
+Fees saved: 9.8842 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:33:44	‎2026-04-14 08:33:46	Isolated	256.78	256.84	--	Short	View History	4,037.5248 USDT	
+-0.9432 USDT (-2.07%)
+≈ -0.94 USD
+Fees saved: 4.4407 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:33:30	‎2026-04-14 08:33:35	Isolated	256.75	256.80	--	Short	View History	8,990.5680 USDT	
+-2.0152 USDT (-1.99%)
+≈ -2.01 USD
+Fees saved: 9.8888 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:33:11	‎2026-04-14 08:33:15	Isolated	256.77	256.63	--	Short	View History	8,984.6163 USDT	
+4.9014 USDT (+4.85%)
+≈ 4.90 USD
+Fees saved: 9.8857 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:33:06	‎2026-04-14 08:33:09	Isolated	256.74	256.65	--	Short	View History	8,985.3165 USDT	
+3.1509 USDT (+3.11%)
+≈ 3.15 USD
+Fees saved: 9.8855 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:32:57	‎2026-04-14 08:33:01	Isolated	256.71	256.70	--	Long	View History	8,987.0670 USDT	
+-0.3501 USDT (-0.34%)
+≈ -0.35 USD
+Fees saved: 9.8859 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:32:49	‎2026-04-14 08:32:51	Isolated	256.64	256.65	--	Short	View History	1,142.0925 USDT	
+-0.0445 USDT (-0.34%)
+≈ -0.04 USD
+Fees saved: 1.2562 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:32:40	‎2026-04-14 08:32:43	Isolated	256.55	256.62	--	Long	View History	2,235.1602 USDT	
+0.6097 USDT (+2.42%)
+≈ 0.60 USD
+Fees saved: 2.0785 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:32:34	‎2026-04-14 08:32:36	Isolated	256.62	256.54	--	Long	View History	8,981.4654 USDT	
+-2.5204 USDT (-2.49%)
+≈ -2.52 USD
+Fees saved: 9.8813 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:32:30	‎2026-04-14 08:32:32	Isolated	256.59	256.57	--	Long	View History	8,982.5157 USDT	
+-0.5134 USDT (-0.50%)
+≈ -0.51 USD
+Fees saved: 8.7182 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:32:20	‎2026-04-14 08:32:22	Isolated	256.58	256.58	--	Long	View History	8,123.3228 USDT	
+0.0000 USDT (0.00%)
+≈ 0.00 USD
+Fees saved: 8.9356 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:32:11	‎2026-04-14 08:32:13	Isolated	256.64	256.64	--	Long	View History	8,984.9664 USDT	
+0.0000 USDT (0.00%)
+≈ 0.00 USD
+Fees saved: 9.8834 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:32:07	‎2026-04-14 08:32:09	Isolated	256.59	256.54	--	Long	View History	5,243.6776 USDT	
+-0.9431 USDT (-1.60%)
+≈ -0.94 USD
+Fees saved: 5.7686 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:32:02	‎2026-04-14 08:32:05	Isolated	256.37	256.61	--	Long	View History	8,563.0757 USDT	
+8.0088 USDT (+8.33%)
+≈ 8.01 USD
+Fees saved: 6.4207 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:31:39	‎2026-04-14 08:31:54	Isolated	256.27	256.34	--	Long	View History	5,247.2798 USDT	
+1.4329 USDT (+2.43%)
+≈ 1.43 USD
+Fees saved: 5.7712 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:31:35	‎2026-04-14 08:31:37	Isolated	256.24	256.20	--	Long	View History	4,550.1120 USDT	
+-0.6651 USDT (-1.30%)
+≈ -0.66 USD
+Fees saved: 3.6459 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:31:29	‎2026-04-14 08:31:31	Isolated	256.17	256.15	--	Long	View History	8,967.8115 USDT	
+-0.3671 USDT (-0.36%)
+≈ -0.36 USD
+Fees saved: 9.8651 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:31:25	‎2026-04-14 08:31:27	Isolated	256.09	256.10	--	Long	View History	8,966.0610 USDT	
+0.5743 USDT (+0.57%)
+≈ 0.57 USD
+Fees saved: 9.8625 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:31:17	‎2026-04-14 08:31:22	Isolated	256.10	256.08	--	Short	View History	8,965.3608 USDT	
+0.4500 USDT (+0.44%)
+≈ 0.45 USD
+Fees saved: 9.8624 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:30:55	‎2026-04-14 08:30:57	Isolated	256.23	256.16	--	Long	View History	8,968.1616 USDT	
+-2.2885 USDT (-2.27%)
+≈ -2.28 USD
+Fees saved: 9.8664 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:30:38	‎2026-04-14 08:30:43	Isolated	256.19	256.17	--	Long	View History	8,968.5117 USDT	
+-0.6334 USDT (-0.62%)
+≈ -0.63 USD
+Fees saved: 9.8657 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:29:50	‎2026-04-14 08:30:30	Isolated	256.11	256.06	--	Short	View History	8,964.6606 USDT	
+1.5040 USDT (+1.49%)
+≈ 1.50 USD
+Fees saved: 9.8622 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:29:07	‎2026-04-14 08:29:39	Isolated	256.18	256.07	--	Short	View History	8,965.0107 USDT	
+3.8511 USDT (+3.82%)
+≈ 3.85 USD
+Fees saved: 9.8636 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:29:01	‎2026-04-14 08:29:03	Isolated	256.18	256.17	--	Long	View History	8,968.5117 USDT	
+-0.3501 USDT (-0.34%)
+≈ -0.35 USD
+Fees saved: 9.8655 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:28:35	‎2026-04-14 08:28:37	Isolated	256.14	256.13	--	Long	View History	5,885.8674 USDT	
+-0.2298 USDT (-0.34%)
+≈ -0.22 USD
+Fees saved: 6.4745 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:28:17	‎2026-04-14 08:28:23	Isolated	256.25	256.08	--	Short	View History	8,965.3608 USDT	
+5.9517 USDT (+5.90%)
+≈ 5.95 USD
+Fees saved: 9.8651 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:28:00	‎2026-04-14 08:28:10	Isolated	256.14	256.19	--	Long	View History	8,520.8794 USDT	
+1.6630 USDT (+1.73%)
+≈ 1.66 USD
+Fees saved: 9.372 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:27:39	‎2026-04-14 08:27:41	Isolated	256.14	256.12	--	Long	View History	4,274.6428 USDT	
+-0.2557 USDT (-0.53%)
+≈ -0.25 USD
+Fees saved: 4.7023 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:27:33	‎2026-04-14 08:27:36	Isolated	256.14	256.15	--	Short	View History	8,967.8115 USDT	
+-0.3501 USDT (-0.34%)
+≈ -0.35 USD
+Fees saved: 9.8644 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:27:22	‎2026-04-14 08:27:24	Isolated	256.15	256.15	--	Short	View History	8,967.8115 USDT	
+0.0000 USDT (0.00%)
+≈ 0.00 USD
+Fees saved: 9.8645 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:26:59	‎2026-04-14 08:27:01	Isolated	256.06	256.12	--	Short	View History	8,966.7612 USDT	
+-2.2608 USDT (-2.24%)
+≈ -2.26 USD
+Fees saved: 9.8623 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:26:30	‎2026-04-14 08:26:37	Isolated	256.05	256.05	--	Short	View History	8,232.0075 USDT	
+0.0000 USDT (0.00%)
+≈ 0.00 USD
+Fees saved: 9.0552 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:26:24	‎2026-04-14 08:26:27	Isolated	256.04	256.03	--	Short	View History	8,963.6103 USDT	
+0.3501 USDT (+0.34%)
+≈ 0.35 USD
+Fees saved: 9.8601 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:26:07	‎2026-04-14 08:26:14	Isolated	256.28	256.10	--	Short	View History	2,348.4370 USDT	
+1.6506 USDT (+6.25%)
+≈ 1.65 USD
+Fees saved: 2.5841 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:25:54	‎2026-04-14 08:25:59	Isolated	256.23	256.22	--	Short	View History	8,970.2622 USDT	
+0.3501 USDT (+0.34%)
+≈ 0.35 USD
+Fees saved: 9.8674 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:25:48	‎2026-04-14 08:25:50	Isolated	256.26	256.25	--	Long	View History	3,846.3125 USDT	
+-0.1501 USDT (-0.34%)
+≈ -0.15 USD
+Fees saved: 4.231 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:25:38	‎2026-04-14 08:25:42	Isolated	256.27	256.25	--	Short	View History	3,846.3125 USDT	
+0.2654 USDT (+0.61%)
+≈ 0.26 USD
+Fees saved: 4.2311 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:25:17	‎2026-04-14 08:25:24	Isolated	256.28	256.28	--	Short	View History	3,846.7628 USDT	
+0.0000 USDT (0.00%)
+≈ 0.00 USD
+Fees saved: 4.2314 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:25:00	‎2026-04-14 08:25:03	Isolated	256.28	256.28	--	Short	View History	3,846.7628 USDT	
+-0.1007 USDT (-0.23%)
+≈ -0.10 USD
+Fees saved: 4.2314 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:24:53	‎2026-04-14 08:24:55	Isolated	256.25	256.28	--	Long	View History	3,846.7628 USDT	
+0.4503 USDT (+1.04%)
+≈ 0.45 USD
+Fees saved: 4.2311 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:24:28	‎2026-04-14 08:24:42	Isolated	256.36	256.30	--	Short	View History	3,847.0630 USDT	
+0.9006 USDT (+2.08%)
+≈ 0.90 USD
+Fees saved: 4.2322 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:24:19	‎2026-04-14 08:24:21	Isolated	256.37	256.38	--	Short	View History	3,848.2638 USDT	
+-0.1501 USDT (-0.34%)
+≈ -0.15 USD
+Fees saved: 4.233 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:23:26	‎2026-04-14 08:23:30	Isolated	256.28	256.33	--	Long	View History	3,424.5688 USDT	
+0.6680 USDT (+1.73%)
+≈ 0.66 USD
+Fees saved: 3.7666 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:23:19	‎2026-04-14 08:23:23	Isolated	256.32	256.28	--	Short	View History	3,846.7628 USDT	
+0.6004 USDT (+1.38%)
+≈ 0.60 USD
+Fees saved: 4.2317 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:23:11	‎2026-04-14 08:23:15	Isolated	256.16	256.28	--	Long	View History	3,846.7628 USDT	
+1.8012 USDT (+4.16%)
+≈ 1.80 USD
+Fees saved: 4.2304 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:22:55	‎2026-04-14 08:23:07	Isolated	256.26	256.33	--	Long	View History	3,847.5133 USDT	
+1.0507 USDT (+2.43%)
+≈ 1.05 USD
+Fees saved: 4.2316 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:22:43	‎2026-04-14 08:22:53	Isolated	256.25	256.25	--	Long	View History	3,846.3125 USDT	
+0.0000 USDT (0.00%)
+≈ 0.00 USD
+Fees saved: 4.2309 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:22:23	‎2026-04-14 08:22:31	Isolated	256.25	256.20	--	Short	View History	3,112.8300 USDT	
+0.6018 USDT (+1.72%)
+≈ 0.60 USD
+Fees saved: 3.4244 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:22:12	‎2026-04-14 08:22:17	Isolated	256.24	256.24	--	Long	View History	3,846.1624 USDT	
+0.0000 USDT (0.00%)
+≈ 0.00 USD
+Fees saved: 4.2307 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:22:04	‎2026-04-14 08:22:06	Isolated	256.21	256.22	--	Short	View History	3,845.8622 USDT	
+-0.1501 USDT (-0.34%)
+≈ -0.15 USD
+Fees saved: 4.2303 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:21:31	‎2026-04-14 08:21:51	Isolated	256.23	256.31	--	Long	View History	3,847.2131 USDT	
+1.2008 USDT (+2.77%)
+≈ 1.20 USD
+Fees saved: 4.2312 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:21:12	‎2026-04-14 08:21:14	Isolated	256.37	256.33	--	Long	View History	3,847.5133 USDT	
+-0.5203 USDT (-1.20%)
+≈ -0.52 USD
+Fees saved: 4.2326 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:21:07	‎2026-04-14 08:21:09	Isolated	256.23	256.27	--	Short	View History	3,846.6127 USDT	
+-0.6338 USDT (-1.46%)
+≈ -0.63 USD
+Fees saved: 4.2309 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:21:02	‎2026-04-14 08:21:04	Isolated	256.24	256.36	--	Long	View History	3,847.9636 USDT	
+1.8012 USDT (+4.16%)
+≈ 1.80 USD
+Fees saved: 4.2317 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:20:49	‎2026-04-14 08:20:51	Isolated	256.16	256.24	--	Long	View History	3,846.1624 USDT	
+1.2008 USDT (+2.77%)
+≈ 1.20 USD
+Fees saved: 4.2301 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:20:21	‎2026-04-14 08:20:40	Isolated	256.08	256.16	--	Long	View History	3,844.9616 USDT	
+1.2008 USDT (+2.78%)
+≈ 1.20 USD
+Fees saved: 4.2287 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:20:04	‎2026-04-14 08:20:18	Isolated	256.22	256.09	--	Short	View History	3,180.6378 USDT	
+1.6146 USDT (+4.51%)
+≈ 1.61 USD
+Fees saved: 3.4995 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:19:49	‎2026-04-14 08:19:59	Isolated	256.24	256.27	--	Long	View History	3,846.6127 USDT	
+0.5637 USDT (+1.30%)
+≈ 0.56 USD
+Fees saved: 4.231 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:19:35	‎2026-04-14 08:19:40	Isolated	256.20	256.23	--	Long	View History	3,846.0123 USDT	
+0.5838 USDT (+1.35%)
+≈ 0.58 USD
+Fees saved: 4.2304 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:19:30	‎2026-04-14 08:19:33	Isolated	256.20	256.19	--	Long	View History	366.3517 USDT	
+-0.0143 USDT (-0.34%)
+≈ -0.01 USD
+Fees saved: 0.4029 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:19:14	‎2026-04-14 08:19:23	Isolated	256.28	256.23	--	Short	View History	3,846.0123 USDT	
+0.7505 USDT (+1.73%)
+≈ 0.75 USD
+Fees saved: 4.231 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:18:49	‎2026-04-14 08:18:53	Isolated	256.29	256.28	--	Long	View History	3,846.7628 USDT	
+-0.0335 USDT (-0.07%)
+≈ -0.03 USD
+Fees saved: 4.2315 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:18:12	‎2026-04-14 08:18:38	Isolated	256.28	256.37	--	Long	View History	3,848.1137 USDT	
+1.4933 USDT (+3.45%)
+≈ 1.49 USD
+Fees saved: 4.2322 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:18:01	‎2026-04-14 08:18:03	Isolated	256.27	256.29	--	Long	View History	3,846.9129 USDT	
+0.3002 USDT (+0.69%)
+≈ 0.30 USD
+Fees saved: 4.2314 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:17:56	‎2026-04-14 08:17:58	Isolated	256.27	256.26	--	Long	View History	3,846.4626 USDT	
+-0.1501 USDT (-0.34%)
+≈ -0.15 USD
+Fees saved: 4.2311 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:17:40	‎2026-04-14 08:17:45	Isolated	256.32	256.36	--	Long	View History	3,847.9636 USDT	
+0.6004 USDT (+1.38%)
+≈ 0.60 USD
+Fees saved: 4.2324 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:17:30	‎2026-04-14 08:17:32	Isolated	256.24	256.23	--	Long	View History	3,846.0123 USDT	
+-0.1501 USDT (-0.34%)
+≈ -0.15 USD
+Fees saved: 4.2306 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:17:22	‎2026-04-14 08:17:24	Isolated	256.08	256.07	--	Long	View History	3,843.6107 USDT	
+-0.0491 USDT (-0.11%)
+≈ -0.04 USD
+Fees saved: 4.2281 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:17:10	‎2026-04-14 08:17:14	Isolated	256.07	256.01	--	Short	View History	3,842.7101 USDT	
+0.9006 USDT (+2.08%)
+≈ 0.90 USD
+Fees saved: 4.2274 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:16:15	‎2026-04-14 08:16:24	Isolated	256.09	256.05	--	Short	View History	2,053.5210 USDT	
+0.3208 USDT (+1.39%)
+≈ 0.32 USD
+Fees saved: 2.259 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:16:05	‎2026-04-14 08:16:07	Isolated	256.05	256.04	--	Short	View History	3,843.1604 USDT	
+0.1501 USDT (+0.34%)
+≈ 0.15 USD
+Fees saved: 4.2275 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:15:55	‎2026-04-14 08:16:00	Isolated	256.08	256.09	--	Long	View History	3,843.9109 USDT	
+0.2786 USDT (+0.64%)
+≈ 0.27 USD
+Fees saved: 4.2282 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:15:29	‎2026-04-14 08:15:38	Isolated	256.26	256.32	--	Long	View History	3,847.3632 USDT	
+0.9006 USDT (+2.08%)
+≈ 0.90 USD
+Fees saved: 4.2316 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:15:12	‎2026-04-14 08:15:18	Isolated	256.23	256.23	--	Long	View History	3,846.0123 USDT	
+0.0413 USDT (+0.09%)
+≈ 0.04 USD
+Fees saved: 4.2306 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:15:07	‎2026-04-14 08:15:09	Isolated	256.10	256.11	--	Short	View History	3,844.2111 USDT	
+-0.1501 USDT (-0.34%)
+≈ -0.15 USD
+Fees saved: 4.2285 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:15:01	‎2026-04-14 08:15:04	Isolated	256.08	256.12	--	Short	View History	3,844.3612 USDT	
+-0.6866 USDT (-1.58%)
+≈ -0.68 USD
+Fees saved: 4.2285 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:14:51	‎2026-04-14 08:14:56	Isolated	256.36	256.23	--	Short	View History	3,846.0123 USDT	
+1.9513 USDT (+4.51%)
+≈ 1.95 USD
+Fees saved: 4.2316 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:14:46	‎2026-04-14 08:14:49	Isolated	256.38	256.39	--	Long	View History	3,848.4139 USDT	
+0.2332 USDT (+0.53%)
+≈ 0.23 USD
+Fees saved: 4.2332 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:14:25	‎2026-04-14 08:14:27	Isolated	256.27	256.26	--	Long	View History	3,846.4626 USDT	
+-0.1318 USDT (-0.30%)
+≈ -0.13 USD
+Fees saved: 4.2312 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:13:57	‎2026-04-14 08:14:01	Isolated	256.21	256.25	--	Long	View History	3,846.3125 USDT	
+0.6004 USDT (+1.38%)
+≈ 0.60 USD
+Fees saved: 4.2306 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:13:43	‎2026-04-14 08:13:47	Isolated	256.17	256.16	--	Long	View History	3,844.9616 USDT	
+-0.1185 USDT (-0.27%)
+≈ -0.11 USD
+Fees saved: 4.2295 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:13:29	‎2026-04-14 08:13:32	Isolated	256.14	256.06	--	Long	View History	3,843.4606 USDT	
+-1.1240 USDT (-2.60%)
+≈ -1.12 USD
+Fees saved: 4.2285 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:13:14	‎2026-04-14 08:13:27	Isolated	256.14	256.14	--	Long	View History	3,844.6614 USDT	
+0.0788 USDT (+0.18%)
+≈ 0.07 USD
+Fees saved: 4.2291 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:12:54	‎2026-04-14 08:13:07	Isolated	256.12	256.06	--	Short	View History	3,843.4606 USDT	
+0.9006 USDT (+2.08%)
+≈ 0.90 USD
+Fees saved: 4.2283 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:12:43	‎2026-04-14 08:12:50	Isolated	256.15	256.15	--	Short	View History	3,844.8115 USDT	
+0.0000 USDT (0.00%)
+≈ 0.00 USD
+Fees saved: 4.2292 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:12:19	‎2026-04-14 08:12:33	Isolated	256.27	256.11	--	Short	View History	3,844.2111 USDT	
+2.2621 USDT (+5.23%)
+≈ 2.26 USD
+Fees saved: 4.23 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:12:04	‎2026-04-14 08:12:08	Isolated	256.26	256.31	--	Long	View History	3,847.2131 USDT	
+0.7505 USDT (+1.73%)
+≈ 0.75 USD
+Fees saved: 4.2315 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:11:59	‎2026-04-14 08:12:01	Isolated	256.21	256.22	--	Short	View History	3,845.8622 USDT	
+-0.2207 USDT (-0.51%)
+≈ -0.22 USD
+Fees saved: 4.2304 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:11:49	‎2026-04-14 08:11:51	Isolated	256.21	256.25	--	Short	View History	1,219.7500 USDT	
+-0.1904 USDT (-1.38%)
+≈ -0.19 USD
+Fees saved: 1.3416 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:11:32	‎2026-04-14 08:11:41	Isolated	256.45	256.26	--	Short	View History	3,846.4626 USDT	
+2.8519 USDT (+6.59%)
+≈ 2.85 USD
+Fees saved: 4.2326 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:11:15	‎2026-04-14 08:11:25	Isolated	256.47	256.50	--	Long	View History	69.2550 USDT	
+0.0081 USDT (+1.04%)
+≈ 0.00 USD
+Fees saved: 0.0761 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:11:04	‎2026-04-14 08:11:06	Isolated	256.59	256.48	--	Long	View History	3,849.7648 USDT	
+-1.6511 USDT (-3.81%)
+≈ -1.65 USD
+Fees saved: 4.2356 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:11:00	‎2026-04-14 08:11:02	Isolated	256.58	256.59	--	Short	View History	3,851.4159 USDT	
+-0.1501 USDT (-0.34%)
+≈ -0.15 USD
+Fees saved: 4.2364 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:10:50	‎2026-04-14 08:10:53	Isolated	256.58	256.53	--	Short	View History	3,850.5153 USDT	
+0.7505 USDT (+1.73%)
+≈ 0.75 USD
+Fees saved: 4.2359 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:10:20	‎2026-04-14 08:10:35	Isolated	256.57	256.68	--	Long	View History	3,852.7668 USDT	
+1.6511 USDT (+3.81%)
+≈ 1.65 USD
+Fees saved: 4.2371 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:10:08	‎2026-04-14 08:10:17	Isolated	256.51	256.55	--	Long	View History	3,850.8155 USDT	
+0.7107 USDT (+1.64%)
+≈ 0.71 USD
+Fees saved: 4.2356 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:10:00	‎2026-04-14 08:10:03	Isolated	256.41	256.51	--	Long	View History	3,850.2151 USDT	
+1.5449 USDT (+3.57%)
+≈ 1.54 USD
+Fees saved: 4.2344 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:09:49	‎2026-04-14 08:09:52	Isolated	256.47	256.42	--	Short	View History	3,848.8642 USDT	
+0.7505 USDT (+1.73%)
+≈ 0.75 USD
+Fees saved: 4.2341 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:09:32	‎2026-04-14 08:09:48	Isolated	256.48	256.50	--	Long	View History	3,850.0650 USDT	
+0.3942 USDT (+0.91%)
+≈ 0.39 USD
+Fees saved: 4.2349 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:09:18	‎2026-04-14 08:09:23	Isolated	256.48	256.45	--	Long	View History	3,849.3145 USDT	
+-0.4174 USDT (-0.96%)
+≈ -0.41 USD
+Fees saved: 4.2345 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:09:11	‎2026-04-14 08:09:13	Isolated	256.46	256.47	--	Long	View History	3,849.6147 USDT	
+0.1501 USDT (+0.34%)
+≈ 0.15 USD
+Fees saved: 4.2344 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:08:50	‎2026-04-14 08:09:06	Isolated	256.09	256.38	--	Long	View History	1,333.1760 USDT	
+1.5142 USDT (+10.11%)
+≈ 1.51 USD
+Fees saved: 1.4656 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:08:38	‎2026-04-14 08:08:41	Isolated	256.13	256.05	--	Short	View History	3,843.3105 USDT	
+1.1627 USDT (+2.69%)
+≈ 1.16 USD
+Fees saved: 4.2283 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:08:05	‎2026-04-14 08:08:31	Isolated	256.01	256.14	--	Long	View History	3,844.6614 USDT	
+1.9513 USDT (+4.51%)
+≈ 1.95 USD
+Fees saved: 4.228 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:07:50	‎2026-04-14 08:08:01	Isolated	256.14	256.13	--	Short	View History	2,105.3886 USDT	
+0.0822 USDT (+0.34%)
+≈ 0.08 USD
+Fees saved: 2.3159 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:07:30	‎2026-04-14 08:07:35	Isolated	256.16	256.13	--	Short	View History	3,844.5113 USDT	
+0.4503 USDT (+1.04%)
+≈ 0.45 USD
+Fees saved: 4.2292 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:07:05	‎2026-04-14 08:07:26	Isolated	256.25	256.22	--	Short	View History	3,845.8622 USDT	
+0.4274 USDT (+0.98%)
+≈ 0.42 USD
+Fees saved: 4.2307 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:06:46	‎2026-04-14 08:06:52	Isolated	256.17	256.20	--	Long	View History	3,845.5620 USDT	
+0.5547 USDT (+1.28%)
+≈ 0.55 USD
+Fees saved: 4.2299 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:06:19	‎2026-04-14 08:06:40	Isolated	256.29	256.18	--	Short	View History	3,845.2618 USDT	
+1.6511 USDT (+3.81%)
+≈ 1.65 USD
+Fees saved: 4.2306 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:06:02	‎2026-04-14 08:06:06	Isolated	256.41	256.26	--	Short	View History	3,846.4626 USDT	
+2.2515 USDT (+5.20%)
+≈ 2.25 USD
+Fees saved: 4.2323 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:05:40	‎2026-04-14 08:05:58	Isolated	256.56	256.42	--	Short	View History	3,848.8642 USDT	
+2.1014 USDT (+4.85%)
+≈ 2.10 USD
+Fees saved: 4.2349 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:05:22	‎2026-04-14 08:05:25	Isolated	256.26	256.21	--	Long	View History	3,845.7121 USDT	
+-0.6397 USDT (-1.48%)
+≈ -0.63 USD
+Fees saved: 4.2307 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:05:18	‎2026-04-14 08:05:20	Isolated	256.12	256.19	--	Short	View History	3,845.4119 USDT	
+-1.1221 USDT (-2.59%)
+≈ -1.12 USD
+Fees saved: 3.0156 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:05:11	‎2026-04-14 08:05:15	Isolated	256.36	256.27	--	Short	View History	3,846.6127 USDT	
+1.3318 USDT (+3.08%)
+≈ 1.33 USD
+Fees saved: 4.232 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:04:53	‎2026-04-14 08:05:00	Isolated	256.33	256.61	--	Long	View History	3,851.7161 USDT	
+4.2028 USDT (+9.72%)
+≈ 4.20 USD
+Fees saved: 4.2345 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:04:35	‎2026-04-14 08:04:45	Isolated	256.40	256.38	--	Short	View History	3,848.2638 USDT	
+0.3002 USDT (+0.69%)
+≈ 0.30 USD
+Fees saved: 4.2332 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:04:18	‎2026-04-14 08:04:21	Isolated	256.39	256.40	--	Short	View History	3,848.5640 USDT	
+-0.1501 USDT (-0.34%)
+≈ -0.15 USD
+Fees saved: 4.2333 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:03:52	‎2026-04-14 08:04:16	Isolated	256.45	256.52	--	Long	View History	3,850.3652 USDT	
+1.0507 USDT (+2.42%)
+≈ 1.05 USD
+Fees saved: 4.2348 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:03:37	‎2026-04-14 08:03:45	Isolated	256.58	256.32	--	Long	View History	3,847.3632 USDT	
+-3.9026 USDT (-9.01%)
+≈ -3.90 USD
+Fees saved: 4.2342 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:03:19	‎2026-04-14 08:03:22	Isolated	256.47	256.48	--	Short	View History	3,849.7648 USDT	
+-0.1501 USDT (-0.34%)
+≈ -0.15 USD
+Fees saved: 4.2346 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:02:49	‎2026-04-14 08:03:08	Isolated	256.47	256.49	--	Long	View History	3,849.9149 USDT	
+0.3002 USDT (+0.69%)
+≈ 0.30 USD
+Fees saved: 4.2347 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:02:39	‎2026-04-14 08:02:45	Isolated	256.26	256.34	--	Long	View History	3,847.6634 USDT	
+1.2553 USDT (+2.90%)
+≈ 1.25 USD
+Fees saved: 4.2317 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:02:23	‎2026-04-14 08:02:35	Isolated	256.26	256.27	--	Long	View History	3,846.6127 USDT	
+0.1501 USDT (+0.34%)
+≈ 0.15 USD
+Fees saved: 4.2311 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:02:17	‎2026-04-14 08:02:21	Isolated	256.22	256.21	--	Long	View History	3,845.7121 USDT	
+-0.1501 USDT (-0.34%)
+≈ -0.15 USD
+Fees saved: 4.2303 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:02:12	‎2026-04-14 08:02:14	Isolated	256.26	256.22	--	Long	View History	3,845.8622 USDT	
+-0.6004 USDT (-1.38%)
+≈ -0.60 USD
+Fees saved: 4.2307 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:01:59	‎2026-04-14 08:02:04	Isolated	256.05	256.15	--	Long	View History	3,844.8115 USDT	
+1.5010 USDT (+3.47%)
+≈ 1.50 USD
+Fees saved: 4.2284 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:01:52	‎2026-04-14 08:01:57	Isolated	255.95	256.04	--	Long	View History	2,048.3200 USDT	
+0.7200 USDT (+3.12%)
+≈ 0.72 USD
+Fees saved: 2.2527 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:01:38	‎2026-04-14 08:01:50	Isolated	255.95	255.83	--	Long	View History	3,840.0083 USDT	
+-1.8012 USDT (-4.17%)
+≈ -1.80 USD
+Fees saved: 4.2249 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:01:17	‎2026-04-14 08:01:31	Isolated	256.00	256.03	--	Long	View History	3,843.0103 USDT	
+0.4503 USDT (+1.04%)
+≈ 0.45 USD
+Fees saved: 4.227 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:01:09	‎2026-04-14 08:01:11	Isolated	255.93	255.92	--	Long	View History	3,841.3592 USDT	
+-0.0262 USDT (-0.06%)
+≈ -0.02 USD
+Fees saved: 4.2256 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:00:42	‎2026-04-14 08:00:45	Isolated	255.95	255.94	--	Long	View History	3,841.6594 USDT	
+-0.1501 USDT (-0.34%)
+≈ -0.15 USD
+Fees saved: 4.2259 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:00:27	‎2026-04-14 08:00:40	Isolated	256.05	255.90	--	Short	View History	3,841.0590 USDT	
+2.2515 USDT (+5.21%)
+≈ 2.25 USD
+Fees saved: 4.2264 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 08:00:09	‎2026-04-14 08:00:16	Isolated	256.11	256.07	--	Short	View History	3,843.6107 USDT	
+0.4886 USDT (+1.13%)
+≈ 0.48 USD
+Fees saved: 4.2283 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:59:52	‎2026-04-14 07:59:54	Isolated	256.03	256.04	--	Short	View History	3,843.1604 USDT	
+-0.1501 USDT (-0.34%)
+≈ -0.15 USD
+Fees saved: 4.2273 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:59:19	‎2026-04-14 07:59:45	Isolated	256.14	256.01	--	Short	View History	1,625.6635 USDT	
+0.8199 USDT (+4.48%)
+≈ 0.82 USD
+Fees saved: 1.7886 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:59:07	‎2026-04-14 07:59:09	Isolated	256.24	256.17	--	Short	View History	3,845.1117 USDT	
+0.9167 USDT (+2.12%)
+≈ 0.91 USD
+Fees saved: 4.2302 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:58:31	‎2026-04-14 07:59:00	Isolated	256.23	256.27	--	Long	View History	3,846.6127 USDT	
+0.6004 USDT (+1.38%)
+≈ 0.60 USD
+Fees saved: 4.2309 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:58:20	‎2026-04-14 07:58:26	Isolated	256.23	256.23	--	Long	View History	3,846.0123 USDT	
+0.0000 USDT (0.00%)
+≈ 0.00 USD
+Fees saved: 4.2306 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:58:14	‎2026-04-14 07:58:16	Isolated	256.09	256.10	--	Short	View History	3,844.0610 USDT	
+-0.1501 USDT (-0.34%)
+≈ -0.15 USD
+Fees saved: 4.2283 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:58:07	‎2026-04-14 07:58:09	Isolated	256.05	256.07	--	Long	View History	3,843.6107 USDT	
+0.4115 USDT (+0.95%)
+≈ 0.41 USD
+Fees saved: 4.2278 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:57:59	‎2026-04-14 07:58:01	Isolated	256.06	256.05	--	Long	View History	1,249.5240 USDT	
+-0.0488 USDT (-0.34%)
+≈ -0.04 USD
+Fees saved: 1.3745 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:57:28	‎2026-04-14 07:57:31	Isolated	256.04	256.05	--	Short	View History	3,843.3105 USDT	
+-0.1501 USDT (-0.34%)
+≈ -0.15 USD
+Fees saved: 4.2275 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:57:16	‎2026-04-14 07:57:18	Isolated	256.01	256.02	--	Long	View History	3,842.8602 USDT	
+0.1501 USDT (+0.34%)
+≈ 0.15 USD
+Fees saved: 4.227 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:56:58	‎2026-04-14 07:57:03	Isolated	255.95	255.94	--	Long	View History	3,841.6594 USDT	
+-0.0598 USDT (-0.13%)
+≈ -0.05 USD
+Fees saved: 4.2259 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:56:53	‎2026-04-14 07:56:56	Isolated	255.86	255.87	--	Short	View History	3,840.6087 USDT	
+-0.1501 USDT (-0.34%)
+≈ -0.15 USD
+Fees saved: 4.2245 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:56:33	‎2026-04-14 07:56:43	Isolated	255.81	255.74	--	Short	View History	3,838.6574 USDT	
+1.0507 USDT (+2.43%)
+≈ 1.05 USD
+Fees saved: 4.2231 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:56:13	‎2026-04-14 07:56:31	Isolated	255.85	255.85	--	Long	View History	3,840.3085 USDT	
+0.0000 USDT (0.00%)
+≈ 0.00 USD
+Fees saved: 4.2243 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:56:01	‎2026-04-14 07:56:11	Isolated	255.73	255.84	--	Long	View History	3,840.1584 USDT	
+1.6511 USDT (+3.82%)
+≈ 1.65 USD
+Fees saved: 4.2232 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:55:38	‎2026-04-14 07:55:50	Isolated	255.67	255.72	--	Long	View History	3,838.3572 USDT	
+0.7505 USDT (+1.74%)
+≈ 0.75 USD
+Fees saved: 4.2217 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:55:22	‎2026-04-14 07:55:28	Isolated	255.80	255.67	--	Short	View History	3,837.6067 USDT	
+1.8018 USDT (+4.17%)
+≈ 1.80 USD
+Fees saved: 4.2225 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:55:08	‎2026-04-14 07:55:13	Isolated	255.72	255.88	--	Long	View History	3,840.7588 USDT	
+2.4016 USDT (+5.56%)
+≈ 2.40 USD
+Fees saved: 4.2235 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:55:01	‎2026-04-14 07:55:03	Isolated	255.63	255.68	--	Long	View History	3,837.7568 USDT	
+0.7505 USDT (+1.74%)
+≈ 0.75 USD
+Fees saved: 4.2211 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:54:53	‎2026-04-14 07:54:58	Isolated	255.57	255.62	--	Long	View History	3,836.8562 USDT	
+0.7505 USDT (+1.74%)
+≈ 0.75 USD
+Fees saved: 4.2201 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:54:36	‎2026-04-14 07:54:47	Isolated	255.51	255.58	--	Long	View History	3,836.2558 USDT	
+1.0507 USDT (+2.43%)
+≈ 1.05 USD
+Fees saved: 4.2193 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:54:08	‎2026-04-14 07:54:10	Isolated	255.53	255.49	--	Long	View History	3,834.9049 USDT	
+-0.5675 USDT (-1.31%)
+≈ -0.56 USD
+Fees saved: 4.2187 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:53:59	‎2026-04-14 07:54:01	Isolated	255.42	255.51	--	Long	View History	3,559.2543 USDT	
+1.2537 USDT (+3.13%)
+≈ 1.25 USD
+Fees saved: 3.9144 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:53:33	‎2026-04-14 07:53:50	Isolated	255.35	255.47	--	Long	View History	3,834.6047 USDT	
+1.8012 USDT (+4.18%)
+≈ 1.80 USD
+Fees saved: 4.217 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:53:23	‎2026-04-14 07:53:28	Isolated	255.24	255.26	--	Short	View History	3,831.4526 USDT	
+-0.3002 USDT (-0.69%)
+≈ -0.30 USD
+Fees saved: 2.8735 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:52:52	‎2026-04-14 07:53:18	Isolated	255.36	255.38	--	Long	View History	3,833.2538 USDT	
+0.3002 USDT (+0.69%)
+≈ 0.30 USD
+Fees saved: 4.2164 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:52:36	‎2026-04-14 07:52:45	Isolated	255.42	255.35	--	Short	View History	3,832.8035 USDT	
+1.0507 USDT (+2.43%)
+≈ 1.05 USD
+Fees saved: 4.2166 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:52:05	‎2026-04-14 07:52:18	Isolated	255.39	255.53	--	Long	View History	3,835.5053 USDT	
+2.1014 USDT (+4.87%)
+≈ 2.10 USD
+Fees saved: 4.2179 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:52:01	‎2026-04-14 07:52:03	Isolated	255.44	255.45	--	Short	View History	3,834.3045 USDT	
+-0.1501 USDT (-0.34%)
+≈ -0.15 USD
+Fees saved: 4.2176 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:51:44	‎2026-04-14 07:51:59	Isolated	255.57	255.51	--	Short	View History	3,835.2051 USDT	
+0.8948 USDT (+2.07%)
+≈ 0.89 USD
+Fees saved: 4.2192 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:51:06	‎2026-04-14 07:51:15	Isolated	255.57	255.56	--	Short	View History	3,835.9556 USDT	
+0.0728 USDT (+0.16%)
+≈ 0.07 USD
+Fees saved: 4.2196 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:50:37	‎2026-04-14 07:51:02	Isolated	255.61	255.63	--	Long	View History	3,837.0063 USDT	
+0.3002 USDT (+0.69%)
+≈ 0.30 USD
+Fees saved: 4.2205 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:50:19	‎2026-04-14 07:50:29	Isolated	255.66	255.73	--	Long	View History	2,442.2215 USDT	
+0.6685 USDT (+2.43%)
+≈ 0.66 USD
+Fees saved: 2.686 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:50:14	‎2026-04-14 07:50:17	Isolated	255.63	255.64	--	Short	View History	3,837.1564 USDT	
+-0.1501 USDT (-0.34%)
+≈ -0.15 USD
+Fees saved: 4.2207 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:49:54	‎2026-04-14 07:50:08	Isolated	255.65	255.70	--	Long	View History	3,838.0570 USDT	
+0.7505 USDT (+1.74%)
+≈ 0.75 USD
+Fees saved: 4.2214 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:49:46	‎2026-04-14 07:49:48	Isolated	255.60	255.64	--	Short	View History	3,837.1564 USDT	
+-0.6004 USDT (-1.39%)
+≈ -0.60 USD
+Fees saved: 4.2205 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:49:16	‎2026-04-14 07:49:43	Isolated	255.72	255.61	--	Short	View History	3,836.7061 USDT	
+1.6511 USDT (+3.82%)
+≈ 1.65 USD
+Fees saved: 4.2212 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:49:04	‎2026-04-14 07:49:11	Isolated	255.75	255.65	--	Short	View History	3,837.3065 USDT	
+1.5010 USDT (+3.47%)
+≈ 1.50 USD
+Fees saved: 4.2218 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:48:56	‎2026-04-14 07:49:01	Isolated	255.74	255.75	--	Long	View History	3,838.8075 USDT	
+0.1501 USDT (+0.34%)
+≈ 0.15 USD
+Fees saved: 4.2226 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:48:37	‎2026-04-14 07:48:48	Isolated	255.67	255.67	--	Short	View History	2,968.3287 USDT	
+0.0000 USDT (0.00%)
+≈ 0.00 USD
+Fees saved: 3.2651 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:48:15	‎2026-04-14 07:48:34	Isolated	255.82	255.71	--	Short	View History	3,838.2071 USDT	
+1.6511 USDT (+3.82%)
+≈ 1.65 USD
+Fees saved: 4.2229 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:47:54	‎2026-04-14 07:48:13	Isolated	255.67	255.85	--	Long	View History	2,131.2305 USDT	
+1.4994 USDT (+6.26%)
+≈ 1.49 USD
+Fees saved: 2.3435 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:47:13	‎2026-04-14 07:47:25	Isolated	255.43	255.65	--	Long	View History	3,837.3065 USDT	
+3.3239 USDT (+7.71%)
+≈ 3.32 USD
+Fees saved: 4.2192 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:47:05	‎2026-04-14 07:47:11	Isolated	255.38	255.37	--	Short	View History	3,833.1037 USDT	
+0.1501 USDT (+0.34%)
+≈ 0.15 USD
+Fees saved: 4.2164 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:47:01	‎2026-04-14 07:47:03	Isolated	255.36	255.41	--	Short	View History	3,833.7041 USDT	
+-0.7609 USDT (-1.76%)
+≈ -0.76 USD
+Fees saved: 4.2166 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:46:52	‎2026-04-14 07:46:53	Isolated	255.50	255.40	--	Short	View History	3,833.5540 USDT	
+1.5010 USDT (+3.48%)
+≈ 1.50 USD
+Fees saved: 4.2177 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:46:38	‎2026-04-14 07:46:47	Isolated	255.60	255.49	--	Short	View History	3,834.9049 USDT	
+1.6511 USDT (+3.83%)
+≈ 1.65 USD
+Fees saved: 4.2193 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:46:08	‎2026-04-14 07:46:19	Isolated	255.54	255.60	--	Long	View History	3,836.5560 USDT	
+0.9820 USDT (+2.27%)
+≈ 0.98 USD
+Fees saved: 4.2197 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:45:54	‎2026-04-14 07:46:05	Isolated	255.62	255.64	--	Long	View History	3,837.1564 USDT	
+0.3002 USDT (+0.69%)
+≈ 0.30 USD
+Fees saved: 4.2207 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:45:39	‎2026-04-14 07:45:47	Isolated	255.65	255.62	--	Short	View History	3,836.8562 USDT	
+0.4503 USDT (+1.04%)
+≈ 0.45 USD
+Fees saved: 4.2207 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:45:33	‎2026-04-14 07:45:35	Isolated	255.65	255.66	--	Short	View History	3,837.4566 USDT	
+-0.1656 USDT (-0.38%)
+≈ -0.16 USD
+Fees saved: 4.2211 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:45:28	‎2026-04-14 07:45:30	Isolated	255.54	255.58	--	Short	View History	3,836.2558 USDT	
+-0.7138 USDT (-1.65%)
+≈ -0.71 USD
+Fees saved: 4.2196 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:45:17	‎2026-04-14 07:45:25	Isolated	255.61	255.62	--	Long	View History	3,836.8562 USDT	
+0.2946 USDT (+0.68%)
+≈ 0.29 USD
+Fees saved: 4.2205 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:45:09	‎2026-04-14 07:45:13	Isolated	255.71	255.69	--	Long	View History	3,837.9069 USDT	
+-0.2658 USDT (-0.61%)
+≈ -0.26 USD
+Fees saved: 4.2218 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:44:49	‎2026-04-14 07:44:56	Isolated	255.73	255.56	--	Short	View History	3,835.9556 USDT	
+2.5517 USDT (+5.91%)
+≈ 2.55 USD
+Fees saved: 4.2209 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:44:33	‎2026-04-14 07:44:45	Isolated	255.75	255.74	--	Short	View History	3,838.6574 USDT	
+0.1501 USDT (+0.34%)
+≈ 0.15 USD
+Fees saved: 4.2226 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:44:16	‎2026-04-14 07:44:20	Isolated	255.78	255.72	--	Short	View History	3,838.3572 USDT	
+0.9006 USDT (+2.08%)
+≈ 0.90 USD
+Fees saved: 4.2226 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:43:55	‎2026-04-14 07:43:59	Isolated	255.86	255.83	--	Short	View History	3,840.0083 USDT	
+0.4503 USDT (+1.04%)
+≈ 0.45 USD
+Fees saved: 4.2242 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:43:46	‎2026-04-14 07:43:49	Isolated	255.92	255.86	--	Short	View History	3,840.4586 USDT	
+0.9006 USDT (+2.08%)
+≈ 0.90 USD
+Fees saved: 4.2249 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:43:30	‎2026-04-14 07:43:39	Isolated	255.94	255.90	--	Short	View History	3,841.0590 USDT	
+0.6004 USDT (+1.39%)
+≈ 0.60 USD
+Fees saved: 4.2254 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:43:26	‎2026-04-14 07:43:28	Isolated	255.92	256.00	--	Short	View History	3,842.5600 USDT	
+-1.3410 USDT (-3.10%)
+≈ -1.34 USD
+Fees saved: 4.2262 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:43:09	‎2026-04-14 07:43:17	Isolated	255.89	255.77	--	Short	View History	3,839.1077 USDT	
+1.8012 USDT (+4.17%)
+≈ 1.80 USD
+Fees saved: 4.224 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:42:51	‎2026-04-14 07:43:06	Isolated	255.99	255.95	--	Short	View History	3,841.8095 USDT	
+0.6004 USDT (+1.39%)
+≈ 0.60 USD
+Fees saved: 4.2263 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:42:35	‎2026-04-14 07:42:46	Isolated	256.13	256.03	--	Short	View History	3,843.0103 USDT	
+1.4132 USDT (+3.27%)
+≈ 1.41 USD
+Fees saved: 4.2281 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:42:22	‎2026-04-14 07:42:28	Isolated	256.16	256.16	--	Short	View History	3,844.9616 USDT	
+0.0000 USDT (0.00%)
+≈ 0.00 USD
+Fees saved: 4.2294 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:42:02	‎2026-04-14 07:42:06	Isolated	256.23	256.17	--	Short	View History	3,822.0564 USDT	
+0.8952 USDT (+2.08%)
+≈ 0.89 USD
+Fees saved: 4.2047 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:41:56	‎2026-04-14 07:41:59	Isolated	255.99	256.03	--	Short	View History	1,902.3029 USDT	
+-0.2972 USDT (-1.39%)
+≈ -0.29 USD
+Fees saved: 2.0923 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:41:32	‎2026-04-14 07:41:40	Isolated	255.99	255.99	--	Short	View History	3,842.4099 USDT	
+0.0000 USDT (0.00%)
+≈ 0.00 USD
+Fees saved: 4.2266 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:41:04	‎2026-04-14 07:41:22	Isolated	255.83	255.96	--	Long	View History	3,841.9596 USDT	
+2.0621 USDT (+4.77%)
+≈ 2.06 USD
+Fees saved: 4.2251 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:40:52	‎2026-04-14 07:40:58	Isolated	255.70	255.79	--	Long	View History	3,839.4079 USDT	
+1.3509 USDT (+3.13%)
+≈ 1.35 USD
+Fees saved: 4.2226 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:40:24	‎2026-04-14 07:40:47	Isolated	255.62	255.57	--	Short	View History	3,836.1057 USDT	
+0.7505 USDT (+1.74%)
+≈ 0.75 USD
+Fees saved: 4.2201 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:39:37	‎2026-04-14 07:40:05	Isolated	255.32	255.47	--	Long	View History	3,834.6047 USDT	
+2.2515 USDT (+5.22%)
+≈ 2.25 USD
+Fees saved: 4.2168 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:39:12	‎2026-04-14 07:39:21	Isolated	255.32	255.34	--	Long	View History	3,832.6534 USDT	
+0.3002 USDT (+0.69%)
+≈ 0.30 USD
+Fees saved: 4.2157 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:39:03	‎2026-04-14 07:39:05	Isolated	255.34	255.33	--	Long	View History	3,832.5033 USDT	
+-0.1501 USDT (-0.34%)
+≈ -0.15 USD
+Fees saved: 4.2158 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:38:55	‎2026-04-14 07:39:01	Isolated	255.29	255.29	--	Short	View History	3,831.9029 USDT	
+0.0000 USDT (0.00%)
+≈ 0.00 USD
+Fees saved: 4.215 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:38:13	‎2026-04-14 07:38:15	Isolated	255.21	255.22	--	Short	View History	3,830.8522 USDT	
+-0.1501 USDT (-0.34%)
+≈ -0.15 USD
+Fees saved: 4.2138 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:37:34	‎2026-04-14 07:37:36	Isolated	255.19	255.18	--	Long	View History	3,830.2518 USDT	
+-0.1309 USDT (-0.30%)
+≈ -0.13 USD
+Fees saved: 4.2133 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:37:19	‎2026-04-14 07:37:32	Isolated	255.16	255.17	--	Long	View History	3,830.1017 USDT	
+0.2272 USDT (+0.52%)
+≈ 0.22 USD
+Fees saved: 4.213 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:37:12	‎2026-04-14 07:37:14	Isolated	255.12	255.16	--	Short	View History	3,829.9516 USDT	
+-0.7008 USDT (-1.62%)
+≈ -0.70 USD
+Fees saved: 4.2126 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:37:01	‎2026-04-14 07:37:06	Isolated	255.08	255.13	--	Long	View History	3,829.5013 USDT	
+0.8643 USDT (+2.00%)
+≈ 0.86 USD
+Fees saved: 4.2121 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:36:55	‎2026-04-14 07:36:57	Isolated	254.97	254.94	--	Short	View History	209.0508 USDT	
+0.0246 USDT (+1.04%)
+≈ 0.02 USD
+Fees saved: 0.2299 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:36:51	‎2026-04-14 07:36:53	Isolated	254.99	254.98	--	Long	View History	3,827.2498 USDT	
+-0.1501 USDT (-0.34%)
+≈ -0.15 USD
+Fees saved: 4.21 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:36:37	‎2026-04-14 07:36:45	Isolated	255.23	255.06	--	Short	View History	3,828.4506 USDT	
+2.5517 USDT (+5.92%)
+≈ 2.55 USD
+Fees saved: 4.2126 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:36:27	‎2026-04-14 07:36:31	Isolated	255.29	255.28	--	Long	View History	2,351.1288 USDT	
+-0.0921 USDT (-0.34%)
+≈ -0.09 USD
+Fees saved: 2.5862 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:36:14	‎2026-04-14 07:36:18	Isolated	255.31	255.31	--	Long	View History	3,237.3308 USDT	
+0.0000 USDT (0.00%)
+≈ 0.00 USD
+Fees saved: 3.561 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:36:00	‎2026-04-14 07:36:08	Isolated	255.22	255.32	--	Long	View History	3,832.3532 USDT	
+1.5010 USDT (+3.48%)
+≈ 1.50 USD
+Fees saved: 4.2147 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:35:53	‎2026-04-14 07:35:55	Isolated	255.22	255.23	--	Short	View History	3,831.0023 USDT	
+-0.1501 USDT (-0.34%)
+≈ -0.15 USD
+Fees saved: 4.214 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:35:31	‎2026-04-14 07:35:47	Isolated	255.17	255.23	--	Long	View History	3,831.0023 USDT	
+0.9006 USDT (+2.09%)
+≈ 0.90 USD
+Fees saved: 4.2136 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:34:47	‎2026-04-14 07:34:53	Isolated	255.08	255.12	--	Long	View History	3,829.3512 USDT	
+0.7373 USDT (+1.71%)
+≈ 0.73 USD
+Fees saved: 4.212 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:34:31	‎2026-04-14 07:34:33	Isolated	255.13	255.12	--	Short	View History	3,829.3512 USDT	
+0.0687 USDT (+0.15%)
+≈ 0.06 USD
+Fees saved: 4.2124 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:34:14	‎2026-04-14 07:34:19	Isolated	255.23	255.23	--	Long	View History	3,831.0023 USDT	
+0.0840 USDT (+0.19%)
+≈ 0.08 USD
+Fees saved: 4.2141 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:33:54	‎2026-04-14 07:34:06	Isolated	255.20	255.21	--	Short	View History	1,319.4357 USDT	
+-0.0517 USDT (-0.34%)
+≈ -0.05 USD
+Fees saved: 1.4513 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:33:13	‎2026-04-14 07:33:15	Isolated	255.18	255.07	--	Long	View History	783.0649 USDT	
+-0.3374 USDT (-3.83%)
+≈ -0.33 USD
+Fees saved: 0.8615 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:32:58	‎2026-04-14 07:33:01	Isolated	255.15	255.18	--	Long	View History	2,513.5230 USDT	
+0.2955 USDT (+1.04%)
+≈ 0.29 USD
+Fees saved: 2.7647 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:32:34	‎2026-04-14 07:32:56	Isolated	255.14	255.09	--	Short	View History	602.0124 USDT	
+0.1180 USDT (+1.74%)
+≈ 0.11 USD
+Fees saved: 0.6622 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:32:29	‎2026-04-14 07:32:31	Isolated	255.09	255.08	--	Long	View History	3,828.7508 USDT	
+-0.0862 USDT (-0.20%)
+≈ -0.08 USD
+Fees saved: 4.2117 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:32:19	‎2026-04-14 07:32:21	Isolated	255.07	255.08	--	Short	View History	3,828.7508 USDT	
+-0.2999 USDT (-0.69%)
+≈ -0.29 USD
+Fees saved: 4.2116 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:32:09	‎2026-04-14 07:32:12	Isolated	255.00	255.01	--	Long	View History	3,827.7001 USDT	
+0.1986 USDT (+0.46%)
+≈ 0.19 USD
+Fees saved: 4.2104 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:31:39	‎2026-04-14 07:31:58	Isolated	254.91	254.92	--	Long	View History	3,826.3492 USDT	
+0.1505 USDT (+0.35%)
+≈ 0.15 USD
+Fees saved: 4.2089 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:31:25	‎2026-04-14 07:31:30	Isolated	254.89	254.89	--	Long	View History	960.9353 USDT	
+0.0000 USDT (0.00%)
+≈ 0.00 USD
+Fees saved: 1.057 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:31:08	‎2026-04-14 07:31:19	Isolated	255.10	254.87	--	Short	View History	2,446.7520 USDT	
+2.1940 USDT (+7.97%)
+≈ 2.19 USD
+Fees saved: 2.6926 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:30:59	‎2026-04-14 07:31:01	Isolated	255.10	255.03	--	Long	View History	3,828.0003 USDT	
+-0.9527 USDT (-2.21%)
+≈ -0.95 USD
+Fees saved: 4.2114 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:30:54	‎2026-04-14 07:30:56	Isolated	255.03	255.02	--	Long	View History	3,827.8502 USDT	
+-0.1501 USDT (-0.34%)
+≈ -0.15 USD
+Fees saved: 4.2107 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:30:35	‎2026-04-14 07:30:37	Isolated	255.08	255.05	--	Long	View History	3,828.3005 USDT	
+-0.4043 USDT (-0.93%)
+≈ -0.40 USD
+Fees saved: 4.2114 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:30:31	‎2026-04-14 07:30:33	Isolated	255.06	255.03	--	Long	View History	3,070.5612 USDT	
+-0.3537 USDT (-1.02%)
+≈ -0.35 USD
+Fees saved: 3.3778 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:30:22	‎2026-04-14 07:30:24	Isolated	255.07	255.10	--	Short	View History	3,829.0510 USDT	
+-0.4636 USDT (-1.07%)
+≈ -0.46 USD
+Fees saved: 4.2117 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:30:08	‎2026-04-14 07:30:12	Isolated	255.17	255.19	--	Long	View History	2,980.6192 USDT	
+0.1542 USDT (+0.46%)
+≈ 0.15 USD
+Fees saved: 3.2785 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:29:56	‎2026-04-14 07:30:03	Isolated	255.13	255.16	--	Long	View History	89.3060 USDT	
+0.0105 USDT (+1.04%)
+≈ 0.01 USD
+Fees saved: 0.0982 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:29:43	‎2026-04-14 07:29:50	Isolated	254.98	255.00	--	Long	View History	3,827.5500 USDT	
+0.3596 USDT (+0.83%)
+≈ 0.35 USD
+Fees saved: 4.2101 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:29:32	‎2026-04-14 07:29:34	Isolated	254.93	254.91	--	Long	View History	3,826.1991 USDT	
+-0.3002 USDT (-0.69%)
+≈ -0.30 USD
+Fees saved: 4.2089 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:29:23	‎2026-04-14 07:29:29	Isolated	254.98	254.93	--	Short	View History	3,826.4993 USDT	
+0.7505 USDT (+1.74%)
+≈ 0.75 USD
+Fees saved: 4.2095 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:29:13	‎2026-04-14 07:29:20	Isolated	255.11	254.96	--	Short	View History	397.7376 USDT	
+0.2340 USDT (+5.23%)
+≈ 0.23 USD
+Fees saved: 0.4376 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:29:08	‎2026-04-14 07:29:10	Isolated	255.07	255.13	--	Short	View History	3,829.5013 USDT	
+-0.9006 USDT (-2.09%)
+≈ -0.90 USD
+Fees saved: 4.2119 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:29:00	‎2026-04-14 07:29:02	Isolated	255.12	255.05	--	Long	View History	3,828.3005 USDT	
+-1.0018 USDT (-2.32%)
+≈ -1.00 USD
+Fees saved: 4.2117 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:28:54	‎2026-04-14 07:28:57	Isolated	255.10	255.11	--	Short	View History	3,829.2011 USDT	
+-0.1501 USDT (-0.34%)
+≈ -0.15 USD
+Fees saved: 4.212 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:28:40	‎2026-04-14 07:28:48	Isolated	255.15	255.06	--	Short	View History	3,828.4506 USDT	
+1.3509 USDT (+3.13%)
+≈ 1.35 USD
+Fees saved: 4.212 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:28:29	‎2026-04-14 07:28:31	Isolated	255.14	255.17	--	Short	View History	3,830.1017 USDT	
+-0.5048 USDT (-1.17%)
+≈ -0.50 USD
+Fees saved: 4.2128 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:28:17	‎2026-04-14 07:28:19	Isolated	255.08	255.09	--	Long	View History	3,828.9009 USDT	
+0.1501 USDT (+0.34%)
+≈ 0.15 USD
+Fees saved: 4.2117 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:28:11	‎2026-04-14 07:28:14	Isolated	254.97	255.07	--	Long	View History	3,828.6007 USDT	
+1.5010 USDT (+3.49%)
+≈ 1.50 USD
+Fees saved: 4.2106 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:28:00	‎2026-04-14 07:28:02	Isolated	254.99	254.96	--	Short	View History	3,826.9496 USDT	
+0.3780 USDT (+0.87%)
+≈ 0.37 USD
+Fees saved: 4.2099 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:27:56	‎2026-04-14 07:27:58	Isolated	254.99	255.00	--	Long	View History	3,827.5500 USDT	
+0.1501 USDT (+0.34%)
+≈ 0.15 USD
+Fees saved: 4.2102 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:27:23	‎2026-04-14 07:27:35	Isolated	255.00	255.01	--	Long	View History	3,827.7001 USDT	
+0.1501 USDT (+0.34%)
+≈ 0.15 USD
+Fees saved: 4.2103 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:27:08	‎2026-04-14 07:27:20	Isolated	254.98	254.92	--	Short	View History	864.1788 USDT	
+0.2034 USDT (+2.09%)
+≈ 0.20 USD
+Fees saved: 0.9507 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:27:04	‎2026-04-14 07:27:06	Isolated	255.05	254.99	--	Short	View History	3,827.3999 USDT	
+0.9006 USDT (+2.09%)
+≈ 0.90 USD
+Fees saved: 4.2106 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:26:56	‎2026-04-14 07:26:59	Isolated	255.04	255.03	--	Long	View History	3,828.0003 USDT	
+-0.1501 USDT (-0.34%)
+≈ -0.15 USD
+Fees saved: 4.2108 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:26:36	‎2026-04-14 07:26:40	Isolated	255.06	255.10	--	Short	View History	3,829.0510 USDT	
+-0.7212 USDT (-1.67%)
+≈ -0.72 USD
+Fees saved: 4.2116 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:26:15	‎2026-04-14 07:26:34	Isolated	255.15	255.16	--	Long	View History	3,829.9516 USDT	
+0.1501 USDT (+0.34%)
+≈ 0.15 USD
+Fees saved: 4.2128 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:26:12	‎2026-04-14 07:26:14	Isolated	255.12	255.11	--	Long	View History	3,829.2011 USDT	
+-0.1501 USDT (-0.34%)
+≈ -0.15 USD
+Fees saved: 4.2122 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:25:51	‎2026-04-14 07:25:58	Isolated	255.03	255.08	--	Long	View History	594.3364 USDT	
+0.1234 USDT (+1.84%)
+≈ 0.12 USD
+Fees saved: 0.6537 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:25:40	‎2026-04-14 07:25:43	Isolated	254.89	254.90	--	Short	View History	3,826.0490 USDT	
+-0.1501 USDT (-0.34%)
+≈ -0.15 USD
+Fees saved: 4.2085 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:25:32	‎2026-04-14 07:25:37	Isolated	255.24	254.94	--	Short	View History	3,826.6494 USDT	
+4.5030 USDT (+10.46%)
+≈ 4.50 USD
+Fees saved: 4.2117 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:25:14	‎2026-04-14 07:25:22	Isolated	255.28	255.28	--	Short	View History	3,831.7528 USDT	
+0.0000 USDT (0.00%)
+≈ 0.00 USD
+Fees saved: 4.2149 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:24:59	‎2026-04-14 07:25:04	Isolated	255.34	255.26	--	Short	View History	3,831.4526 USDT	
+1.2008 USDT (+2.78%)
+≈ 1.20 USD
+Fees saved: 4.2152 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:24:52	‎2026-04-14 07:24:54	Isolated	255.56	255.42	--	Short	View History	3,833.8542 USDT	
+2.0615 USDT (+4.78%)
+≈ 2.06 USD
+Fees saved: 4.2184 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:24:11	‎2026-04-14 07:24:22	Isolated	255.33	255.43	--	Long	View History	3,834.0043 USDT	
+1.5010 USDT (+3.48%)
+≈ 1.50 USD
+Fees saved: 4.2165 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:24:07	‎2026-04-14 07:24:09	Isolated	255.32	255.30	--	Short	View History	3,832.0530 USDT	
+0.3002 USDT (+0.69%)
+≈ 0.30 USD
+Fees saved: 4.2154 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:24:00	‎2026-04-14 07:24:02	Isolated	255.22	255.36	--	Long	View History	3,832.9536 USDT	
+2.1808 USDT (+5.06%)
+≈ 2.18 USD
+Fees saved: 4.2151 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:23:45	‎2026-04-14 07:23:53	Isolated	255.15	255.21	--	Long	View History	2,016.1590 USDT	
+0.4740 USDT (+2.09%)
+≈ 0.47 USD
+Fees saved: 2.2175 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:23:21	‎2026-04-14 07:23:43	Isolated	255.51	255.18	--	Short	View History	3,830.2518 USDT	
+4.8649 USDT (+11.28%)
+≈ 4.86 USD
+Fees saved: 4.216 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:22:56	‎2026-04-14 07:23:11	Isolated	255.80	255.74	--	Short	View History	3,838.6574 USDT	
+0.9006 USDT (+2.08%)
+≈ 0.90 USD
+Fees saved: 4.223 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:22:43	‎2026-04-14 07:22:47	Isolated	255.78	255.73	--	Short	View History	3,838.5073 USDT	
+0.7505 USDT (+1.73%)
+≈ 0.75 USD
+Fees saved: 4.2227 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:22:32	‎2026-04-14 07:22:35	Isolated	255.84	255.79	--	Short	View History	3,839.4079 USDT	
+0.7505 USDT (+1.73%)
+≈ 0.75 USD
+Fees saved: 2.8797 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:22:22	‎2026-04-14 07:22:28	Isolated	255.89	255.88	--	Short	View History	3,840.7588 USDT	
+0.0520 USDT (+0.12%)
+≈ 0.05 USD
+Fees saved: 4.2249 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:22:03	‎2026-04-14 07:22:20	Isolated	255.88	255.94	--	Long	View History	3,841.6594 USDT	
+0.9006 USDT (+2.08%)
+≈ 0.90 USD
+Fees saved: 4.2253 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:21:50	‎2026-04-14 07:21:59	Isolated	255.87	255.84	--	Short	View History	3,840.1584 USDT	
+0.4503 USDT (+1.04%)
+≈ 0.45 USD
+Fees saved: 4.2244 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:21:41	‎2026-04-14 07:21:44	Isolated	255.93	255.90	--	Short	View History	3,841.0590 USDT	
+0.3712 USDT (+0.85%)
+≈ 0.37 USD
+Fees saved: 4.2254 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:21:16	‎2026-04-14 07:21:31	Isolated	256.00	256.02	--	Long	View History	3,842.8602 USDT	
+0.3002 USDT (+0.69%)
+≈ 0.30 USD
+Fees saved: 4.2269 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:20:59	‎2026-04-14 07:21:09	Isolated	256.14	255.98	--	Short	View History	3,842.2598 USDT	
+2.4016 USDT (+5.55%)
+≈ 2.40 USD
+Fees saved: 4.2278 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:20:49	‎2026-04-14 07:20:51	Isolated	256.17	256.15	--	Long	View History	3,844.8115 USDT	
+-0.3002 USDT (-0.69%)
+≈ -0.30 USD
+Fees saved: 2.9338 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:20:42	‎2026-04-14 07:20:44	Isolated	256.04	256.05	--	Short	View History	3,843.3105 USDT	
+-0.1501 USDT (-0.34%)
+≈ -0.15 USD
+Fees saved: 4.2275 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:20:28	‎2026-04-14 07:20:37	Isolated	255.97	256.04	--	Long	View History	3,843.1604 USDT	
+1.0507 USDT (+2.43%)
+≈ 1.05 USD
+Fees saved: 4.2268 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:20:13	‎2026-04-14 07:20:18	Isolated	255.78	255.80	--	Long	View History	3,839.5580 USDT	
+0.3002 USDT (+0.69%)
+≈ 0.30 USD
+Fees saved: 4.2233 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:20:07	‎2026-04-14 07:20:09	Isolated	255.79	255.80	--	Short	View History	3,839.5580 USDT	
+-0.2428 USDT (-0.56%)
+≈ -0.24 USD
+Fees saved: 4.2234 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:19:20	‎2026-04-14 07:19:56	Isolated	255.67	255.87	--	Long	View History	3,840.6087 USDT	
+3.1474 USDT (+7.29%)
+≈ 3.14 USD
+Fees saved: 4.223 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:19:09	‎2026-04-14 07:19:13	Isolated	255.62	255.65	--	Short	View History	3,837.3065 USDT	
+-0.4503 USDT (-1.04%)
+≈ -0.45 USD
+Fees saved: 4.2207 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:18:46	‎2026-04-14 07:19:05	Isolated	255.75	255.63	--	Short	View History	3,837.0063 USDT	
+1.8012 USDT (+4.17%)
+≈ 1.80 USD
+Fees saved: 4.2216 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:18:35	‎2026-04-14 07:18:44	Isolated	255.64	255.75	--	Long	View History	3,838.8075 USDT	
+1.6511 USDT (+3.82%)
+≈ 1.65 USD
+Fees saved: 4.2217 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:18:06	‎2026-04-14 07:18:13	Isolated	255.58	255.61	--	Long	View History	3,836.7061 USDT	
+0.4503 USDT (+1.04%)
+≈ 0.45 USD
+Fees saved: 4.2201 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:18:01	‎2026-04-14 07:18:03	Isolated	255.57	255.58	--	Short	View History	1,275.3442 USDT	
+-0.0499 USDT (-0.34%)
+≈ -0.04 USD
+Fees saved: 1.4028 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:17:55	‎2026-04-14 07:17:57	Isolated	255.52	255.54	--	Short	View History	3,835.6554 USDT	
+-0.3945 USDT (-0.91%)
+≈ -0.39 USD
+Fees saved: 4.2191 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:17:39	‎2026-04-14 07:17:47	Isolated	255.51	255.51	--	Short	View History	3,209.2056 USDT	
+0.0000 USDT (0.00%)
+≈ 0.00 USD
+Fees saved: 3.5301 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:17:29	‎2026-04-14 07:17:36	Isolated	255.56	255.53	--	Short	View History	3,835.5053 USDT	
+0.4503 USDT (+1.04%)
+≈ 0.45 USD
+Fees saved: 4.2193 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:16:01	‎2026-04-14 07:17:16	Isolated	255.42	255.71	--	Long	View History	1,680.0147 USDT	
+1.9053 USDT (+10.10%)
+≈ 1.90 USD
+Fees saved: 1.8469 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:15:53	‎2026-04-14 07:15:58	Isolated	255.40	255.38	--	Long	View History	3,833.2538 USDT	
+-0.1528 USDT (-0.35%)
+≈ -0.15 USD
+Fees saved: 4.2168 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:15:23	‎2026-04-14 07:15:41	Isolated	255.35	255.37	--	Long	View History	3,833.1037 USDT	
+0.3002 USDT (+0.69%)
+≈ 0.30 USD
+Fees saved: 4.2162 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:15:18	‎2026-04-14 07:15:21	Isolated	255.26	255.27	--	Short	View History	3,831.6027 USDT	
+-0.1501 USDT (-0.34%)
+≈ -0.15 USD
+Fees saved: 4.2146 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:15:07	‎2026-04-14 07:15:09	Isolated	255.26	255.25	--	Long	View History	3,831.3025 USDT	
+-0.1501 USDT (-0.34%)
+≈ -0.15 USD
+Fees saved: 4.2145 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:14:37	‎2026-04-14 07:15:01	Isolated	255.32	255.25	--	Long	View History	3,831.3025 USDT	
+-0.9310 USDT (-2.16%)
+≈ -0.93 USD
+Fees saved: 4.215 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:14:30	‎2026-04-14 07:14:32	Isolated	255.31	255.32	--	Short	View History	3,832.3532 USDT	
+-0.2068 USDT (-0.48%)
+≈ -0.20 USD
+Fees saved: 4.2155 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:14:26	‎2026-04-14 07:14:28	Isolated	255.51	255.32	--	Short	View History	3,832.3532 USDT	
+2.8016 USDT (+6.50%)
+≈ 2.80 USD
+Fees saved: 4.2171 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:14:21	‎2026-04-14 07:14:23	Isolated	255.48	255.52	--	Short	View History	3,835.3552 USDT	
+-0.6004 USDT (-1.39%)
+≈ -0.60 USD
+Fees saved: 4.2185 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:14:15	‎2026-04-14 07:14:17	Isolated	255.50	255.49	--	Long	View History	3,834.9049 USDT	
+-0.1501 USDT (-0.34%)
+≈ -0.15 USD
+Fees saved: 4.2184 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:14:07	‎2026-04-14 07:14:10	Isolated	255.48	255.50	--	Short	View History	3,835.0550 USDT	
+-0.3002 USDT (-0.69%)
+≈ -0.30 USD
+Fees saved: 2.8762 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:14:03	‎2026-04-14 07:14:03	Isolated	255.81	255.49	--	Long	View History	1,205.9128 USDT	
+-1.5104 USDT (-11.13%)
+≈ -1.51 USD
+Fees saved: 1.3273 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:13:54	‎2026-04-14 07:13:56	Isolated	255.78	255.82	--	Short	View History	3,839.8582 USDT	
+-0.6154 USDT (-1.42%)
+≈ -0.61 USD
+Fees saved: 4.2235 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:13:46	‎2026-04-14 07:13:48	Isolated	255.77	255.78	--	Long	View History	3,839.2578 USDT	
+0.1501 USDT (+0.34%)
+≈ 0.15 USD
+Fees saved: 4.2231 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:13:22	‎2026-04-14 07:13:27	Isolated	255.66	255.69	--	Long	View History	2,840.7159 USDT	
+0.3333 USDT (+1.04%)
+≈ 0.33 USD
+Fees saved: 3.1246 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:13:12	‎2026-04-14 07:13:12	Isolated	255.49	255.70	--	Short	View History	3,838.0570 USDT	
+-3.1521 USDT (-7.31%)
+≈ -3.15 USD
+Fees saved: 2.8779 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:13:01	‎2026-04-14 07:13:03	Isolated	255.72	255.71	--	Long	View History	3,838.2071 USDT	
+-0.1501 USDT (-0.34%)
+≈ -0.15 USD
+Fees saved: 4.2221 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:12:55	‎2026-04-14 07:12:57	Isolated	255.70	255.69	--	Long	View History	3,837.9069 USDT	
+-0.1501 USDT (-0.34%)
+≈ -0.15 USD
+Fees saved: 4.2217 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:12:38	‎2026-04-14 07:12:50	Isolated	255.80	255.77	--	Short	View History	3,839.1077 USDT	
+0.4503 USDT (+1.04%)
+≈ 0.45 USD
+Fees saved: 4.2232 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:12:29	‎2026-04-14 07:12:33	Isolated	255.81	255.81	--	Short	View History	3,839.7081 USDT	
+0.0000 USDT (0.00%)
+≈ 0.00 USD
+Fees saved: 4.2236 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:12:16	‎2026-04-14 07:12:18	Isolated	255.82	255.80	--	Long	View History	7.6740 USDT	
+-0.0006 USDT (-0.69%)
+≈ 0.00 USD
+Fees saved: 0.0084 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:12:10	‎2026-04-14 07:12:12	Isolated	255.92	255.85	--	Short	View History	2,031.4490 USDT	
+0.5558 USDT (+2.43%)
+≈ 0.55 USD
+Fees saved: 2.2348 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:11:55	‎2026-04-14 07:12:01	Isolated	256.57	256.38	--	Short	View History	3,848.2638 USDT	
+2.8519 USDT (+6.59%)
+≈ 2.85 USD
+Fees saved: 4.2346 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:11:47	‎2026-04-14 07:11:52	Isolated	256.48	256.60	--	Long	View History	3,851.5660 USDT	
+1.8012 USDT (+4.16%)
+≈ 1.80 USD
+Fees saved: 4.2357 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:10:39	‎2026-04-14 07:11:22	Isolated	256.17	256.41	--	Long	View History	3,848.7141 USDT	
+3.6024 USDT (+8.33%)
+≈ 3.60 USD
+Fees saved: 4.2316 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:10:14	‎2026-04-14 07:10:37	Isolated	256.12	256.11	--	Long	View History	3,844.2111 USDT	
+-0.0620 USDT (-0.14%)
+≈ -0.06 USD
+Fees saved: 4.2287 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:10:09	‎2026-04-14 07:10:12	Isolated	256.06	256.07	--	Short	View History	3,024.1867 USDT	
+-0.1181 USDT (-0.34%)
+≈ -0.11 USD
+Fees saved: 3.3265 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:10:01	‎2026-04-14 07:10:06	Isolated	256.07	256.08	--	Long	View History	3,843.7608 USDT	
+0.1501 USDT (+0.34%)
+≈ 0.15 USD
+Fees saved: 4.228 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:09:29	‎2026-04-14 07:09:56	Isolated	256.00	256.06	--	Long	View History	576.1350 USDT	
+0.1350 USDT (+2.08%)
+≈ 0.13 USD
+Fees saved: 0.6336 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:09:23	‎2026-04-14 07:09:25	Isolated	255.90	255.91	--	Long	View History	3,841.2091 USDT	
+0.1501 USDT (+0.34%)
+≈ 0.15 USD
+Fees saved: 4.2252 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:08:34	‎2026-04-14 07:09:12	Isolated	256.22	256.00	--	Short	View History	3,842.5600 USDT	
+3.3022 USDT (+7.64%)
+≈ 3.30 USD
+Fees saved: 4.2286 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:08:19	‎2026-04-14 07:08:33	Isolated	256.00	256.11	--	Short	View History	289.4043 USDT	
+-0.1254 USDT (-3.85%)
+≈ -0.12 USD
+Fees saved: 0.3182 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:08:02	‎2026-04-14 07:08:15	Isolated	255.93	256.02	--	Long	View History	3,842.8602 USDT	
+1.3509 USDT (+3.12%)
+≈ 1.35 USD
+Fees saved: 4.2264 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:07:55	‎2026-04-14 07:07:59	Isolated	255.85	255.77	--	Short	View History	3,839.1077 USDT	
+1.2008 USDT (+2.78%)
+≈ 1.20 USD
+Fees saved: 4.2236 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:07:31	‎2026-04-14 07:07:38	Isolated	255.94	255.89	--	Short	View History	3,840.9089 USDT	
+0.7505 USDT (+1.73%)
+≈ 0.75 USD
+Fees saved: 4.2254 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:07:05	‎2026-04-14 07:07:16	Isolated	255.94	255.93	--	Short	View History	345.5055 USDT	
+0.0135 USDT (+0.34%)
+≈ 0.01 USD
+Fees saved: 0.38 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:06:55	‎2026-04-14 07:07:02	Isolated	255.95	255.94	--	Short	View History	3,841.6594 USDT	
+0.1501 USDT (+0.34%)
+≈ 0.15 USD
+Fees saved: 4.2259 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:06:41	‎2026-04-14 07:06:45	Isolated	256.02	255.96	--	Short	View History	3,841.9596 USDT	
+0.9006 USDT (+2.08%)
+≈ 0.90 USD
+Fees saved: 4.2266 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:06:17	‎2026-04-14 07:06:37	Isolated	256.05	256.15	--	Long	View History	3,844.8115 USDT	
+1.5010 USDT (+3.47%)
+≈ 1.50 USD
+Fees saved: 4.2284 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:06:06	‎2026-04-14 07:06:08	Isolated	256.10	256.00	--	Short	View History	3,842.5600 USDT	
+1.4481 USDT (+3.35%)
+≈ 1.44 USD
+Fees saved: 4.2276 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:06:00	‎2026-04-14 07:06:04	Isolated	256.14	256.16	--	Long	View History	3,844.9616 USDT	
+0.3002 USDT (+0.69%)
+≈ 0.30 USD
+Fees saved: 4.2292 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:05:24	‎2026-04-14 07:05:40	Isolated	256.05	256.00	--	Short	View History	3,842.5600 USDT	
+0.7505 USDT (+1.73%)
+≈ 0.75 USD
+Fees saved: 4.2272 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:05:01	‎2026-04-14 07:05:06	Isolated	255.91	255.98	--	Long	View History	3,842.2598 USDT	
+1.0507 USDT (+2.43%)
+≈ 1.05 USD
+Fees saved: 4.2259 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:04:56	‎2026-04-14 07:04:58	Isolated	255.84	255.84	--	Long	View History	1,852.2816 USDT	
+0.0000 USDT (0.00%)
+≈ 0.00 USD
+Fees saved: 2.0375 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:04:24	‎2026-04-14 07:04:26	Isolated	255.83	255.75	--	Long	View History	3,838.8075 USDT	
+-1.2008 USDT (-2.78%)
+≈ -1.20 USD
+Fees saved: 4.2233 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:03:54	‎2026-04-14 07:04:15	Isolated	255.71	255.88	--	Long	View History	3,840.7588 USDT	
+2.5517 USDT (+5.91%)
+≈ 2.55 USD
+Fees saved: 4.2234 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:03:39	‎2026-04-14 07:03:41	Isolated	255.84	255.71	--	Short	View History	3,838.2071 USDT	
+1.9513 USDT (+4.52%)
+≈ 1.95 USD
+Fees saved: 4.2231 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:03:20	‎2026-04-14 07:03:33	Isolated	255.86	255.79	--	Short	View History	3,839.4079 USDT	
+1.0507 USDT (+2.43%)
+≈ 1.05 USD
+Fees saved: 4.2239 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:03:06	‎2026-04-14 07:03:08	Isolated	255.80	255.85	--	Short	View History	3,840.3085 USDT	
+-0.7505 USDT (-1.73%)
+≈ -0.75 USD
+Fees saved: 4.2239 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:02:52	‎2026-04-14 07:02:56	Isolated	255.82	255.84	--	Long	View History	3,840.1584 USDT	
+0.3002 USDT (+0.69%)
+≈ 0.30 USD
+Fees saved: 4.224 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:02:34	‎2026-04-14 07:02:38	Isolated	255.81	255.82	--	Long	View History	3,839.8582 USDT	
+0.2022 USDT (+0.46%)
+≈ 0.20 USD
+Fees saved: 4.2237 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:02:07	‎2026-04-14 07:02:09	Isolated	255.85	255.86	--	Short	View History	3,840.4586 USDT	
+-0.1501 USDT (-0.34%)
+≈ -0.15 USD
+Fees saved: 4.2244 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:01:52	‎2026-04-14 07:01:58	Isolated	255.88	255.87	--	Long	View History	3,840.6087 USDT	
+-0.0410 USDT (-0.09%)
+≈ -0.04 USD
+Fees saved: 4.2248 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:01:43	‎2026-04-14 07:01:49	Isolated	255.80	255.85	--	Long	View History	3,840.3085 USDT	
+0.7505 USDT (+1.73%)
+≈ 0.75 USD
+Fees saved: 4.2239 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:01:37	‎2026-04-14 07:01:39	Isolated	255.66	255.65	--	Long	View History	3,837.3065 USDT	
+-0.1501 USDT (-0.34%)
+≈ -0.15 USD
+Fees saved: 4.2211 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:01:25	‎2026-04-14 07:01:27	Isolated	255.82	255.83	--	Short	View History	3,840.0083 USDT	
+-0.1501 USDT (-0.34%)
+≈ -0.15 USD
+Fees saved: 4.2239 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:01:16	‎2026-04-14 07:01:20	Isolated	255.95	255.57	--	Short	View History	3,836.1057 USDT	
+5.7038 USDT (+13.21%)
+≈ 5.70 USD
+Fees saved: 4.2228 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:01:08	‎2026-04-14 07:01:14	Isolated	255.90	255.92	--	Long	View History	3,841.3592 USDT	
+0.3002 USDT (+0.69%)
+≈ 0.30 USD
+Fees saved: 4.2253 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:01:01	‎2026-04-14 07:01:04	Isolated	255.82	255.86	--	Long	View History	3,840.4586 USDT	
+0.6004 USDT (+1.39%)
+≈ 0.60 USD
+Fees saved: 4.2241 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:00:47	‎2026-04-14 07:00:49	Isolated	255.83	255.85	--	Short	View History	3,840.3085 USDT	
+-0.3002 USDT (-0.69%)
+≈ -0.30 USD
+Fees saved: 4.2241 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:00:33	‎2026-04-14 07:00:38	Isolated	255.94	255.93	--	Long	View History	3,841.5093 USDT	
+-0.0881 USDT (-0.20%)
+≈ -0.08 USD
+Fees saved: 4.2257 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:00:22	‎2026-04-14 07:00:24	Isolated	255.79	255.86	--	Short	View History	3,840.4586 USDT	
+-1.1055 USDT (-2.56%)
+≈ -1.10 USD
+Fees saved: 4.2239 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:00:06	‎2026-04-14 07:00:19	Isolated	256.38	255.83	--	Long	View History	803.3062 USDT	
+-1.7270 USDT (-19.09%)
+≈ -1.72 USD
+Fees saved: 0.6028 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:00:07	‎2026-04-14 07:00:17	Isolated	256.38	256.02	--	Short	View History	3,842.8602 USDT	
+5.2918 USDT (+12.23%)
+≈ 5.29 USD
+Fees saved: 4.2301 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 07:00:03	‎2026-04-14 07:00:05	Isolated	256.38	256.41	--	Long	View History	3,043.5867 USDT	
+0.3561 USDT (+1.04%)
+≈ 0.35 USD
+Fees saved: 2.2826 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 06:59:14	‎2026-04-14 06:59:36	Isolated	256.23	256.24	--	Long	View History	345.9240 USDT	
+0.0135 USDT (+0.34%)
+≈ 0.01 USD
+Fees saved: 0.3805 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 06:59:10	‎2026-04-14 06:59:12	Isolated	256.22	256.21	--	Long	View History	3,845.7121 USDT	
+-0.1483 USDT (-0.34%)
+≈ -0.14 USD
+Fees saved: 4.2303 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 06:58:53	‎2026-04-14 06:58:55	Isolated	256.06	256.05	--	Long	View History	3,843.3105 USDT	
+-0.1501 USDT (-0.34%)
+≈ -0.15 USD
+Fees saved: 4.2277 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 06:58:38	‎2026-04-14 06:58:49	Isolated	256.05	256.03	--	Short	View History	3,113.3248 USDT	
+0.1225 USDT (+0.35%)
+≈ 0.12 USD
+Fees saved: 3.4248 USDT
+All Closed
+TAOUSDT Perpetual
+‎2026-04-14 06:57:46	‎2026-04-14 06:58:01	Isolated	255.92	255.94	--	Long	View History	3,841.6594 USDT	
+0.3002 USDT (+0.69%)
+≈ 0.30 USD
+Fees saved: 4.2256 USDT
+All Closed

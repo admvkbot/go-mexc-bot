@@ -12,9 +12,13 @@ The design merges behaviors seen in:
 ## Tooling milestones
 
 - **Go toolchain**: The module was raised to **Go 1.26** with an explicit `toolchain go1.26.0` directive so builds resolve the same compiler version via the Go toolchain mechanism.
-- **Dependencies**: The only third-party dependency is `github.com/joho/godotenv` for optional `.env` loading; versions were refreshed using Context7 documentation as reference for install and usage patterns.
+- **Dependencies**: `github.com/joho/godotenv` for optional `.env` loading; `github.com/gorilla/websocket` for the contract-edge WebSocket client (`ContractWS`), mirroring `mexc-futures-sdk` `websocket.ts`.
 - **Version control**: Git was initialized in the workspace when the directory was not yet a repository; the first commit captured the library, tests, ignore rules, documentation, and memory bank snapshot.
 
 ## GitHub remote
 
 The repository `https://github.com/mexc-bot/go-mexc-bot` was not available to the token used (GraphQL “Could not resolve”). A new public repository was created as **`https://github.com/admvkbot/go-mexc-bot`** and `main` was pushed as the first upstream branch. The Go module import path in `go.mod` was left unchanged.
+
+## Layout: bot-oriented layers
+
+The root package `mexcfutures/` was moved under `internal/infrastructure/mexc/mexcfutures/` so the client is an implementation detail. Added `cmd/mexc-bot`, `internal/app`, `internal/config`, and `internal/ports` for a conventional Go service layout and future use-case/domain packages.
