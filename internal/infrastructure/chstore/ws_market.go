@@ -24,11 +24,10 @@ type WSMarketRow struct {
 
 // Client is a small ClickHouse writer for WS capture tables.
 type Client struct {
-	cfg  Config
+	cfg Config
 	conn driver.Conn
 
-	schemaMu   sync.Mutex
-	schemaDone bool
+	schemaMu sync.Mutex
 }
 
 // Dial opens a native-protocol connection and pings the server.
@@ -63,14 +62,11 @@ func (c *Client) Close() error {
 	return c.conn.Close()
 }
 
-// InitMarketWSSchema creates database and the market WebSocket capture table if missing (symbol is a column).
-// Safe to call from several goroutines (e.g. one per tracked symbol); runs DDL at most once after success.
+// InitMarketWSSchema creates database, raw WS table, normalized tables, and hourly MV (all idempotent).
+// Safe to call from several goroutines; DDL is lightweight when objects already exist.
 func (c *Client) InitMarketWSSchema(ctx context.Context) error {
 	c.schemaMu.Lock()
 	defer c.schemaMu.Unlock()
-	if c.schemaDone {
-		return nil
-	}
 	db := quoteIdent(c.cfg.Database)
 	if err := c.conn.Exec(ctx, "CREATE DATABASE IF NOT EXISTS "+db); err != nil {
 		return fmt.Errorf("chstore: create database: %w", err)
@@ -91,7 +87,9 @@ ORDER BY (symbol, channel, ingested_at, exchange_ts)`, db, tbl)
 	if err := c.conn.Exec(ctx, q); err != nil {
 		return fmt.Errorf("chstore: create table: %w", err)
 	}
-	c.schemaDone = true
+	if err := c.createNormalizedTables(ctx); err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -112,6 +110,9 @@ func (c *Client) InsertWSMarketRows(ctx context.Context, rows []WSMarketRow) err
 	}
 	if err := batch.Send(); err != nil {
 		return fmt.Errorf("chstore: send: %w", err)
+	}
+	if err := c.insertNormalizedFromWSRows(ctx, rows); err != nil {
+		return fmt.Errorf("chstore: normalized: %w", err)
 	}
 	return nil
 }
