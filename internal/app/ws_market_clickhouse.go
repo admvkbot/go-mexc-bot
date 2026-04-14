@@ -64,6 +64,7 @@ func (b *Bot) captureWSOneSession(ctx context.Context, symbol string) error {
 	if err := ws.SubscribeDeals(symbol); err != nil {
 		return fmt.Errorf("sub.deal: %w", err)
 	}
+	log.Printf("mexc-bot: ws capture %s: connected, subscribed (depth + depth.full + deal); streaming to ClickHouse", symbol)
 
 	var batch []chstore.WSMarketRow
 	flush := func() error {
@@ -79,11 +80,18 @@ func (b *Bot) captureWSOneSession(ctx context.Context, symbol string) error {
 
 	readWait := 8 * time.Second
 	lastFlush := time.Now()
+	lastStat := time.Now()
+	var framesWindow int64
 	for {
 		if ctx.Err() != nil {
 			_ = ws.Close()
 			_ = flush()
 			return ctx.Err()
+		}
+		if time.Since(lastStat) >= 30*time.Second {
+			log.Printf("mexc-bot: ws capture %s: %d market frames last 30s (0 = no push.depth/deal or filter mismatch)", symbol, framesWindow)
+			framesWindow = 0
+			lastStat = time.Now()
 		}
 		if time.Since(lastFlush) >= 500*time.Millisecond {
 			if err := flush(); err != nil {
@@ -110,6 +118,10 @@ func (b *Bot) captureWSOneSession(ctx context.Context, symbol string) error {
 		row, ok := wsPayloadToRow(mt, data, symbol)
 		if !ok {
 			continue
+		}
+		framesWindow++
+		if framesWindow == 1 {
+			log.Printf("mexc-bot: ws capture %s: first frame (channel=%s)", symbol, row.Channel)
 		}
 		batch = append(batch, row)
 		if len(batch) >= 400 {
