@@ -17,4 +17,4 @@ The design merges behaviors seen in:
 
 ## GitHub remote
 
-The canonical GitHub remote used for the initial push was created under the authenticated GitHub user because the organization/name `mexc-bot/go-mexc-bot` did not resolve as an existing repository at push time. See `current-state.md` for the exact remote URL.
+The repository `https://github.com/mexc-bot/go-mexc-bot` was not available to the token used (GraphQL “Could not resolve”). A new public repository was created as **`https://github.com/admvkbot/go-mexc-bot`** and `main` was pushed as the first upstream branch. The Go module import path in `go.mod` was left unchanged.

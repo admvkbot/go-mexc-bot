@@ -34,4 +34,9 @@ A Go module (`github.com/mexc-bot/go-mexc-bot`) with one importable package:
 
 ## Git remote (as of last setup)
 
-After `git init` and the first push, the default **`origin`** points to the repository created under the authenticated GitHub account (not `mexc-bot/go-mexc-bot`, which did not exist or was not visible to the token used). Update this file if the remote is changed to match the `go.mod` module path.
+After `git init` and the first push, the default **`origin`** is:
+
+- **HTTPS**: `https://github.com/admvkbot/go-mexc-bot.git`
+- **Web**: `https://github.com/admvkbot/go-mexc-bot`
+
+The `go.mod` module path remains `github.com/mexc-bot/go-mexc-bot` (vanity path); the GitHub organization `mexc-bot` did not resolve to an existing repository for the authenticated account at setup time. Update this file if the remote is repointed.
