@@ -154,6 +154,11 @@ func ParseRuntimeMode() RuntimeMode {
 }
 
 // ScalperFromEnv reads book-only scalper runtime settings.
+//
+// Default numeric values below are preliminary heuristics aligned with the exported
+// TAO_USDT position history sample (typical ~8–9k USDT notional per round-trip,
+// hold times often a few seconds, many small PnL outcomes near ~±1 tick at ~256
+// USDT/TAO and 0.01 tick). Override any default via MEXC_SCALPER_* env vars.
 func ScalperFromEnv() Scalper {
 	start, _ := parseTimeEnv("MEXC_SCALPER_REPLAY_START")
 	end, _ := parseTimeEnv("MEXC_SCALPER_REPLAY_END")
@@ -161,28 +166,28 @@ func ScalperFromEnv() Scalper {
 		Symbol:               getenvString("MEXC_SCALPER_SYMBOL", defaultSymbol),
 		TickSize:             getenvFloat("MEXC_SCALPER_TICK_SIZE", 0.01),
 		StepVolume:           getenvFloat("MEXC_SCALPER_STEP_VOLUME", 1),
-		MaxLadderSteps:       getenvInt("MEXC_SCALPER_MAX_LADDER_STEPS", 3),
-		MinStepInterval:      getenvDuration("MEXC_SCALPER_MIN_STEP_INTERVAL", 350*time.Millisecond),
-		EntryTTL:             getenvDuration("MEXC_SCALPER_ENTRY_TTL", 1500*time.Millisecond),
-		ExitTTL:              getenvDuration("MEXC_SCALPER_EXIT_TTL", 1200*time.Millisecond),
-		TimeStop:             getenvDuration("MEXC_SCALPER_TIME_STOP", 4*time.Second),
-		Cooldown:             getenvDuration("MEXC_SCALPER_COOLDOWN", 800*time.Millisecond),
-		PollInterval:         getenvDuration("MEXC_SCALPER_POLL_INTERVAL", 250*time.Millisecond),
-		RepriceInterval:      getenvDuration("MEXC_SCALPER_REPRICE_INTERVAL", 450*time.Millisecond),
-		MaxReprices:          getenvInt("MEXC_SCALPER_MAX_REPRICES", 4),
+		MaxLadderSteps:       getenvInt("MEXC_SCALPER_MAX_LADDER_STEPS", 4),
+		MinStepInterval:      getenvDuration("MEXC_SCALPER_MIN_STEP_INTERVAL", 280*time.Millisecond),
+		EntryTTL:             getenvDuration("MEXC_SCALPER_ENTRY_TTL", 900*time.Millisecond),
+		ExitTTL:              getenvDuration("MEXC_SCALPER_EXIT_TTL", 900*time.Millisecond),
+		TimeStop:             getenvDuration("MEXC_SCALPER_TIME_STOP", 5*time.Second),
+		Cooldown:             getenvDuration("MEXC_SCALPER_COOLDOWN", 600*time.Millisecond),
+		PollInterval:         getenvDuration("MEXC_SCALPER_POLL_INTERVAL", 200*time.Millisecond),
+		RepriceInterval:      getenvDuration("MEXC_SCALPER_REPRICE_INTERVAL", 400*time.Millisecond),
+		MaxReprices:          getenvInt("MEXC_SCALPER_MAX_REPRICES", 5),
 		ProfitTargetTicks:    getenvInt("MEXC_SCALPER_PROFIT_TARGET_TICKS", 2),
-		StopLossTicks:        getenvInt("MEXC_SCALPER_STOP_LOSS_TICKS", 2),
-		MaxSpreadTicks:       getenvFloat("MEXC_SCALPER_MAX_SPREAD_TICKS", 2),
-		MaxBookAge:           getenvDuration("MEXC_SCALPER_MAX_BOOK_AGE", 1200*time.Millisecond),
-		MaxUpdateRate:        getenvFloat("MEXC_SCALPER_MAX_UPDATE_RATE", 180),
-		VolatilityPause:      getenvDuration("MEXC_SCALPER_VOLATILITY_PAUSE", 6*time.Second),
-		FeatureLookback:      getenvDuration("MEXC_SCALPER_FEATURE_LOOKBACK", 400*time.Millisecond),
-		MinImbalance:         getenvFloat("MEXC_SCALPER_MIN_IMBALANCE", 0.18),
-		MinImbalanceDelta:    getenvFloat("MEXC_SCALPER_MIN_IMBALANCE_DELTA", 0.08),
-		MinPressureDelta:     getenvFloat("MEXC_SCALPER_MIN_PRESSURE_DELTA", 0.12),
-		MinSignalScore:       getenvFloat("MEXC_SCALPER_MIN_SIGNAL_SCORE", 1.7),
+		StopLossTicks:        getenvInt("MEXC_SCALPER_STOP_LOSS_TICKS", 1),
+		MaxSpreadTicks:       getenvFloat("MEXC_SCALPER_MAX_SPREAD_TICKS", 1.5),
+		MaxBookAge:           getenvDuration("MEXC_SCALPER_MAX_BOOK_AGE", 1000*time.Millisecond),
+		MaxUpdateRate:        getenvFloat("MEXC_SCALPER_MAX_UPDATE_RATE", 220),
+		VolatilityPause:      getenvDuration("MEXC_SCALPER_VOLATILITY_PAUSE", 5*time.Second),
+		FeatureLookback:      getenvDuration("MEXC_SCALPER_FEATURE_LOOKBACK", 350*time.Millisecond),
+		MinImbalance:         getenvFloat("MEXC_SCALPER_MIN_IMBALANCE", 0.14),
+		MinImbalanceDelta:    getenvFloat("MEXC_SCALPER_MIN_IMBALANCE_DELTA", 0.055),
+		MinPressureDelta:     getenvFloat("MEXC_SCALPER_MIN_PRESSURE_DELTA", 0.09),
+		MinSignalScore:       getenvFloat("MEXC_SCALPER_MIN_SIGNAL_SCORE", 1.45),
 		MinPulseTicks:        getenvInt("MEXC_SCALPER_MIN_PULSE_TICKS", 1),
-		MaxInventoryNotional: getenvFloat("MEXC_SCALPER_MAX_INVENTORY_NOTIONAL", 3500),
+		MaxInventoryNotional: getenvFloat("MEXC_SCALPER_MAX_INVENTORY_NOTIONAL", 10000),
 		AllowEmergencyMarket: getenvBool("MEXC_SCALPER_EMERGENCY_MARKET", true),
 		KillSwitch:           getenvBool("MEXC_SCALPER_KILL_SWITCH", false),
 		OpenType:             getenvInt("MEXC_SCALPER_OPEN_TYPE", defaultOpenType),
@@ -192,8 +197,8 @@ func ScalperFromEnv() Scalper {
 		ReplayEnd:            end,
 		ReplayLimit:          getenvInt("MEXC_SCALPER_REPLAY_LIMIT", 50000),
 		ReplayTargetTicks:    getenvInt("MEXC_SCALPER_REPLAY_TARGET_TICKS", 2),
-		ReplayStopTicks:      getenvInt("MEXC_SCALPER_REPLAY_STOP_TICKS", 2),
-		ReplayTimeStop:       getenvDuration("MEXC_SCALPER_REPLAY_TIME_STOP", 4*time.Second),
+		ReplayStopTicks:      getenvInt("MEXC_SCALPER_REPLAY_STOP_TICKS", 1),
+		ReplayTimeStop:       getenvDuration("MEXC_SCALPER_REPLAY_TIME_STOP", 5*time.Second),
 	}
 }
 

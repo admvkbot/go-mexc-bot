@@ -20,6 +20,7 @@ The active work implemented a V1 execution framework for a book-only scalper on 
 
 ## Immediate Next Steps
 
+- preliminary `MEXC_SCALPER_*` defaults were tuned from the sample `TAO_USDT` position history export (typical notional ~8–9k USDT, sub‑5s holds, small tick PnL); override via env as needed
 - validate MEXC order response shapes on a safe live environment
 - tune thresholds for imbalance, pressure delta, repricing TTLs, and stop/target ticks
 - confirm that `GetOrderByExternalID` polling is sufficient for reliable fill tracking
