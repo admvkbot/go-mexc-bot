@@ -22,10 +22,12 @@ func (b *Bot) runWSMarketToClickHouse(ctx context.Context, symbol string) {
 	if b.ch == nil {
 		return
 	}
+	log.Printf("mexc-bot: ws capture %s: ClickHouse schema init ...", symbol)
 	if err := b.ch.InitMarketWSSchema(ctx); err != nil {
 		log.Printf("mexc-bot: clickhouse schema: %v", err)
 		return
 	}
+	log.Printf("mexc-bot: ws capture %s: ClickHouse schema OK", symbol)
 	for {
 		if ctx.Err() != nil {
 			return
@@ -50,9 +52,11 @@ func (b *Bot) captureWSOneSession(ctx context.Context, symbol string) error {
 	}
 	defer func() { _ = ws.Close() }()
 
+	log.Printf("mexc-bot: ws capture %s: connecting contract WebSocket ...", symbol)
 	if err := ws.Connect(ctx); err != nil {
 		return fmt.Errorf("ws connect: %w", err)
 	}
+	log.Printf("mexc-bot: ws capture %s: WebSocket connected, subscribing ...", symbol)
 	if err := ws.SubscribeDepth(symbol, false); err != nil {
 		return fmt.Errorf("sub.depth: %w", err)
 	}
