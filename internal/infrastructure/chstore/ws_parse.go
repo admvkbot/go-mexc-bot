@@ -39,6 +39,24 @@ type DealTickRow struct {
 	TradeTSMs    int64
 }
 
+// BookLevelRow is one normalized order-book level update from push.depth / push.depth.full*.
+// For incremental depth, zero-volume levels are kept as delete events.
+type BookLevelRow struct {
+	IngestedAt   time.Time
+	ExchangeTSMs int64
+	Symbol       string
+	Channel      string
+	Version      int64
+	Begin        int64
+	End          int64
+	Side         string
+	LevelRank    uint8
+	Price        float64
+	Vol          float64
+	Orders       int32
+	IsDelete     uint8
+}
+
 type depthData struct {
 	Bids    [][]any `json:"bids"`
 	Asks    [][]any `json:"asks"`
@@ -102,6 +120,31 @@ func ParseDepthTopFromMessageJSON(messageJSON, symbol, channel string, ingestedA
 	}, true
 }
 
+// ParseBookLevelsFromMessageJSON extracts per-level rows from depth messages.
+// maxLevels <= 0 means keep all levels present in the message.
+func ParseBookLevelsFromMessageJSON(messageJSON, symbol, channel string, ingestedAt time.Time, maxLevels int) []BookLevelRow {
+	ch := strings.TrimSpace(channel)
+	if ch != "push.depth" && !strings.HasPrefix(ch, "push.depth.full") {
+		return nil
+	}
+	var env wsEnvelope
+	if err := json.Unmarshal([]byte(messageJSON), &env); err != nil {
+		return nil
+	}
+	var dd depthData
+	if err := json.Unmarshal(env.Data, &dd); err != nil {
+		return nil
+	}
+	sym := strings.TrimSpace(env.Symbol)
+	if sym == "" {
+		sym = symbol
+	}
+	var rows []BookLevelRow
+	rows = append(rows, buildBookLevels(ingestedAt.UTC(), env.TS, sym, ch, dd, "bid", dd.Bids, true, maxLevels)...)
+	rows = append(rows, buildBookLevels(ingestedAt.UTC(), env.TS, sym, ch, dd, "ask", dd.Asks, false, maxLevels)...)
+	return rows
+}
+
 func bestLevel(levels [][]any, bids bool) (px, vol float64, ok bool) {
 	if len(levels) == 0 {
 		return 0, 0, false
@@ -132,6 +175,12 @@ func bestLevel(levels [][]any, bids bool) (px, vol float64, ok bool) {
 type priceVol struct {
 	p float64
 	v float64
+}
+
+type levelEntry struct {
+	p      float64
+	v      float64
+	orders int32
 }
 
 func sumVolTopN(levels [][]any, n int, bids bool) float64 {
@@ -170,6 +219,18 @@ func levelTuple(a []any) (px float64, vol float64, ok bool) {
 	return px, vol, ok
 }
 
+func levelEntryTuple(a []any) (levelEntry, bool) {
+	px, vol, ok := levelTuple(a)
+	if !ok {
+		return levelEntry{}, false
+	}
+	var orders int32
+	if len(a) >= 3 {
+		orders = int32(pickIntFromAny(a[2]))
+	}
+	return levelEntry{p: px, v: vol, orders: orders}, true
+}
+
 func toFloat(x any) (float64, bool) {
 	switch t := x.(type) {
 	case float64:
@@ -186,6 +247,51 @@ func toFloat(x any) (float64, bool) {
 	default:
 		return 0, false
 	}
+}
+
+func buildBookLevels(ingestedAt time.Time, exchangeTS int64, symbol, channel string, dd depthData, side string, levels [][]any, bids bool, maxLevels int) []BookLevelRow {
+	var xs []levelEntry
+	for _, lv := range levels {
+		e, ok := levelEntryTuple(lv)
+		if !ok {
+			continue
+		}
+		xs = append(xs, e)
+	}
+	if len(xs) == 0 {
+		return nil
+	}
+	if bids {
+		sort.Slice(xs, func(i, j int) bool { return xs[i].p > xs[j].p })
+	} else {
+		sort.Slice(xs, func(i, j int) bool { return xs[i].p < xs[j].p })
+	}
+	if maxLevels > 0 && len(xs) > maxLevels {
+		xs = xs[:maxLevels]
+	}
+	rows := make([]BookLevelRow, 0, len(xs))
+	for i, e := range xs {
+		isDelete := uint8(0)
+		if e.v <= 0 {
+			isDelete = 1
+		}
+		rows = append(rows, BookLevelRow{
+			IngestedAt:   ingestedAt,
+			ExchangeTSMs: exchangeTS,
+			Symbol:       symbol,
+			Channel:      channel,
+			Version:      dd.Version,
+			Begin:        dd.Begin,
+			End:          dd.End,
+			Side:         side,
+			LevelRank:    uint8(i + 1),
+			Price:        e.p,
+			Vol:          e.v,
+			Orders:       e.orders,
+			IsDelete:     isDelete,
+		})
+	}
+	return rows
 }
 
 // ParseDealTicksFromMessageJSON extracts trade rows from push.deal frame JSON.
@@ -302,6 +408,21 @@ func pickInt(m map[string]any, keys ...string) int {
 		}
 	}
 	return 0
+}
+
+func pickIntFromAny(x any) int {
+	switch t := x.(type) {
+	case float64:
+		return int(t)
+	case json.Number:
+		i, _ := t.Int64()
+		return int(i)
+	case string:
+		v, _ := strconv.Atoi(strings.TrimSpace(t))
+		return v
+	default:
+		return 0
+	}
 }
 
 func pickFloat(m map[string]any, keys ...string) float64 {

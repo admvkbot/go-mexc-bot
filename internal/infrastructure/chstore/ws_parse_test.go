@@ -67,3 +67,32 @@ func TestParseDealTicksFromMessageJSON_matrix(t *testing.T) {
 		t.Fatalf("got %+v", rows)
 	}
 }
+
+func TestParseBookLevelsFromMessageJSON_keepsDeletesAndRanks(t *testing.T) {
+	const raw = `{
+  "symbol": "TAO_USDT",
+  "data": {
+    "asks": [[250.18, 100, 2], [250.17, 0, 0]],
+    "bids": [[250.10, 50, 1], [250.11, 5, 1], [250.09, 0, 0]],
+    "begin": 10,
+    "end": 11,
+    "version": 12
+  },
+  "channel": "push.depth",
+  "ts": 1776166891963
+}`
+	ts := time.Unix(0, 0).UTC()
+	rows := ParseBookLevelsFromMessageJSON(raw, "TAO_USDT", "push.depth", ts, 2)
+	if len(rows) != 4 {
+		t.Fatalf("want 4 rows got %d: %+v", len(rows), rows)
+	}
+	if rows[0].Side != "bid" || rows[0].LevelRank != 1 || math.Abs(rows[0].Price-250.11) > 1e-9 {
+		t.Fatalf("unexpected best bid row: %+v", rows[0])
+	}
+	if rows[1].Side != "bid" || rows[1].LevelRank != 2 || math.Abs(rows[1].Price-250.10) > 1e-9 {
+		t.Fatalf("unexpected second bid row: %+v", rows[1])
+	}
+	if rows[2].Side != "ask" || rows[2].LevelRank != 1 || rows[2].IsDelete != 1 || math.Abs(rows[2].Price-250.17) > 1e-9 {
+		t.Fatalf("unexpected best ask row: %+v", rows[2])
+	}
+}

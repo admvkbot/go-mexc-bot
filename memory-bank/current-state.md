@@ -19,7 +19,7 @@ The `mexcfutures` package is **not** importable from outside this module (under 
 | `cmd/mexc-bot/main.go` | Loads `internal/config`, builds `internal/app.Bot`, runs until SIGINT/SIGTERM |
 | `internal/app/bot.go` | `Bot`, `New`, `NewFromConfig`, `Run` (REST check, then WS market capture → ClickHouse until shutdown) |
 | `internal/app/ws_market_clickhouse.go` | Contract WS per symbol in `MEXC_WS_SYMBOLS`: `sub.depth`, `sub.depth.full` 5/10/20, `sub.deal`; persists `push.depth*`, `push.deal` JSON to ClickHouse |
-| `internal/infrastructure/chstore` | ClickHouse native client: raw `futures_ws_market`; normalized `futures_depth_top`, `futures_deal_tick`; MV `mv_futures_ws_hourly_stats` → `futures_ws_hourly_stats` (SummingMergeTree); dual-write on flush after parsing WS JSON |
+| `internal/infrastructure/chstore` | ClickHouse native client: raw `futures_ws_market`; normalized `futures_depth_top`, `futures_deal_tick`, `futures_book_level`; MV `mv_futures_ws_hourly_stats` → `futures_ws_hourly_stats`; analytical views `v_futures_depth_1s`, `v_futures_deal_1s`, `v_futures_signal_1s`; dual-write on flush after parsing WS JSON |
 | `internal/config/config.go` | `Bot`, `Load()`, `ParseWSSymbols()` |
 | `internal/ports/futures_rest.go` | `FuturesREST` interface |
 | `internal/infrastructure/mexc/mexcfutures/` | REST client, `ContractWS`, signing, env helpers, types, market/order/account, Python-compat helpers |
