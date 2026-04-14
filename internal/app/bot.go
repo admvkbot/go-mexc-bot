@@ -14,8 +14,9 @@ import (
 
 // Bot wires infrastructure and orchestrates the process lifecycle.
 type Bot struct {
-	client   ports.FuturesREST
-	ch       *chstore.Client
+	cfg       config.Bot
+	client    ports.FuturesREST
+	ch        *chstore.Client
 	wsSymbols []string
 }
 
@@ -34,7 +35,7 @@ func NewFromConfig(cfg config.Bot) (*Bot, error) {
 	if err != nil {
 		return nil, fmt.Errorf("app: clickhouse: %w", err)
 	}
-	return &Bot{client: cli, ch: chCli, wsSymbols: cfg.WSSymbols}, nil
+	return &Bot{cfg: cfg, client: cli, ch: chCli, wsSymbols: cfg.WSSymbols}, nil
 }
 
 // Close releases outbound resources (ClickHouse connection).
@@ -51,11 +52,21 @@ func (b *Bot) Run(ctx context.Context) error {
 		return fmt.Errorf("app: connectivity: %w", err)
 	}
 	log.Printf("mexc-bot: %s OK, ready", config.WebKeyEnv)
-	for _, sym := range b.wsSymbols {
-		sym := sym
-		go b.runWSMarketToClickHouse(ctx, sym)
+
+	if b.cfg.Mode.Replay && !b.cfg.Mode.Capture && !b.cfg.Mode.Scalper {
+		return b.runReplayScalper(ctx)
 	}
-	log.Printf("mexc-bot: writing WS order book + deals for [%s] to ClickHouse (depth + depth.full 5/10/20 + deal)", strings.Join(b.wsSymbols, ","))
+
+	if b.cfg.Mode.Capture {
+		for _, sym := range b.wsSymbols {
+			sym := sym
+			go b.runWSMarketToClickHouse(ctx, sym)
+		}
+		log.Printf("mexc-bot: writing WS order book + deals for [%s] to ClickHouse (depth + depth.full 5/10/20 + deal)", strings.Join(b.wsSymbols, ","))
+	}
+	if b.cfg.Mode.Scalper {
+		go b.runLiveScalper(ctx)
+	}
 	<-ctx.Done()
 	return ctx.Err()
 }
