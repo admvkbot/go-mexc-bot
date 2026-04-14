@@ -13,11 +13,11 @@ import (
 
 // Client performs signed WEB-token REST calls to MEXC Futures endpoints.
 type Client struct {
-	webKey        string
-	futuresBase   string
-	contractBase  string
-	userAgent     string
-	httpClient    *http.Client
+	webKey       string
+	futuresBase  string
+	contractBase string
+	userAgent    string
+	httpClient   *http.Client
 }
 
 // NewClient validates config and returns a ready Client.
@@ -34,7 +34,7 @@ func NewClient(cfg Config) (*Client, error) {
 	}, nil
 }
 
-// NewClientFromEnv loads .env (if present), reads MEXC_SOURCE_WEB_KEY, and constructs a Client.
+// NewClientFromEnv loads .env (if present), reads MEXC_WEB_KEY (trading), and constructs a Client.
 func NewClientFromEnv() (*Client, error) {
 	k, err := WebKeyFromEnv(true)
 	if err != nil {

@@ -10,8 +10,11 @@ import (
 	"github.com/joho/godotenv"
 )
 
-// WebKeyEnv is the environment variable holding the MEXC browser WEB session string.
-const WebKeyEnv = "MEXC_SOURCE_WEB_KEY"
+// SourceWebKeyEnv is the WEB session used for incoming market data capture (REST/WS data plane).
+const SourceWebKeyEnv = "MEXC_SOURCE_WEB_KEY"
+
+// TradeWebKeyEnv is the WEB session used for trading / private REST (orders, positions).
+const TradeWebKeyEnv = "MEXC_WEB_KEY"
 
 // WSSymbolEnv is a single-symbol fallback for public WebSocket market capture (deprecated in favour of MEXC_WS_SYMBOLS).
 const WSSymbolEnv = "MEXC_WS_SYMBOL"
@@ -80,24 +83,31 @@ type Scalper struct {
 
 // Bot holds runtime settings for the trading bot process.
 type Bot struct {
-	WebKey    string
-	WSSymbols []string
-	Mode      RuntimeMode
-	Scalper   Scalper
+	SourceWebKey string
+	TradeWebKey  string
+	WSSymbols    []string
+	Mode         RuntimeMode
+	Scalper      Scalper
 }
 
 // Load reads optional .env from the working directory and returns Bot configuration.
 func Load() (Bot, error) {
 	_ = godotenv.Load()
-	k := strings.TrimSpace(os.Getenv(WebKeyEnv))
-	if k == "" {
-		return Bot{}, fmt.Errorf("config: %s is not set", WebKeyEnv)
+	mode := ParseRuntimeMode()
+	source := strings.TrimSpace(os.Getenv(SourceWebKeyEnv))
+	trade := strings.TrimSpace(os.Getenv(TradeWebKeyEnv))
+	if mode.Capture && source == "" {
+		return Bot{}, fmt.Errorf("config: %s is required when capture is enabled", SourceWebKeyEnv)
+	}
+	if mode.Scalper && trade == "" {
+		return Bot{}, fmt.Errorf("config: %s is required when scalper is enabled", TradeWebKeyEnv)
 	}
 	return Bot{
-		WebKey:    k,
-		WSSymbols: ParseWSSymbols(),
-		Mode:      ParseRuntimeMode(),
-		Scalper:   ScalperFromEnv(),
+		SourceWebKey: source,
+		TradeWebKey:  trade,
+		WSSymbols:    ParseWSSymbols(),
+		Mode:         mode,
+		Scalper:      ScalperFromEnv(),
 	}, nil
 }
 

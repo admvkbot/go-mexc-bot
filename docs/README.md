@@ -61,7 +61,7 @@ func main() {
 }
 ```
 
-Перед запуском задайте `MEXC_SOURCE_WEB_KEY` в окружении или в файле `.env` в рабочей директории (см. [client-configuration.md](client-configuration.md)).
+Перед запуском бота задайте в `.env`: `MEXC_SOURCE_WEB_KEY` для режима **capture**, `MEXC_WEB_KEY` для **scalper** (при `capture,scalper` — оба). См. [client-configuration.md](client-configuration.md).
 
 ## Ответы API
 

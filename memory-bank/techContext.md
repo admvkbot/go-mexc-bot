@@ -10,7 +10,8 @@
 
 ## Key Runtime Inputs
 
-- `MEXC_SOURCE_WEB_KEY`: browser WEB authorization token
+- `MEXC_SOURCE_WEB_KEY`: browser WEB token for **market capture** (data plane)
+- `MEXC_WEB_KEY`: browser WEB token for **trading** (private REST / scalper)
 - `MEXC_WS_SYMBOLS`: symbols for market capture
 - `MEXC_BOT_MODE`: `capture`, `scalper`, `replay`, or combined `capture,scalper`
 - `MEXC_SCALPER_*`: execution, signal, risk, and replay settings

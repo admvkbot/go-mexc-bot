@@ -9,7 +9,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-// TestOpenPositionsFuturesFromEnv loads .env (if present), reads MEXC_SOURCE_WEB_KEY,
+// TestOpenPositionsFuturesFromEnv loads .env (if present), reads MEXC_WEB_KEY (trading),
 // and requests GET /private/position/open_positions on the futures host.
 // Skips when the key is unset so CI and local runs without credentials stay green.
 //

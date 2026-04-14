@@ -6,7 +6,7 @@ A Go module (`github.com/mexc-bot/go-mexc-bot`) for a **MEXC bot** with layered 
 
 - **`cmd/mexc-bot`**: process entrypoint (signal handling, config load, `app.Bot.Run`).
 - **`internal/app`**: composition / lifecycle; depends on `ports` and `config`, constructs `mexcfutures.Client`.
-- **`internal/config`**: `MEXC_SOURCE_WEB_KEY`, `MEXC_WS_SYMBOLS` (and legacy `MEXC_WS_SYMBOL`), ClickHouse settings via env (`chstore.ConfigFromEnv`), optional `.env`.
+- **`internal/config`**: `MEXC_SOURCE_WEB_KEY` (capture/data), `MEXC_WEB_KEY` (trading/scalper), `MEXC_WS_SYMBOLS` (and legacy `MEXC_WS_SYMBOL`), ClickHouse settings via env (`chstore.ConfigFromEnv`), optional `.env`.
 - **`internal/ports`**: small interfaces (`FuturesREST`) for testability and future use cases.
 - **`internal/infrastructure/mexc/mexcfutures`**: HTTP client for selected MEXC Futures REST endpoints using the **WEB token** from the browser, plus **contract WebSocket** (`ContractWS` on `wss://contract.mexc.com/edge`). REST requests set browser-like headers and, where required, `x-mxc-nonce` / `x-mxc-sign` derived from an MD5 chain over the JSON body and the WEB key.
 
@@ -24,7 +24,7 @@ The `mexcfutures` package is **not** importable from outside this module (under 
 | `internal/ports/futures_rest.go` | `FuturesREST` interface |
 | `internal/infrastructure/mexc/mexcfutures/` | REST client, `ContractWS`, signing, env helpers, types, market/order/account, Python-compat helpers |
 | `internal/infrastructure/mexc/mexcfutures/compat_test.go` | Unit test for `ParseContractDetailSummary` |
-| `internal/infrastructure/mexc/mexcfutures/open_positions_integration_test.go` | Integration test with `MEXC_SOURCE_WEB_KEY` (loads `../../../../.env` toward repo root) |
+| `internal/infrastructure/mexc/mexcfutures/open_positions_integration_test.go` | Integration test with `MEXC_WEB_KEY` (loads `../../../../.env` toward repo root) |
 | `internal/infrastructure/mexc/mexcfutures/contract_depth_integration_test.go` | Integration test: public `ContractDepth` for `TAO_USDT` |
 | `internal/infrastructure/mexc/mexcfutures/ws_config.go`, `ws_client.go` | Contract WS |
 | `internal/infrastructure/mexc/mexcfutures/ws_client_integration_test.go` | Integration test: `sub.depth` / `push.depth` for `TAO_USDT` |
@@ -33,7 +33,7 @@ The `mexcfutures` package is **not** importable from outside this module (under 
 
 ## Authentication and configuration
 
-- Environment variable: **`MEXC_SOURCE_WEB_KEY`** — value of the MEXC browser WEB cookie string used as `Authorization`.
+- Environment variables: **`MEXC_SOURCE_WEB_KEY`** (market capture), **`MEXC_WEB_KEY`** (trading REST) — MEXC browser WEB cookie strings used as `Authorization` on their respective clients.
 - Optional: `.env` in the working directory is loaded when using `WebKeyFromEnv(true)` or `NewClientFromEnv()` (errors from a missing file are ignored in `LoadDotEnv`).
 
 ## API surface (high level)
@@ -53,7 +53,7 @@ The `mexcfutures` package is **not** importable from outside this module (under 
 
 - **`Dockerfile`**: multi-stage build of `cmd/mexc-bot`, runtime image `distroless/static` (nonroot).
 - **`docker-compose.yml`**: `mexc-bot` and **`clickhouse`** both use **`env_file: .env`** for ClickHouse credentials (`CLICKHOUSE_USER`, `CLICKHOUSE_PASSWORD`, `CLICKHOUSE_DATABASE`) and **`MEXC_WS_SYMBOLS`**. The ClickHouse service maps **`CLICKHOUSE_*`** into the image’s **`CLICKHOUSE_DB` / `CLICKHOUSE_USER` / `CLICKHOUSE_PASSWORD`**. `mexc-bot` overrides **`CLICKHOUSE_ADDR=clickhouse:9000`** (in-cluster TCP). Host ports: HTTP **127.0.0.1:8123**, native **127.0.0.1:19000→9000** (avoids clashes with another process on host **9000**). Data: **`db/clickhouse`**. Bot appends to **`mexc_bot.futures_ws_market`**.
-- **`.env.example`**: placeholder keys (empty `MEXC_SOURCE_WEB_KEY`, ClickHouse user/password, default symbol list).
+- **`.env.example`**: placeholder keys (`MEXC_SOURCE_WEB_KEY`, `MEXC_WEB_KEY`), ClickHouse user/password, default symbol list.
 - **`.gitignore`**: `db/clickhouse/` is ignored (local DB files).
 
 ## Git remote (as of last setup)

@@ -12,12 +12,15 @@
 
 | Переменная | Назначение |
 |------------|------------|
-| `MEXC_SOURCE_WEB_KEY` | WEB-токен MEXC (обязателен для приватных методов и для подписи). |
+| `MEXC_SOURCE_WEB_KEY` | WEB-токен для **захвата рынка** (потоки/данные в приложении `mexc-bot` при режиме `capture`). |
+| `MEXC_WEB_KEY` | WEB-токен для **торговли** (приватный REST, ордера, скальпер при режиме `scalper`). |
 
 ### Загрузка `.env`
 
 - `mexcfutures.LoadDotEnv()` — вызывает `godotenv.Load()`; ошибка отсутствующего файла **игнорируется**.
-- `mexcfutures.WebKeyFromEnv(loadDotenv bool)` — при `true` сначала загружает `.env`, затем читает `MEXC_SOURCE_WEB_KEY`. Если переменная пустая — возвращается ошибка.
+- `mexcfutures.TradeWebKeyFromEnv(loadDotenv bool)` — при `true` загружает `.env`, затем читает `MEXC_WEB_KEY` (торговый ключ).
+- `mexcfutures.SourceWebKeyFromEnv(loadDotenv bool)` — то же для `MEXC_SOURCE_WEB_KEY` (ключ для data/capture).
+- `mexcfutures.WebKeyFromEnv` — алиас на `TradeWebKeyFromEnv` (торговый ключ).
 
 ## Создание клиента
 
@@ -33,7 +36,7 @@ c, err := mexcfutures.NewClientFromEnv()
 
 ```go
 c, err := mexcfutures.NewClient(mexcfutures.Config{
-	WebKey:          os.Getenv("MEXC_SOURCE_WEB_KEY"),
+	WebKey:          os.Getenv("MEXC_WEB_KEY"),
 	FuturesBaseURL:  "", // пусто = https://futures.mexc.com/api/v1
 	ContractBaseURL: "", // пусто = https://contract.mexc.com/api/v1
 	UserAgent:       "", // пусто = Chrome-подобная строка по умолчанию

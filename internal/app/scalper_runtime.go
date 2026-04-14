@@ -18,6 +18,10 @@ import (
 )
 
 func (b *Bot) runLiveScalper(ctx context.Context) {
+	if b.client == nil {
+		log.Printf("mexc-bot: scalper disabled, MEXC trade REST client is nil")
+		return
+	}
 	if b.ch == nil {
 		log.Printf("mexc-bot: scalper disabled, clickhouse client is nil")
 		return
