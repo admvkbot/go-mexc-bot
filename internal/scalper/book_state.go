@@ -16,6 +16,11 @@ type bookSnapshotEvent struct {
 	snapshot Snapshot
 }
 
+type dealBatch struct {
+	at        time.Time
+	signedVol float64
+}
+
 // BookState keeps an in-memory view of the top-of-book and short-term market microstructure.
 type BookState struct {
 	cfg config.Scalper
@@ -28,6 +33,7 @@ type BookState struct {
 	lastExchange  int64
 	updateSeq     int64
 	recent        []bookSnapshotEvent
+	recentDeals   []dealBatch
 	volPauseUntil time.Time
 }
 
@@ -86,6 +92,76 @@ func (b *BookState) ApplyMessage(messageJSON, symbol, channel string, ingestedAt
 	return true
 }
 
+// ProcessMarketMessage applies depth or (when deal filter is enabled) deal payloads; returns true if state advanced and a strategy tick should run.
+func (b *BookState) ProcessMarketMessage(messageJSON, symbol, channel string, ingestedAt time.Time) bool {
+	if b.ApplyMessage(messageJSON, symbol, channel, ingestedAt) {
+		return true
+	}
+	if b.cfg.EntryDealFilterEnabled && b.ApplyDealMessage(messageJSON, symbol, channel, ingestedAt) {
+		return true
+	}
+	return false
+}
+
+// ApplyDealMessage accumulates signed trade volume (MEXC side 1 = buy +, 2 = sell −) for optional entry alignment.
+func (b *BookState) ApplyDealMessage(messageJSON, symbol, channel string, ingestedAt time.Time) bool {
+	if strings.TrimSpace(channel) != "push.deal" {
+		return false
+	}
+	rows := chstore.ParseDealTicksFromMessageJSON(messageJSON, symbol, ingestedAt)
+	if len(rows) == 0 {
+		return false
+	}
+	var signed float64
+	for _, row := range rows {
+		switch row.SideCode {
+		case 1:
+			signed += row.Vol
+		case 2:
+			signed -= row.Vol
+		}
+	}
+	at := ingestedAt.UTC()
+	b.mu.Lock()
+	b.appendDealBatchesLocked(at, signed)
+	b.mu.Unlock()
+	return true
+}
+
+func (b *BookState) appendDealBatchesLocked(at time.Time, signed float64) {
+	win := b.cfg.EntryDealWindow
+	if win <= 0 {
+		win = time.Second
+	}
+	b.recentDeals = append(b.recentDeals, dealBatch{at: at, signedVol: signed})
+	cutoff := at.Add(-win - 250*time.Millisecond)
+	start := 0
+	for start < len(b.recentDeals) && b.recentDeals[start].at.Before(cutoff) {
+		start++
+	}
+	if start > 0 {
+		b.recentDeals = append([]dealBatch(nil), b.recentDeals[start:]...)
+	}
+}
+
+func (b *BookState) dealTapeLocked(now time.Time) (delta float64, hasTape bool) {
+	if !b.cfg.EntryDealFilterEnabled {
+		return 0, false
+	}
+	win := b.cfg.EntryDealWindow
+	if win <= 0 {
+		win = time.Second
+	}
+	cutoff := now.Add(-win)
+	for _, batch := range b.recentDeals {
+		if !batch.at.Before(cutoff) {
+			hasTape = true
+			delta += batch.signedVol
+		}
+	}
+	return delta, hasTape
+}
+
 func (b *BookState) Snapshot() Snapshot {
 	b.mu.RLock()
 	defer b.mu.RUnlock()
@@ -128,14 +204,22 @@ func (b *BookState) Features(now time.Time) Features {
 		}
 		if features.HasLookback {
 			features.Previous = prev
-			features.BidPulseTicks = priceDeltaTicks(prev.BestBidPx, current.BestBidPx, b.cfg.TickSize)
-			features.AskPulseTicks = priceDeltaTicks(current.BestAskPx, prev.BestAskPx, b.cfg.TickSize)
-			features.PressureDelta = current.Imbalance5 - prev.Imbalance5
 		}
 		if count > 0 && b.cfg.FeatureLookback > 0 {
 			features.UpdateRate = float64(count) / b.cfg.FeatureLookback.Seconds()
 		}
 	}
+	if len(b.recent) >= 2 {
+		last := b.recent[len(b.recent)-2].snapshot
+		if last.HasBook && current.HasBook {
+			features.LastSnapshot = last
+			features.HasLastSnapshot = true
+			features.BidPulseTicks = priceDeltaTicks(last.BestBidPx, current.BestBidPx, b.cfg.TickSize)
+			features.AskPulseTicks = priceDeltaTicks(current.BestAskPx, last.BestAskPx, b.cfg.TickSize)
+			features.PressureDelta = current.Imbalance5 - last.Imbalance5
+		}
+	}
+	features.DealVolDelta1s, features.HasDealTape1s = b.dealTapeLocked(now.UTC())
 	if b.cfg.SpreadStabilityWindow > 0 {
 		features.MaxRecentSpreadTicks = b.maxSpreadTicksLocked(now.Add(-b.cfg.SpreadStabilityWindow))
 	}

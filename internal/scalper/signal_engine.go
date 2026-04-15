@@ -99,14 +99,18 @@ func (e *SignalEngine) longScore(f Features) float64 {
 	if f.PressureDelta >= e.cfg.MinPressureDelta {
 		score += f.PressureDelta
 	}
-	if f.HasLookback && f.BidPulseTicks >= e.cfg.MinPulseTicks {
+	if f.HasLastSnapshot && f.BidPulseTicks >= e.cfg.MinPulseTicks {
 		score += float64(f.BidPulseTicks) * 0.6
 	}
 	if f.MicroPriceDelta > 0 {
-		score += f.MicroPriceDelta / maxFloat(e.cfg.TickSize, 1e-9)
+		mt := f.MicroPriceDelta / maxFloat(e.cfg.TickSize, 1e-9)
+		if e.cfg.MaxMicroPriceScoreTicks > 0 && mt > e.cfg.MaxMicroPriceScoreTicks {
+			mt = e.cfg.MaxMicroPriceScoreTicks
+		}
+		score += mt
 	}
-	if f.HasLookback && (f.Snapshot.Imbalance5-f.Previous.Imbalance5) >= e.cfg.MinImbalanceDelta {
-		score += f.Snapshot.Imbalance5 - f.Previous.Imbalance5
+	if f.HasLastSnapshot && (f.Snapshot.Imbalance5-f.LastSnapshot.Imbalance5) >= e.cfg.MinImbalanceDelta {
+		score += f.Snapshot.Imbalance5 - f.LastSnapshot.Imbalance5
 	}
 	return score
 }
@@ -119,14 +123,18 @@ func (e *SignalEngine) shortScore(f Features) float64 {
 	if -f.PressureDelta >= e.cfg.MinPressureDelta {
 		score += -f.PressureDelta
 	}
-	if f.HasLookback && f.AskPulseTicks >= e.cfg.MinPulseTicks {
+	if f.HasLastSnapshot && f.AskPulseTicks >= e.cfg.MinPulseTicks {
 		score += float64(f.AskPulseTicks) * 0.6
 	}
 	if f.MicroPriceDelta < 0 {
-		score += -f.MicroPriceDelta / maxFloat(e.cfg.TickSize, 1e-9)
+		mt := -f.MicroPriceDelta / maxFloat(e.cfg.TickSize, 1e-9)
+		if e.cfg.MaxMicroPriceScoreTicks > 0 && mt > e.cfg.MaxMicroPriceScoreTicks {
+			mt = e.cfg.MaxMicroPriceScoreTicks
+		}
+		score += mt
 	}
-	if f.HasLookback && -(f.Snapshot.Imbalance5-f.Previous.Imbalance5) >= e.cfg.MinImbalanceDelta {
-		score += -(f.Snapshot.Imbalance5 - f.Previous.Imbalance5)
+	if f.HasLastSnapshot && -(f.Snapshot.Imbalance5-f.LastSnapshot.Imbalance5) >= e.cfg.MinImbalanceDelta {
+		score += -(f.Snapshot.Imbalance5 - f.LastSnapshot.Imbalance5)
 	}
 	return score
 }
@@ -165,8 +173,38 @@ func (e *SignalEngine) rejectEntrySignal(side Side, f Features) string {
 			return "microprice_too_extended"
 		}
 	}
+	if rejectReason := e.rejectDealTape(side, f); rejectReason != "" {
+		return rejectReason
+	}
 	if rejectReason := e.rejectPriceCorridor(side, f); rejectReason != "" {
 		return rejectReason
+	}
+	return ""
+}
+
+func (e *SignalEngine) rejectDealTape(side Side, f Features) string {
+	if !e.cfg.EntryDealFilterEnabled {
+		return ""
+	}
+	if !f.HasDealTape1s {
+		return "deal_tape_insufficient"
+	}
+	minV := e.cfg.EntryDealMinSignedVol
+	if minV <= 0 {
+		minV = 1e-12
+	}
+	d := f.DealVolDelta1s
+	switch executionSide(e.cfg, side) {
+	case SideLong:
+		if d < minV {
+			return "deal_tape_misaligned"
+		}
+	case SideShort:
+		if d > -minV {
+			return "deal_tape_misaligned"
+		}
+	default:
+		return "deal_tape_misaligned"
 	}
 	return ""
 }

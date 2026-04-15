@@ -26,7 +26,11 @@ func (g *RiskGuard) AllowEntry(now time.Time, features Features, ladder *LadderC
 		return false, "volatility_pause", time.Time{}
 	}
 	if features.Stale {
-		return false, "stale_book", now.Add(g.cfg.VolatilityPause)
+		pause := g.cfg.StaleBookVolatilityPause
+		if pause <= 0 {
+			pause = g.cfg.VolatilityPause
+		}
+		return false, "stale_book", now.Add(pause)
 	}
 	if features.WideSpread {
 		return false, "spread_guard", now.Add(g.cfg.VolatilityPause)

@@ -4,6 +4,13 @@
 
 The active work implemented a V1 execution framework for a book-only scalper on `TAO_USDT`.
 
+### 2026-04-15 — entry microstructure refresh
+
+- `BookState`: `Previous` remains the oldest snapshot inside `FeatureLookback` (update rate / window anchor). **`PressureDelta`, bid/ask pulse ticks, and imbalance-delta score terms use `LastSnapshot` (penultimate book event)** — OFI-like step-to-step pressure.
+- **Defaults**: `MEXC_SCALPER_MAX_BOOK_AGE` **1100ms**; **`MEXC_SCALPER_STALE_BOOK_PAUSE` 400ms** for `stale_book` deny (`0s` in env → falls back to full `VolatilityPause`); **`MEXC_SCALPER_MAX_MICROPRICE_SCORE_TICKS` 5** (0 = uncapped score contribution; reject gates still use full microprice).
+- **Optional** `MEXC_SCALPER_ENTRY_DEAL_FILTER`: live subscribes `sub.deal`, replay ingests `push.deal` rows; entry requires net buy vol − sell vol over `ENTRY_DEAL_WINDOW` aligned with executed side (`deal_tape_insufficient` / `deal_tape_misaligned`).
+- Offline SQL samples: `scripts/scalper_signal_calibration.sql`.
+
 ## Recently Added
 
 - price corridor entry gate: `BookState.Features` now computes a rolling mean `mid` price over `MEXC_SCALPER_PRICE_CORRIDOR_WINDOW`, then separate upper/lower deviation bands from `MEXC_SCALPER_PRICE_CORRIDOR_PERCENTILE` (default `0.80`); `SignalEngine.Evaluate` keeps the existing order-book signal but only allows entry when the **executed** side is at the matching corridor edge (long at/below lower band, short at/above upper band), rejects entries inside the corridor, and rejects overshoots beyond `MEXC_SCALPER_PRICE_CORRIDOR_MAX_MULTIPLIER` times the band width from the mean. Warmup logs now print `corridor_ready`, `corridor=[lower..upper]`, and `mean`.

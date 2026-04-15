@@ -332,3 +332,64 @@ func TestEvaluate_priceCorridorUsesExecutedSideWhenInverted(t *testing.T) {
 		t.Fatalf("want price_not_at_upper_band, got %s", dec.Reason)
 	}
 }
+
+func TestEvaluate_rejectsDealTapeInsufficient(t *testing.T) {
+	cfg := config.Scalper{
+		TickSize:               0.01,
+		MinSignalScore:         0.2,
+		MinImbalance:           0.01,
+		MinPressureDelta:       -1,
+		MinImbalanceDelta:      -1,
+		MinPulseTicks:          0,
+		SignalConfirmMinTicks:  0,
+		MinMicroPriceTicks:     0,
+		MaxSpreadTicksInWindow: 0,
+		EntryDealFilterEnabled: true,
+	}
+	e := NewSignalEngine(cfg)
+	f := Features{
+		Snapshot: Snapshot{
+			HasBook: true, Imbalance5: 0.5, BestBidPx: 100, BestAskPx: 100.02,
+			BidVol5: 60, AskVol5: 40,
+		},
+		HasLookback:   true,
+		PressureDelta: 0.15,
+		MicroPriceDelta: 0.001,
+		HasDealTape1s: false,
+	}
+	dec := e.Evaluate(time.Now(), f, nil)
+	if dec.Reason != "deal_tape_insufficient" {
+		t.Fatalf("want deal_tape_insufficient, got %q", dec.Reason)
+	}
+}
+
+func TestEvaluate_rejectsDealTapeMisalignedForShort(t *testing.T) {
+	cfg := config.Scalper{
+		TickSize:               0.01,
+		MinSignalScore:         0.2,
+		MinImbalance:           0.01,
+		MinPressureDelta:       -1,
+		MinImbalanceDelta:      -1,
+		MinPulseTicks:          0,
+		SignalConfirmMinTicks:  0,
+		MinMicroPriceTicks:     0,
+		MaxSpreadTicksInWindow: 0,
+		EntryDealFilterEnabled: true,
+	}
+	e := NewSignalEngine(cfg)
+	f := Features{
+		Snapshot: Snapshot{
+			HasBook: true, Imbalance5: -0.55, BestBidPx: 100, BestAskPx: 100.02,
+			BidVol5: 40, AskVol5: 60,
+		},
+		HasLookback:     true,
+		PressureDelta:   -0.12,
+		MicroPriceDelta: -0.001,
+		HasDealTape1s:   true,
+		DealVolDelta1s:  5.0,
+	}
+	dec := e.Evaluate(time.Now(), f, nil)
+	if dec.Reason != "deal_tape_misaligned" {
+		t.Fatalf("want deal_tape_misaligned, got %q", dec.Reason)
+	}
+}

@@ -66,6 +66,11 @@ func (b *Bot) runOneLiveScalperSession(ctx context.Context, runtime *scalper.Liv
 	if err := ws.SubscribeFullDepth(b.cfg.Scalper.Symbol, 20); err != nil {
 		return fmt.Errorf("scalper sub.depth.full: %w", err)
 	}
+	if b.cfg.Scalper.EntryDealFilterEnabled {
+		if err := ws.SubscribeDeals(b.cfg.Scalper.Symbol); err != nil {
+			return fmt.Errorf("scalper sub.deal: %w", err)
+		}
+	}
 	exitMode := "limit_exit"
 	if b.cfg.Scalper.ExitUsesExchangeBracket() {
 		exitMode = "bracket_sl_tp"
@@ -74,8 +79,12 @@ func (b *Bot) runOneLiveScalperSession(ctx context.Context, runtime *scalper.Liv
 	if b.cfg.Scalper.InvertExecution {
 		invertNote = " invert_execution=on (signal long/short unchanged; orders opposite)"
 	}
-	log.Printf("mexc-bot: scalper live on %s (min_signal_score=%.2f max_update_rate=%.0f/s max_spread_ticks=%.1f step_vol=%.4f eff_step_vol=%.4f lev=%d exit_mode=%s%s; set MEXC_SCALPER_DIAG=1 for 30s diagnostics)",
-		b.cfg.Scalper.Symbol, b.cfg.Scalper.MinSignalScore, b.cfg.Scalper.MaxUpdateRate, b.cfg.Scalper.MaxSpreadTicks, b.cfg.Scalper.StepVolume, b.cfg.Scalper.EffectiveStepVolume(), b.cfg.Scalper.Leverage, exitMode, invertNote)
+	dealNote := ""
+	if b.cfg.Scalper.EntryDealFilterEnabled {
+		dealNote = " entry_deal_filter=on (sub.deal + tape gate)"
+	}
+	log.Printf("mexc-bot: scalper live on %s (min_signal_score=%.2f max_update_rate=%.0f/s max_spread_ticks=%.1f step_vol=%.4f eff_step_vol=%.4f lev=%d exit_mode=%s%s%s; set MEXC_SCALPER_DIAG=1 for 30s diagnostics)",
+		b.cfg.Scalper.Symbol, b.cfg.Scalper.MinSignalScore, b.cfg.Scalper.MaxUpdateRate, b.cfg.Scalper.MaxSpreadTicks, b.cfg.Scalper.StepVolume, b.cfg.Scalper.EffectiveStepVolume(), b.cfg.Scalper.Leverage, exitMode, invertNote, dealNote)
 	for {
 		if ctx.Err() != nil {
 			return ctx.Err()
@@ -95,7 +104,9 @@ func (b *Bot) runOneLiveScalperSession(ctx context.Context, runtime *scalper.Liv
 		if err := json.Unmarshal(messageJSON, &frame); err != nil {
 			continue
 		}
-		if frame.Channel != "push.depth" && !strings.HasPrefix(frame.Channel, "push.depth.full") {
+		isDepth := frame.Channel == "push.depth" || strings.HasPrefix(frame.Channel, "push.depth.full")
+		isDeal := frame.Channel == "push.deal" && b.cfg.Scalper.EntryDealFilterEnabled
+		if !isDepth && !isDeal {
 			continue
 		}
 		if err := runtime.HandleMessage(ctx, string(messageJSON), b.cfg.Scalper.Symbol, frame.Channel, time.Now().UTC()); err != nil {
@@ -126,7 +137,9 @@ func (b *Bot) runReplayScalper(ctx context.Context) error {
 		if ctx.Err() != nil {
 			return ctx.Err()
 		}
-		if row.Channel != "push.depth" && !strings.HasPrefix(row.Channel, "push.depth.full") {
+		isDepth := row.Channel == "push.depth" || strings.HasPrefix(row.Channel, "push.depth.full")
+		isDeal := row.Channel == "push.deal" && b.cfg.Scalper.EntryDealFilterEnabled
+		if !isDepth && !isDeal {
 			continue
 		}
 		if err := runtime.HandleMessage(ctx, row.MessageRaw, row.Symbol, row.Channel, row.IngestedAt); err != nil {

@@ -99,7 +99,7 @@ type Scalper struct {
 	PriceCorridorMaxMultiplier float64
 	// Мин. |имбаланс5| для вклада в скоринг. Связка: MinImbalanceDelta, MinSignalScore.
 	MinImbalance float64
-	// Мин. изменение имбаланса за lookback. Связка: FeatureLookback, MinSignalScore.
+	// Мин. изменение имбаланса между последним и текущим снимком (LastSnapshot). Связка: MinSignalScore.
 	MinImbalanceDelta float64
 	// Мин. давление (дельта имбаланса) для скоринга. Связка: MinImbalance, MinSignalScore.
 	MinPressureDelta float64
@@ -111,6 +111,16 @@ type Scalper struct {
 	MinMicroPriceTicks float64
 	// Верхняя граница microprice (не перегруженный вход). Связка: MinMicroPriceTicks.
 	MaxMicroPriceTicks float64
+	// Потолок вклада microprice в скор (в тиках); 0 = без ограничения. Связка: TickSize, longScore/shortScore.
+	MaxMicroPriceScoreTicks float64
+	// Пауза после deny stale_book (короче VolatilityPause, чтобы редкие дыры WS не блокировали вход надолго). 0 = брать VolatilityPause.
+	StaleBookVolatilityPause time.Duration
+	// Фильтр входа по агрессору сделок за окно (live/replay при наличии push.deal в потоке).
+	EntryDealFilterEnabled bool
+	// Окно суммирования signed deal volume (buy − sell). Связка: EntryDealFilterEnabled.
+	EntryDealWindow time.Duration
+	// Мин. |net vol| для признания направления ленты (0 = только знак >0 / <0).
+	EntryDealMinSignedVol float64
 	// Разрешить рыночный emergency flatten. Связка: риск ShouldFlatten.
 	AllowEmergencyMarket bool
 	// Полный запрет новых входов (всегда deny). Связка: диагностика, аварийный стоп.
@@ -260,7 +270,7 @@ func ScalperFromEnv() Scalper {
 		MaxSpreadTicks:             getenvFloat("MEXC_SCALPER_MAX_SPREAD_TICKS", 2),                              // макс. спред «сейчас» (тиках)
 		SpreadStabilityWindow:      getenvDuration("MEXC_SCALPER_SPREAD_STABILITY_WINDOW", 450*time.Millisecond), // окно max спреда; с MaxSpreadTicksInWindow
 		MaxSpreadTicksInWindow:     getenvFloat("MEXC_SCALPER_MAX_SPREAD_TICKS_IN_WINDOW", 2.0),                  // порог «нестабильного» спреда
-		MaxBookAge:                 getenvDuration("MEXC_SCALPER_MAX_BOOK_AGE", 1000*time.Millisecond),           // старение книги → stale / пауза
+		MaxBookAge:                 getenvDuration("MEXC_SCALPER_MAX_BOOK_AGE", 1100*time.Millisecond),           // ~2× типичный p99 интервала depth; старение книги → stale
 		MaxUpdateRate:              getenvFloat("MEXC_SCALPER_MAX_UPDATE_RATE", 1000),                            // анти-хаос: слишком много апдейтов/с
 		VolatilityPause:            getenvDuration("MEXC_SCALPER_VOLATILITY_PAUSE", 5*time.Second),               // длительность vol-паузы после риска
 		FeatureLookback:            getenvDuration("MEXC_SCALPER_FEATURE_LOOKBACK", 550*time.Millisecond),        // окно фич микроструктуры
@@ -277,6 +287,11 @@ func ScalperFromEnv() Scalper {
 		MinPulseTicks:              getenvInt("MEXC_SCALPER_MIN_PULSE_TICKS", 1),                                 // мин. импульс bid/ask в тиках
 		MinMicroPriceTicks:         getenvFloat("MEXC_SCALPER_MIN_MICROPRICE_TICKS", 0.02),                       // выравнивание microprice
 		MaxMicroPriceTicks:         getenvFloat("MEXC_SCALPER_MAX_MICROPRICE_TICKS", 2.0),                        // потолок microprice
+		MaxMicroPriceScoreTicks:    getenvFloat("MEXC_SCALPER_MAX_MICROPRICE_SCORE_TICKS", 5),                     // вклад microprice в скор (тиках); 0 = без капа
+		StaleBookVolatilityPause:   getenvDuration("MEXC_SCALPER_STALE_BOOK_PAUSE", 400*time.Millisecond),       // 0s в env → полная VolatilityPause (см. RiskGuard)
+		EntryDealFilterEnabled:     getenvBool("MEXC_SCALPER_ENTRY_DEAL_FILTER", false),                          // сделки buy−sell за окно согласованы с сигналом
+		EntryDealWindow:            getenvDuration("MEXC_SCALPER_ENTRY_DEAL_WINDOW", time.Second),                // окно ленты сделок
+		EntryDealMinSignedVol:      getenvFloat("MEXC_SCALPER_ENTRY_DEAL_MIN_SIGNED_VOL", 0),                       // мин. объём для направления; 0 = только строгий знак
 		AllowEmergencyMarket:       getenvBool("MEXC_SCALPER_EMERGENCY_MARKET", true),                            // рынок при emergency flatten
 		KillSwitch:                 getenvBool("MEXC_SCALPER_KILL_SWITCH", false),                                // стоп всех новых входов
 		DiagLog:                    getenvBool("MEXC_SCALPER_DIAG", false),                                       // расширенный лог тика

@@ -32,7 +32,7 @@ func NewLiveRuntime(cfg config.Scalper, orders *OrderManager) *LiveRuntime {
 }
 
 func (r *LiveRuntime) HandleMessage(ctx context.Context, messageJSON, symbol, channel string, ingestedAt time.Time) error {
-	if !r.book.ApplyMessage(messageJSON, symbol, channel, ingestedAt) {
+	if !r.book.ProcessMarketMessage(messageJSON, symbol, channel, ingestedAt) {
 		return nil
 	}
 	return r.tick(ctx, ingestedAt.UTC())
@@ -173,7 +173,7 @@ func NewReplayRuntime(cfg config.Scalper, orders *OrderManager) *ReplayRuntime {
 }
 
 func (r *ReplayRuntime) HandleMessage(ctx context.Context, messageJSON, symbol, channel string, ingestedAt time.Time) error {
-	if !r.book.ApplyMessage(messageJSON, symbol, channel, ingestedAt) {
+	if !r.book.ProcessMarketMessage(messageJSON, symbol, channel, ingestedAt) {
 		return nil
 	}
 	now := ingestedAt.UTC()

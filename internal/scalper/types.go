@@ -69,7 +69,11 @@ type Snapshot struct {
 
 type Features struct {
 	Snapshot             Snapshot
-	Previous             Snapshot
+	// Previous — самый старый снимок внутри FeatureLookback (окно для update rate и т.п.).
+	Previous Snapshot
+	// LastSnapshot — предпоследний снимок книги; PressureDelta и импульсы считаются от него до текущего.
+	LastSnapshot    Snapshot
+	HasLastSnapshot bool
 	BookAge              time.Duration
 	Window               time.Duration
 	UpdateRate           float64
@@ -98,6 +102,9 @@ type Features struct {
 	SignalImbalance      float64
 	SignalSide           Side
 	SignalConfidence     float64
+	// DealVolDelta1s — сумма (buy vol − sell vol) по push.deal за EntryDealWindow (если фильтр вкл.).
+	DealVolDelta1s float64
+	HasDealTape1s  bool
 }
 
 type Decision struct {
