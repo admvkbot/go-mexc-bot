@@ -25,9 +25,10 @@ This separation keeps the data ingestion path independent from execution logic.
 1. MEXC WS pushes `push.depth` and `push.depth.full`
 2. `BookState` maintains an in-memory top-of-book snapshot
 3. `SignalEngine` calculates book-only momentum/imbalance decisions
-4. `RiskGuard` blocks entry or escalates flatten conditions
-5. `OrderManager` submits, reprices, cancels, and emergency-flattens orders
-6. `chscalper.Writer` journals signals, order events, replay candidates, and roundtrips
+4. `SignalEngine` now also applies entry-quality gates from recent book history: signal persistence, spread stability, side consistency, microprice alignment, and a rolling price-corridor gate based on mean `mid` price plus separate upper/lower percentile deviations
+5. `RiskGuard` blocks entry or escalates flatten conditions
+6. `OrderManager` submits, reprices, cancels, and emergency-flattens orders; in `bracket` mode it reconciles local state against `open_positions` deltas instead of only waiting for full position disappearance
+7. `chscalper.Writer` journals signals, order events, replay candidates, and roundtrips; signal rows now include `ladder_id`, allow/deny outcome, and an explicit `entry_submit` marker for actual entry correlation
 
 ## State Pattern
 

@@ -22,19 +22,20 @@ func (c *Client) GetContractDetailContractPublic(ctx context.Context, symbol str
 
 // ContractDetailSummary is a small typed slice of contract fields (Python get_contract_detail subset).
 type ContractDetailSummary struct {
-	ContractSize float64 `json:"contract_size"`
-	MaxLeverage  int     `json:"max_leverage"`
-	MaxVolume    float64 `json:"max_volume"`
-	MinVolume    float64 `json:"min_volume"`
-	VolScale     int     `json:"vol_scale"`
-	VolUnit      float64 `json:"vol_unit"`
+	ContractSize float64        `json:"contract_size"`
+	MaxLeverage  int            `json:"max_leverage"`
+	MaxVolume    float64        `json:"max_volume"`
+	MinVolume    float64        `json:"min_volume"`
+	PriceScale   int            `json:"price_scale"`
+	VolScale     int            `json:"vol_scale"`
+	VolUnit      float64        `json:"vol_unit"`
 	Data         map[string]any `json:"-"`
 }
 
 // ParseContractDetailSummary parses contract host JSON like Python get_contract_detail.
 func ParseContractDetailSummary(body []byte) (ContractDetailSummary, error) {
 	var outer struct {
-		Success bool `json:"success"`
+		Success bool            `json:"success"`
 		Data    json.RawMessage `json:"data"`
 	}
 	if err := json.Unmarshal(body, &outer); err != nil {
@@ -61,6 +62,7 @@ func ParseContractDetailSummary(body []byte) (ContractDetailSummary, error) {
 	out.MaxLeverage = int(anyToFloat64(fields["maxLeverage"]))
 	out.MaxVolume = anyToFloat64(fields["maxVol"])
 	out.MinVolume = anyToFloat64(fields["minVol"])
+	out.PriceScale = int(anyToFloat64(fields["priceScale"]))
 	out.VolScale = int(anyToFloat64(fields["volScale"]))
 	out.VolUnit = anyToFloat64(fields["volUnit"])
 	return out, nil

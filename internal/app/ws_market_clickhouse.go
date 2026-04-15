@@ -10,7 +10,9 @@ import (
 	"io"
 	"log"
 	"net"
+	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -69,6 +71,7 @@ func (b *Bot) captureWSOneSession(ctx context.Context, symbol string) error {
 		return fmt.Errorf("sub.deal: %w", err)
 	}
 	log.Printf("mexc-bot: ws capture %s: connected, subscribed (depth + depth.full + deal); streaming to ClickHouse", symbol)
+	sessionTag := strconv.FormatInt(time.Now().UTC().UnixNano(), 10)
 
 	var batch []chstore.WSMarketRow
 	flush := func() error {
@@ -86,6 +89,7 @@ func (b *Bot) captureWSOneSession(ctx context.Context, symbol string) error {
 	lastFlush := time.Now()
 	lastStat := time.Now()
 	var framesWindow int64
+	var firstFrameOnce sync.Once
 	for {
 		if ctx.Err() != nil {
 			_ = ws.Close()
@@ -93,7 +97,11 @@ func (b *Bot) captureWSOneSession(ctx context.Context, symbol string) error {
 			return ctx.Err()
 		}
 		if time.Since(lastStat) >= 30*time.Second {
-			log.Printf("mexc-bot: ws capture %s: %d market frames last 30s (0 = no push.depth/deal or filter mismatch)", symbol, framesWindow)
+			if framesWindow == 0 {
+				log.Printf("mexc-bot: ws capture %s: 0 market frames last 30s (no push.depth / push.deal / push.depth.full* for this symbol, or payload filtered)", symbol)
+			} else {
+				log.Printf("mexc-bot: ws capture %s: %d market frames last 30s", symbol, framesWindow)
+			}
 			framesWindow = 0
 			lastStat = time.Now()
 		}
@@ -124,9 +132,9 @@ func (b *Bot) captureWSOneSession(ctx context.Context, symbol string) error {
 			continue
 		}
 		framesWindow++
-		if framesWindow == 1 {
-			log.Printf("mexc-bot: ws capture %s: first frame (channel=%s)", symbol, row.Channel)
-		}
+		firstFrameOnce.Do(func() {
+			log.Printf("mexc-bot: ws capture %s: first frame (channel=%s, session=%s)", symbol, row.Channel, sessionTag)
+		})
 		batch = append(batch, row)
 		if len(batch) >= 400 {
 			if err := flush(); err != nil {

@@ -15,5 +15,6 @@ type FuturesREST interface {
 	CancelAllOrders(ctx context.Context, req mexcfutures.CancelAllOrdersRequest) ([]byte, error)
 	GetOrder(ctx context.Context, orderID string) ([]byte, error)
 	GetOrderByExternalID(ctx context.Context, symbol, externalOid string) ([]byte, error)
+	// OpenPositionsFutures is GET /private/position/open_positions (optional symbol filter).
 	OpenPositionsFutures(ctx context.Context, symbol *string) ([]byte, error)
 }

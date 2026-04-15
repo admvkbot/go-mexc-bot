@@ -15,6 +15,7 @@ const (
 
 type ScalperSignalEventRow struct {
 	SessionID      string
+	LadderID       string
 	Mode           string
 	Symbol         string
 	EventAt        time.Time
@@ -22,6 +23,8 @@ type ScalperSignalEventRow struct {
 	Side           string
 	Score          float64
 	Reason         string
+	AllowEntry     bool
+	DenyReason     string
 	BestBidPx      float64
 	BestAskPx      float64
 	Spread         float64
@@ -33,6 +36,9 @@ type ScalperSignalEventRow struct {
 	PressureDelta  float64
 	UpdateRate     float64
 	MicroPriceDiff float64
+	ConfirmCount   int32
+	ConfirmMS      int64
+	MaxSpreadTicks float64
 }
 
 type ScalperOrderEventRow struct {
@@ -109,12 +115,15 @@ CREATE TABLE IF NOT EXISTS %s.%s
 (
     event_at DateTime64(3),
     session_id String,
+    ladder_id String,
     mode LowCardinality(String),
     symbol LowCardinality(String),
     action LowCardinality(String),
     side LowCardinality(String),
     score Float64,
     reason String,
+    allow_entry UInt8,
+    deny_reason String,
     best_bid_px Float64,
     best_ask_px Float64,
     spread Float64,
@@ -125,7 +134,10 @@ CREATE TABLE IF NOT EXISTS %s.%s
     ask_pulse_ticks Int32,
     pressure_delta Float64,
     update_rate Float64,
-    microprice_delta Float64
+    microprice_delta Float64,
+    confirm_count Int32,
+    confirm_ms Int64,
+    max_spread_ticks Float64
 )
 ENGINE = MergeTree
 PARTITION BY toYYYYMM(event_at)
@@ -209,6 +221,19 @@ ORDER BY (symbol, signal_at, session_id)`, db, quoteIdent(scalperReplayTable)),
 			return fmt.Errorf("chstore: init scalper schema: %w", err)
 		}
 	}
+	alterQueries := []string{
+		fmt.Sprintf("ALTER TABLE %s.%s ADD COLUMN IF NOT EXISTS ladder_id String", db, quoteIdent(scalperSignalTable)),
+		fmt.Sprintf("ALTER TABLE %s.%s ADD COLUMN IF NOT EXISTS allow_entry UInt8", db, quoteIdent(scalperSignalTable)),
+		fmt.Sprintf("ALTER TABLE %s.%s ADD COLUMN IF NOT EXISTS deny_reason String", db, quoteIdent(scalperSignalTable)),
+		fmt.Sprintf("ALTER TABLE %s.%s ADD COLUMN IF NOT EXISTS confirm_count Int32", db, quoteIdent(scalperSignalTable)),
+		fmt.Sprintf("ALTER TABLE %s.%s ADD COLUMN IF NOT EXISTS confirm_ms Int64", db, quoteIdent(scalperSignalTable)),
+		fmt.Sprintf("ALTER TABLE %s.%s ADD COLUMN IF NOT EXISTS max_spread_ticks Float64", db, quoteIdent(scalperSignalTable)),
+	}
+	for _, q := range alterQueries {
+		if err := c.conn.Exec(ctx, q); err != nil {
+			return fmt.Errorf("chstore: alter scalper schema: %w", err)
+		}
+	}
 	return nil
 }
 
@@ -218,22 +243,29 @@ func (c *Client) InsertScalperSignalEventRows(ctx context.Context, rows []Scalpe
 	}
 	fq := fmt.Sprintf("%s.%s", quoteIdent(c.cfg.Database), quoteIdent(scalperSignalTable))
 	batch, err := c.conn.PrepareBatch(ctx, `INSERT INTO `+fq+` (
-event_at, session_id, mode, symbol, action, side, score, reason,
+event_at, session_id, ladder_id, mode, symbol, action, side, score, reason, allow_entry, deny_reason,
 best_bid_px, best_ask_px, spread, bid_vol5, ask_vol5, imbalance5,
-bid_pulse_ticks, ask_pulse_ticks, pressure_delta, update_rate, microprice_delta)`)
+bid_pulse_ticks, ask_pulse_ticks, pressure_delta, update_rate, microprice_delta, confirm_count, confirm_ms, max_spread_ticks)`)
 	if err != nil {
 		return fmt.Errorf("chstore: scalper signal batch: %w", err)
 	}
 	for _, r := range rows {
 		if err := batch.Append(
-			r.EventAt, r.SessionID, r.Mode, r.Symbol, r.Action, r.Side, r.Score, r.Reason,
+			r.EventAt, r.SessionID, r.LadderID, r.Mode, r.Symbol, r.Action, r.Side, r.Score, r.Reason, boolToUInt8(r.AllowEntry), r.DenyReason,
 			r.BestBidPx, r.BestAskPx, r.Spread, r.BidVol5, r.AskVol5, r.Imbalance5,
-			r.BidPulseTicks, r.AskPulseTicks, r.PressureDelta, r.UpdateRate, r.MicroPriceDiff,
+			r.BidPulseTicks, r.AskPulseTicks, r.PressureDelta, r.UpdateRate, r.MicroPriceDiff, r.ConfirmCount, r.ConfirmMS, r.MaxSpreadTicks,
 		); err != nil {
 			return fmt.Errorf("chstore: scalper signal append: %w", err)
 		}
 	}
 	return batch.Send()
+}
+
+func boolToUInt8(v bool) uint8 {
+	if v {
+		return 1
+	}
+	return 0
 }
 
 func (c *Client) InsertScalperOrderEventRows(ctx context.Context, rows []ScalperOrderEventRow) error {

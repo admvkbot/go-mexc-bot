@@ -1,6 +1,7 @@
 package scalper
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -40,20 +41,31 @@ func NewOrderManager(cfg config.Scalper, trader ports.FuturesREST, journal Journ
 	}
 }
 
-func (m *OrderManager) EmitSignal(ctx context.Context, decision Decision) {
+func (m *OrderManager) EmitSignal(ctx context.Context, decision Decision, ladderID string, allowEntry bool, denyReason string) {
+	m.emitSignalEvent(ctx, decision, string(decision.Action), ladderID, allowEntry, denyReason)
+}
+
+func (m *OrderManager) EmitEntrySignal(ctx context.Context, decision Decision, ladderID, action string) {
+	m.emitSignalEvent(ctx, decision, action, ladderID, true, "")
+}
+
+func (m *OrderManager) emitSignalEvent(ctx context.Context, decision Decision, action, ladderID string, allowEntry bool, denyReason string) {
 	if m == nil || m.journal == nil {
 		return
 	}
 	s := decision.Features.Snapshot
 	_ = m.journal.InsertScalperSignalEvents(ctx, []SignalEvent{{
 		SessionID:      m.session,
+		LadderID:       ladderID,
 		Mode:           m.modeName,
 		Symbol:         s.Symbol,
 		EventAt:        s.At,
-		Action:         string(decision.Action),
+		Action:         action,
 		Side:           sideToString(decision.Side),
 		Score:          decision.Score,
 		Reason:         decision.Reason,
+		AllowEntry:     allowEntry,
+		DenyReason:     denyReason,
 		BestBidPx:      s.BestBidPx,
 		BestAskPx:      s.BestAskPx,
 		Spread:         s.Spread,
@@ -65,6 +77,9 @@ func (m *OrderManager) EmitSignal(ctx context.Context, decision Decision) {
 		PressureDelta:  decision.Features.PressureDelta,
 		UpdateRate:     decision.Features.UpdateRate,
 		MicroPriceDiff: decision.Features.MicroPriceDelta,
+		ConfirmCount:   decision.Features.SignalConfirmCount,
+		ConfirmMS:      decision.Features.SignalConfirmAge.Milliseconds(),
+		MaxSpreadTicks: decision.Features.MaxRecentSpreadTicks,
 	}})
 }
 
@@ -75,36 +90,73 @@ func (m *OrderManager) EmitReplayCandidate(ctx context.Context, row ReplayCandid
 	_ = m.journal.InsertScalperReplayCandidates(ctx, []ReplayCandidate{row})
 }
 
+func orderPriceDecimalsFromCfg(cfg config.Scalper) int {
+	if cfg.OrderPriceScale != nil {
+		return *cfg.OrderPriceScale
+	}
+	return tickDecimalPlaces(cfg.TickSize)
+}
+
+func orderVolScaleFromCfg(cfg config.Scalper) int {
+	if cfg.OrderVolScale != nil {
+		return *cfg.OrderVolScale
+	}
+	return -1
+}
+
 func (m *OrderManager) PlaceEntry(ctx context.Context, ladder *LadderContext, side Side, quantity, price float64, reason string) (*ManagedOrder, error) {
+	priceOut := quantizeOrderPrice(price, m.cfg.TickSize, orderPriceDecimalsFromCfg(m.cfg))
+	volOut := quantizeOrderVol(quantity, orderVolScaleFromCfg(m.cfg))
 	req := mexcfutures.SubmitOrderRequest{
-		Symbol:       m.cfg.Symbol,
-		Price:        normalizePrice(price, m.cfg.TickSize),
-		Vol:          quantity,
-		Side:         entryOrderSide(side),
-		Type:         mexcfutures.OrderTypeLimit,
-		OpenType:     m.cfg.OpenType,
-		Leverage:     m.cfg.Leverage,
-		ExternalOid:  newSessionID("entry"),
-		PositionMode: m.cfg.PositionMode,
-		STPMode:      0,
+		Symbol:        m.cfg.Symbol,
+		Price:         priceOut,
+		Vol:           volOut,
+		Side:          entryOrderSide(side),
+		Type:          mexcfutures.OrderTypeMarket,
+		OpenType:      m.cfg.OpenType,
+		Leverage:      m.cfg.Leverage,
+		ExternalOid:   newSessionID("entry"),
+		PositionMode:  m.cfg.PositionMode,
+		STPMode:       0,
+		MarketCeiling: true,
+	}
+	if m.cfg.ExitUsesExchangeBracket() {
+		sl, tp, berr := bracketSLTPQuantized(side, priceOut, m.cfg.TickSize, m.cfg.ProfitTargetTicks, m.cfg.StopLossTicks, orderPriceDecimalsFromCfg(m.cfg))
+		if berr != nil {
+			return nil, fmt.Errorf("scalper: bracket SL/TP: %w", berr)
+		}
+		req.StopLossPrice = sl
+		req.TakeProfitPrice = tp
+		log.Printf("[trade] entry with exchange bracket symbol=%s side=%s entry_px=%.8f sl=%.8f tp=%.8f ticks_stop=%d ticks_tp=%d",
+			m.cfg.Symbol, sideToString(side), priceOut, sl, tp, m.cfg.StopLossTicks, m.cfg.ProfitTargetTicks)
 	}
 	raw, err := m.trader.SubmitOrder(ctx, req)
+	t := time.Now().UTC()
 	order := &ManagedOrder{
-		Class:       OrderClassEntry,
-		Side:        side,
-		ExternalOID: req.ExternalOid,
-		Price:       req.Price,
-		Quantity:    quantity,
-		SubmittedAt: time.Now().UTC(),
-		LastUpdate:  time.Now().UTC(),
-		Reason:      reason,
+		Class:         OrderClassEntry,
+		Side:          side,
+		ExternalOID:   req.ExternalOid,
+		Price:         req.Price,
+		Quantity:      volOut,
+		SubmittedAt:   t,
+		LastUpdate:    t,
+		LastRepriceAt: t,
+		Reason:        reason,
 	}
 	if err != nil {
 		m.emitOrderEvent(ctx, ladder, order, "submit_error", reason, "")
 		return nil, err
 	}
-	order.OrderID = parseSubmitOrderID(raw)
-	m.emitOrderEvent(ctx, ladder, order, "submit", reason, string(raw))
+	rawTrim := bytes.TrimPrefix(bytes.TrimSpace(raw), []byte{0xEF, 0xBB, 0xBF})
+	if apiErr := futuresSubmitAPIError(rawTrim); apiErr != nil {
+		log.Printf("[trade] submit REJECTED kind=entry symbol=%s ext_oid=%s side=%s vol=%.8f @ %.8f ladder_reason=%q: %v",
+			m.cfg.Symbol, order.ExternalOID, sideToString(side), volOut, order.Price, reason, apiErr)
+		m.emitOrderEvent(ctx, ladder, order, "submit_error", fmt.Sprintf("%s: %v", reason, apiErr), string(rawTrim))
+		return nil, apiErr
+	}
+	order.OrderID = parseSubmitOrderID(rawTrim)
+	logTradeAPIResponse("submit_entry", order.ExternalOID, order.OrderID, rawTrim)
+	m.emitOrderEvent(ctx, ladder, order, "submit", reason, string(rawTrim))
 	return order, nil
 }
 
@@ -112,10 +164,11 @@ func (m *OrderManager) PlaceExit(ctx context.Context, ladder *LadderContext, pri
 	if ladder == nil || ladder.NetQuantity <= 0 {
 		return nil, fmt.Errorf("scalper: exit requires inventory")
 	}
+	volOut := quantizeOrderVol(ladder.NetQuantity, orderVolScaleFromCfg(m.cfg))
 	req := mexcfutures.SubmitOrderRequest{
 		Symbol:       m.cfg.Symbol,
-		Price:        normalizePrice(price, m.cfg.TickSize),
-		Vol:          ladder.NetQuantity,
+		Price:        quantizeOrderPrice(price, m.cfg.TickSize, orderPriceDecimalsFromCfg(m.cfg)),
+		Vol:          volOut,
 		Side:         exitOrderSide(ladder.Side),
 		Type:         mexcfutures.OrderTypeLimit,
 		OpenType:     m.cfg.OpenType,
@@ -125,23 +178,33 @@ func (m *OrderManager) PlaceExit(ctx context.Context, ladder *LadderContext, pri
 		STPMode:      0,
 	}
 	raw, err := m.trader.SubmitOrder(ctx, req)
+	t := time.Now().UTC()
 	order := &ManagedOrder{
-		Class:       OrderClassExit,
-		Side:        ladder.Side,
-		ExternalOID: req.ExternalOid,
-		Price:       req.Price,
-		Quantity:    req.Vol,
-		SubmittedAt: time.Now().UTC(),
-		LastUpdate:  time.Now().UTC(),
-		Reason:      reason,
-		ReduceOnly:  req.ReduceOnly,
+		Class:         OrderClassExit,
+		Side:          ladder.Side,
+		ExternalOID:   req.ExternalOid,
+		Price:         req.Price,
+		Quantity:      volOut,
+		SubmittedAt:   t,
+		LastUpdate:    t,
+		LastRepriceAt: t,
+		Reason:        reason,
+		ReduceOnly:    req.ReduceOnly,
 	}
 	if err != nil {
 		m.emitOrderEvent(ctx, ladder, order, "submit_error", reason, "")
 		return nil, err
 	}
-	order.OrderID = parseSubmitOrderID(raw)
-	m.emitOrderEvent(ctx, ladder, order, "submit", reason, string(raw))
+	rawTrim := bytes.TrimPrefix(bytes.TrimSpace(raw), []byte{0xEF, 0xBB, 0xBF})
+	if apiErr := futuresSubmitAPIError(rawTrim); apiErr != nil {
+		log.Printf("[trade] submit REJECTED kind=exit symbol=%s ext_oid=%s side=%s vol=%.8f @ %.8f ladder_reason=%q: %v",
+			m.cfg.Symbol, order.ExternalOID, sideToString(order.Side), volOut, order.Price, reason, apiErr)
+		m.emitOrderEvent(ctx, ladder, order, "submit_error", fmt.Sprintf("%s: %v", reason, apiErr), string(rawTrim))
+		return nil, apiErr
+	}
+	order.OrderID = parseSubmitOrderID(rawTrim)
+	logTradeAPIResponse("submit_exit", order.ExternalOID, order.OrderID, rawTrim)
+	m.emitOrderEvent(ctx, ladder, order, "submit", reason, string(rawTrim))
 	return order, nil
 }
 
@@ -157,10 +220,11 @@ func (m *OrderManager) EmergencyFlatten(ctx context.Context, ladder *LadderConte
 	if !m.cfg.AllowEmergencyMarket {
 		return nil, fmt.Errorf("scalper: emergency market disabled")
 	}
+	volOut := quantizeOrderVol(ladder.NetQuantity, orderVolScaleFromCfg(m.cfg))
 	req := mexcfutures.SubmitOrderRequest{
 		Symbol:        m.cfg.Symbol,
-		Price:         normalizePrice(priceHint, m.cfg.TickSize),
-		Vol:           ladder.NetQuantity,
+		Price:         quantizeOrderPrice(priceHint, m.cfg.TickSize, orderPriceDecimalsFromCfg(m.cfg)),
+		Vol:           volOut,
 		Side:          exitOrderSide(ladder.Side),
 		Type:          mexcfutures.OrderTypeMarket,
 		OpenType:      m.cfg.OpenType,
@@ -171,26 +235,73 @@ func (m *OrderManager) EmergencyFlatten(ctx context.Context, ladder *LadderConte
 		MarketCeiling: true,
 	}
 	raw, err := m.trader.SubmitOrder(ctx, req)
+	t := time.Now().UTC()
 	order := &ManagedOrder{
-		Class:       OrderClassEmergency,
-		Side:        ladder.Side,
-		ExternalOID: req.ExternalOid,
-		Price:       req.Price,
-		Quantity:    req.Vol,
-		SubmittedAt: time.Now().UTC(),
-		LastUpdate:  time.Now().UTC(),
-		Reason:      reason,
+		Class:         OrderClassEmergency,
+		Side:          ladder.Side,
+		ExternalOID:   req.ExternalOid,
+		Price:         req.Price,
+		Quantity:      volOut,
+		SubmittedAt:   t,
+		LastUpdate:    t,
+		LastRepriceAt: t,
+		Reason:        reason,
 	}
 	if err != nil {
 		m.emitOrderEvent(ctx, ladder, order, "flatten_error", reason, "")
 		return nil, err
 	}
-	order.OrderID = parseSubmitOrderID(raw)
-	m.emitOrderEvent(ctx, ladder, order, "flatten_submit", reason, string(raw))
+	rawTrim := bytes.TrimPrefix(bytes.TrimSpace(raw), []byte{0xEF, 0xBB, 0xBF})
+	if apiErr := futuresSubmitAPIError(rawTrim); apiErr != nil {
+		log.Printf("[trade] submit REJECTED kind=flatten symbol=%s ext_oid=%s side=%s vol=%.8f @ %.8f ladder_reason=%q: %v",
+			m.cfg.Symbol, order.ExternalOID, sideToString(order.Side), volOut, order.Price, reason, apiErr)
+		m.emitOrderEvent(ctx, ladder, order, "flatten_error", fmt.Sprintf("%s: %v", reason, apiErr), string(rawTrim))
+		return nil, apiErr
+	}
+	order.OrderID = parseSubmitOrderID(rawTrim)
+	logTradeAPIResponse("submit_flatten", order.ExternalOID, order.OrderID, rawTrim)
+	m.emitOrderEvent(ctx, ladder, order, "flatten_submit", reason, string(rawTrim))
 	return order, nil
 }
 
-func (m *OrderManager) SyncLadder(ctx context.Context, ladder *LadderContext) error {
+func logTradeAPIResponse(kind, extOID, orderID string, raw []byte) {
+	body := string(raw)
+	const maxLog = 65536
+	if len(body) > maxLog {
+		body = body[:maxLog] + "... (truncated)"
+	}
+	log.Printf("[trade] api_response kind=%s ext_oid=%s order_id=%s body=%s", kind, extOID, orderID, body)
+}
+
+// futuresSubmitAPIError returns a non-nil error when MEXC returns HTTP 200 with JSON body success=false.
+// If "success" is absent or true, returns nil (including unparseable JSON — handled elsewhere).
+func futuresSubmitAPIError(raw []byte) error {
+	raw = bytes.TrimPrefix(bytes.TrimSpace(raw), []byte{0xEF, 0xBB, 0xBF})
+	var meta struct {
+		Success *bool           `json:"success"`
+		Code    int             `json:"code"`
+		Message string          `json:"message"`
+		Extend  json.RawMessage `json:"_extend"`
+	}
+	if err := json.Unmarshal(raw, &meta); err != nil {
+		return nil
+	}
+	if meta.Success == nil || *meta.Success {
+		return nil
+	}
+	ext := strings.TrimSpace(string(meta.Extend))
+	const maxExt = 600
+	if len(ext) > maxExt {
+		ext = ext[:maxExt] + "..."
+	}
+	msg := strings.TrimSpace(meta.Message)
+	if msg != "" {
+		return fmt.Errorf("mexc success=false code=%d message=%q _extend=%s", meta.Code, msg, ext)
+	}
+	return fmt.Errorf("mexc success=false code=%d _extend=%s", meta.Code, ext)
+}
+
+func (m *OrderManager) SyncLadder(ctx context.Context, ladder *LadderContext, exitMarkPx float64, now time.Time) error {
 	if ladder == nil {
 		return nil
 	}
@@ -216,6 +327,14 @@ func (m *OrderManager) SyncLadder(ctx context.Context, ladder *LadderContext) er
 			m.applyRemoteOrder(ctx, ladder, ladder.EmergencyOrder, remote, raw)
 		}
 	}
+	if m.cfg.ExitUsesExchangeBracket() && ladder.HasInventory() && m.trader != nil {
+		if ladder.LastPositionSyncAt.IsZero() || now.Sub(ladder.LastPositionSyncAt) >= m.cfg.PollInterval {
+			ladder.LastPositionSyncAt = now
+			if err := m.syncExchangeBracketClose(ctx, ladder, exitMarkPx, now); err != nil {
+				log.Printf("[trade] bracket position sync symbol=%s err=%v", m.cfg.Symbol, err)
+			}
+		}
+	}
 	return nil
 }
 
@@ -227,17 +346,28 @@ func (m *OrderManager) RepriceEntries(ctx context.Context, ladder *LadderContext
 		if order.Reprices >= m.cfg.MaxReprices {
 			continue
 		}
-		if now.Sub(order.SubmittedAt) < m.cfg.EntryTTL && now.Sub(order.LastUpdate) < m.cfg.RepriceInterval {
+		// Throttle by local placement time, not LastUpdate (exchange polls may not bump LastUpdate → cancel churn).
+		if now.Sub(order.SubmittedAt) < m.cfg.EntryTTL {
+			continue
+		}
+		if now.Sub(order.LastRepriceAt) < m.cfg.RepriceInterval {
 			continue
 		}
 		remaining := order.Quantity - order.FilledQty
 		if remaining <= 0 {
 			continue
 		}
+		refPx := quantizeOrderPrice(entryReferencePrice(snapshot, ladder.Side), m.cfg.TickSize, orderPriceDecimalsFromCfg(m.cfg))
+		if refPx > 0 && order.Price > 0 && refPx == order.Price {
+			// Same limit price as now: cancel+resubmit would only churn; wait for book to move or fill.
+			continue
+		}
 		_ = m.cancelByExternalID(ctx, order.ExternalOID)
 		repriced, err := m.PlaceEntry(ctx, ladder, ladder.Side, remaining, entryReferencePrice(snapshot, ladder.Side), "entry_reprice")
 		if err != nil {
-			return err
+			log.Printf("[trade] entry_reprice PlaceEntry failed symbol=%s slot=%d ext_oid_was=%s err=%v",
+				m.cfg.Symbol, i, order.ExternalOID, err)
+			return nil
 		}
 		repriced.Reprices = order.Reprices + 1
 		ladder.RepricesCount++
@@ -250,6 +380,9 @@ func (m *OrderManager) EnsureExit(ctx context.Context, ladder *LadderContext, sn
 	if ladder == nil || ladder.NetQuantity <= 0 {
 		return nil
 	}
+	if m.cfg.ExitUsesExchangeBracket() {
+		return nil
+	}
 	target := targetExitPrice(ladder, snapshot, m.cfg)
 	if ladder.ExitOrder == nil || isTerminalState(ladder.ExitOrder.StateCode) {
 		exitOrder, err := m.PlaceExit(ctx, ladder, target, "target_exit")
@@ -259,14 +392,12 @@ func (m *OrderManager) EnsureExit(ctx context.Context, ladder *LadderContext, sn
 		ladder.UpsertExitOrder(exitOrder)
 		return nil
 	}
-	if now.Sub(ladder.ExitOrder.SubmittedAt) >= m.cfg.ExitTTL || now.Sub(ladder.ExitOrder.LastUpdate) >= m.cfg.RepriceInterval {
-		remaining := ladder.NetQuantity
+	if now.Sub(ladder.ExitOrder.SubmittedAt) >= m.cfg.ExitTTL && now.Sub(ladder.ExitOrder.LastRepriceAt) >= m.cfg.RepriceInterval {
 		_ = m.cancelByExternalID(ctx, ladder.ExitOrder.ExternalOID)
 		exitOrder, err := m.PlaceExit(ctx, ladder, target, "exit_reprice")
 		if err != nil {
 			return err
 		}
-		exitOrder.Quantity = remaining
 		exitOrder.Reprices = ladder.ExitOrder.Reprices + 1
 		ladder.RepricesCount++
 		ladder.UpsertExitOrder(exitOrder)
@@ -394,20 +525,87 @@ type remoteOrder struct {
 	UpdateTime   time.Time
 }
 
+var submitOrderIDKeys = []string{"orderId", "order_id", "orderID"}
+
 func parseSubmitOrderID(raw []byte) string {
-	var env apiEnvelope
-	if err := json.Unmarshal(raw, &env); err != nil {
+	var top map[string]json.RawMessage
+	if err := json.Unmarshal(raw, &top); err != nil {
 		return ""
 	}
-	var obj struct {
-		OrderID any `json:"orderId"`
+	if s := pickOrderIDFromMap(top); s != "" {
+		return s
 	}
-	if err := json.Unmarshal(env.Data, &obj); err == nil {
-		return anyToString(obj.OrderID)
+	data, ok := top["data"]
+	if !ok || len(bytes.TrimSpace(data)) == 0 {
+		return ""
 	}
-	var scalar any
-	if err := json.Unmarshal(env.Data, &scalar); err == nil {
-		return anyToString(scalar)
+	data = unwrapJSONStringData(data)
+	if s := pickOrderIDFromMapRawObject(data); s != "" {
+		return s
+	}
+	var arr []json.RawMessage
+	if err := json.Unmarshal(data, &arr); err == nil && len(arr) > 0 {
+		if s := pickOrderIDFromMapRawObject(arr[0]); s != "" {
+			return s
+		}
+	}
+	if s := rawJSONToOrderID(data); s != "" {
+		return s
+	}
+	var inner map[string]json.RawMessage
+	if err := json.Unmarshal(data, &inner); err != nil {
+		return ""
+	}
+	return pickOrderIDFromMap(inner)
+}
+
+func pickOrderIDFromMap(m map[string]json.RawMessage) string {
+	for _, key := range submitOrderIDKeys {
+		if v, ok := m[key]; ok {
+			if s := rawJSONToOrderID(v); s != "" {
+				return s
+			}
+		}
+	}
+	return ""
+}
+
+func pickOrderIDFromMapRawObject(obj json.RawMessage) string {
+	var inner map[string]json.RawMessage
+	if err := json.Unmarshal(obj, &inner); err != nil {
+		return ""
+	}
+	return pickOrderIDFromMap(inner)
+}
+
+func unwrapJSONStringData(data json.RawMessage) json.RawMessage {
+	var s string
+	if err := json.Unmarshal(data, &s); err != nil {
+		return data
+	}
+	st := strings.TrimSpace(s)
+	if strings.HasPrefix(st, "{") || strings.HasPrefix(st, "[") {
+		return []byte(st)
+	}
+	return data
+}
+
+func rawJSONToOrderID(m json.RawMessage) string {
+	m = bytes.TrimSpace(m)
+	if len(m) == 0 {
+		return ""
+	}
+	var s string
+	if err := json.Unmarshal(m, &s); err == nil {
+		return strings.TrimSpace(s)
+	}
+	var n json.Number
+	if err := json.Unmarshal(m, &n); err == nil {
+		return strings.TrimSpace(n.String())
+	}
+	var i int64
+	if err := json.Unmarshal(m, &i); err == nil {
+		return strconv.FormatInt(i, 10)
 	}
 	return ""
 }
@@ -474,6 +672,225 @@ func isTerminalState(state int) bool {
 	return state == mexcfutures.OrderStateFilled || state == mexcfutures.OrderStateCanceled || state == mexcfutures.OrderStateInvalid
 }
 
+// syncExchangeBracketClose detects exchange-side bracket fills via open_positions and mirrors them locally.
+func (m *OrderManager) syncExchangeBracketClose(ctx context.Context, ladder *LadderContext, exitMarkPx float64, now time.Time) error {
+	if ladder == nil || ladder.NetQuantity <= 0 || m.trader == nil || !m.cfg.ExitUsesExchangeBracket() {
+		return nil
+	}
+	sym := m.cfg.Symbol
+	rows, err := m.fetchPositionRows(ctx, sym)
+	if err != nil {
+		return err
+	}
+	holdVol := positionHoldVolForSide(rows, sym, ladder.Side)
+	if holdVol >= ladder.NetQuantity-1e-6 {
+		return nil
+	}
+	remaining := holdVol
+	closedQty := ladder.NetQuantity - remaining
+	if closedQty <= 1e-6 {
+		return nil
+	}
+	if remaining <= 1e-6 {
+		// One retry: transient empty open_positions right after a fill can false-trigger.
+		time.Sleep(80 * time.Millisecond)
+		rows2, err2 := m.fetchPositionRows(ctx, sym)
+		if err2 != nil {
+			return err2
+		}
+		remaining = positionHoldVolForSide(rows2, sym, ladder.Side)
+		closedQty = ladder.NetQuantity - remaining
+		if closedQty <= 1e-6 {
+			return nil
+		}
+	}
+	fillPx, reason := inferBracketExitFill(ladder.Side, ladder.AvgEntryPrice, exitMarkPx, m.cfg.TickSize, m.cfg.ProfitTargetTicks, m.cfg.StopLossTicks)
+	exitOrder := m.ensureSyntheticBracketExitOrder(ladder, now)
+	closedTotal := exitOrder.FilledQty + closedQty
+	if closedTotal <= 0 {
+		closedTotal = closedQty
+	}
+	if exitOrder.AvgFillPx > 0 && exitOrder.FilledQty > 0 {
+		exitOrder.AvgFillPx = ((exitOrder.AvgFillPx * exitOrder.FilledQty) + (fillPx * closedQty)) / closedTotal
+	} else {
+		exitOrder.AvgFillPx = fillPx
+	}
+	exitOrder.Price = fillPx
+	exitOrder.Quantity = closedTotal + remaining
+	exitOrder.FilledQty = closedTotal
+	exitOrder.LastUpdate = now
+	exitOrder.LastRepriceAt = now
+	exitOrder.Reason = reason
+	if remaining <= 1e-6 {
+		exitOrder.StateCode = mexcfutures.OrderStateFilled
+	} else {
+		exitOrder.StateCode = mexcfutures.OrderStateUnfilled
+	}
+	ladder.ExitReason = reason
+	m.emitOrderEvent(ctx, ladder, exitOrder, "fill", reason, "")
+	ladder.ApplyExitFill(closedQty, fillPx, now, m.cfg.TickSize)
+	if remaining <= 1e-6 {
+		if err := m.cancelOpenEntryOrders(ctx, ladder); err != nil {
+			log.Printf("[trade] cancel_open_entries_after_bracket_close symbol=%s ladder=%s err=%v", m.cfg.Symbol, ladder.LadderID, err)
+		}
+	}
+	return nil
+}
+
+func (m *OrderManager) fetchPositionRows(ctx context.Context, symbol string) ([]mexcfutures.OpenPositionClose, error) {
+	raw, err := m.trader.OpenPositionsFutures(ctx, &symbol)
+	if err != nil {
+		return nil, err
+	}
+	return mexcfutures.ParseOpenPositionsResponse(raw)
+}
+
+func (m *OrderManager) fetchPositionHoldVol(ctx context.Context, symbol string, side Side) (float64, error) {
+	rows, err := m.fetchPositionRows(ctx, symbol)
+	if err != nil {
+		return 0, err
+	}
+	return positionHoldVolForSide(rows, symbol, side), nil
+}
+
+func positionHoldVolForSide(rows []mexcfutures.OpenPositionClose, symbol string, side Side) float64 {
+	var v float64
+	for i := range rows {
+		r := rows[i]
+		if r.Symbol != symbol {
+			continue
+		}
+		switch side {
+		case SideLong:
+			if r.IsLong {
+				v += r.HoldVol
+			}
+		case SideShort:
+			if !r.IsLong {
+				v += r.HoldVol
+			}
+		}
+	}
+	return v
+}
+
+func (m *OrderManager) ensureSyntheticBracketExitOrder(ladder *LadderContext, now time.Time) *ManagedOrder {
+	if ladder.ExitOrder != nil {
+		return ladder.ExitOrder
+	}
+	exitOrder := &ManagedOrder{
+		Class:         OrderClassExit,
+		Side:          ladder.Side,
+		ExternalOID:   newSessionID("bracket-exit"),
+		StateCode:     mexcfutures.OrderStatePending,
+		SubmittedAt:   now,
+		LastUpdate:    now,
+		LastRepriceAt: now,
+	}
+	ladder.UpsertExitOrder(exitOrder)
+	return exitOrder
+}
+
+func (m *OrderManager) cancelOpenEntryOrders(ctx context.Context, ladder *LadderContext) error {
+	if ladder == nil {
+		return nil
+	}
+	var firstErr error
+	for _, order := range ladder.EntryOrders {
+		if order == nil || isTerminalState(order.StateCode) {
+			continue
+		}
+		if err := m.cancelByExternalID(ctx, order.ExternalOID); err != nil && firstErr == nil {
+			firstErr = err
+			continue
+		}
+		order.StateCode = mexcfutures.OrderStateCanceled
+		order.LastUpdate = time.Now().UTC()
+		m.emitOrderEvent(ctx, ladder, order, "cancelled", "entry_cancel_after_bracket_close", "")
+	}
+	return firstErr
+}
+
+func bracketSLTPQuantized(side Side, entryPx, tickSize float64, profitTicks, stopTicks, priceDecimals int) (sl, tp float64, err error) {
+	if profitTicks <= 0 || stopTicks <= 0 {
+		return 0, 0, fmt.Errorf("profit_ticks and stop_ticks must be > 0 (got profit=%d stop=%d)", profitTicks, stopTicks)
+	}
+	var slRaw, tpRaw float64
+	switch side {
+	case SideLong:
+		slRaw = entryPx - float64(stopTicks)*tickSize
+		tpRaw = entryPx + float64(profitTicks)*tickSize
+	case SideShort:
+		slRaw = entryPx + float64(stopTicks)*tickSize
+		tpRaw = entryPx - float64(profitTicks)*tickSize
+	default:
+		return 0, 0, fmt.Errorf("unknown side %q", side)
+	}
+	sl = quantizeOrderPrice(slRaw, tickSize, priceDecimals)
+	tp = quantizeOrderPrice(tpRaw, tickSize, priceDecimals)
+	switch side {
+	case SideLong:
+		if !(sl < entryPx && tp > entryPx) {
+			return 0, 0, fmt.Errorf("long bracket invalid after quantize entry=%.8f sl=%.8f tp=%.8f", entryPx, sl, tp)
+		}
+	case SideShort:
+		if !(sl > entryPx && tp < entryPx) {
+			return 0, 0, fmt.Errorf("short bracket invalid after quantize entry=%.8f sl=%.8f tp=%.8f", entryPx, sl, tp)
+		}
+	}
+	return sl, tp, nil
+}
+
+func inferBracketExitFill(side Side, avgEntry, exitMark, tickSize float64, profitTicks, stopTicks int) (float64, string) {
+	reason := inferBracketExitReason(side, avgEntry, exitMark, tickSize, profitTicks, stopTicks)
+	tpPx, slPx := bracketExitPrices(side, avgEntry, tickSize, profitTicks, stopTicks)
+	switch reason {
+	case "take_profit_ticks":
+		return tpPx, reason
+	case "stop_loss_ticks":
+		return slPx, reason
+	default:
+		if exitMark > 0 {
+			return exitMark, reason
+		}
+		return avgEntry, reason
+	}
+}
+
+func bracketExitPrices(side Side, avgEntry, tickSize float64, profitTicks, stopTicks int) (tpPx, slPx float64) {
+	tpPx = avgEntry + float64(profitTicks)*tickSize
+	slPx = avgEntry - float64(stopTicks)*tickSize
+	if side == SideShort {
+		tpPx = avgEntry - float64(profitTicks)*tickSize
+		slPx = avgEntry + float64(stopTicks)*tickSize
+	}
+	return tpPx, slPx
+}
+
+func inferBracketExitReason(side Side, avgEntry, exitMark, tickSize float64, profitTicks, stopTicks int) string {
+	if avgEntry <= 0 || tickSize <= 0 {
+		return "bracket_exit"
+	}
+	tol := 0.75 * tickSize
+	tpPx, slPx := bracketExitPrices(side, avgEntry, tickSize, profitTicks, stopTicks)
+	if side == SideLong {
+		if exitMark >= tpPx-tol {
+			return "take_profit_ticks"
+		}
+		if exitMark <= slPx+tol {
+			return "stop_loss_ticks"
+		}
+	} else if side == SideShort {
+		if exitMark <= tpPx+tol {
+			return "take_profit_ticks"
+		}
+		if exitMark >= slPx-tol {
+			return "stop_loss_ticks"
+		}
+	}
+	return "bracket_exit"
+}
+
 func entryOrderSide(side Side) int {
 	if side == SideShort {
 		return mexcfutures.OrderSideOpenShort
@@ -509,5 +926,5 @@ func targetExitPrice(ladder *LadderContext, snapshot Snapshot, cfg config.Scalpe
 			target = snapshot.BestBidPx
 		}
 	}
-	return normalizePrice(target, cfg.TickSize)
+	return quantizeOrderPrice(target, cfg.TickSize, orderPriceDecimalsFromCfg(cfg))
 }

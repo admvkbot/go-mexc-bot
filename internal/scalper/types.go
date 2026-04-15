@@ -68,24 +68,36 @@ type Snapshot struct {
 }
 
 type Features struct {
-	Snapshot         Snapshot
-	Previous         Snapshot
-	BookAge          time.Duration
-	Window           time.Duration
-	UpdateRate       float64
-	BidPulseTicks    int
-	AskPulseTicks    int
-	PressureDelta    float64
-	SpreadTicks      float64
-	MicroPriceDelta  float64
-	VolatilityPause  bool
-	HasLookback      bool
-	Stale            bool
-	WideSpread       bool
-	Chaos            bool
-	SignalImbalance  float64
-	SignalSide       Side
-	SignalConfidence float64
+	Snapshot             Snapshot
+	Previous             Snapshot
+	BookAge              time.Duration
+	Window               time.Duration
+	UpdateRate           float64
+	BidPulseTicks        int
+	AskPulseTicks        int
+	PressureDelta        float64
+	SpreadTicks          float64
+	MaxRecentSpreadTicks float64
+	MicroPriceDelta      float64
+	SignalConfirmCount   int
+	SignalConfirmAge     time.Duration
+	PriceMean            float64
+	PriceUpperDeviation  float64
+	PriceLowerDeviation  float64
+	PriceUpperBound      float64
+	PriceLowerBound      float64
+	PriceMaxUpperBound   float64
+	PriceMaxLowerBound   float64
+	PriceCorridorSamples int
+	HasPriceCorridor     bool
+	VolatilityPause      bool
+	HasLookback          bool
+	Stale                bool
+	WideSpread           bool
+	Chaos                bool
+	SignalImbalance      float64
+	SignalSide           Side
+	SignalConfidence     float64
 }
 
 type Decision struct {
@@ -110,40 +122,44 @@ type ManagedOrder struct {
 	StateCode   int
 	SubmittedAt time.Time
 	LastUpdate  time.Time
-	Reprices    int
-	ReduceOnly  bool
-	Reason      string
+	// LastRepriceAt is when this order slot was last placed or replaced locally (repricing throttle).
+	LastRepriceAt time.Time
+	Reprices      int
+	ReduceOnly    bool
+	Reason        string
 }
 
 type LadderContext struct {
-	SessionID         string
-	LadderID          string
-	Symbol            string
-	Side              Side
-	Phase             TradePhase
-	EntryOrders       []*ManagedOrder
-	ExitOrder         *ManagedOrder
-	EmergencyOrder    *ManagedOrder
-	StepCount         int
-	MaxSteps          int
-	NetQuantity       float64
-	AvgEntryPrice     float64
-	RealizedPnL       float64
-	EntryStartedAt    time.Time
-	EntryFilledAt     time.Time
-	ExitStartedAt     time.Time
-	ExitFilledAt      time.Time
-	LastStepAt        time.Time
-	LastDecisionAt    time.Time
-	CooldownUntil     time.Time
-	MaxFavorableTicks float64
-	MaxAdverseTicks   float64
-	RepricesCount     int
-	ExitReason        string
-	FlattenReason     string
-	WasEmergencyExit  bool
-	LastSignalReason  string
-	RoundTripWritten  bool
+	SessionID      string
+	LadderID       string
+	Symbol         string
+	Side           Side
+	Phase          TradePhase
+	EntryOrders    []*ManagedOrder
+	ExitOrder      *ManagedOrder
+	EmergencyOrder *ManagedOrder
+	StepCount      int
+	MaxSteps       int
+	NetQuantity    float64
+	AvgEntryPrice  float64
+	RealizedPnL    float64
+	EntryStartedAt time.Time
+	EntryFilledAt  time.Time
+	ExitStartedAt  time.Time
+	ExitFilledAt   time.Time
+	LastStepAt     time.Time
+	LastDecisionAt time.Time
+	CooldownUntil  time.Time
+	// LastPositionSyncAt throttles REST open_positions polling for bracket exits.
+	LastPositionSyncAt time.Time
+	MaxFavorableTicks  float64
+	MaxAdverseTicks    float64
+	RepricesCount      int
+	ExitReason         string
+	FlattenReason      string
+	WasEmergencyExit   bool
+	LastSignalReason   string
+	RoundTripWritten   bool
 }
 
 func (c *LadderContext) HasInventory() bool {
@@ -171,6 +187,7 @@ func (c *LadderContext) ActiveOrders() []*ManagedOrder {
 
 type SignalEvent struct {
 	SessionID      string
+	LadderID       string
 	Mode           string
 	Symbol         string
 	EventAt        time.Time
@@ -178,6 +195,8 @@ type SignalEvent struct {
 	Side           string
 	Score          float64
 	Reason         string
+	AllowEntry     bool
+	DenyReason     string
 	BestBidPx      float64
 	BestAskPx      float64
 	Spread         float64
@@ -189,6 +208,9 @@ type SignalEvent struct {
 	PressureDelta  float64
 	UpdateRate     float64
 	MicroPriceDiff float64
+	ConfirmCount   int
+	ConfirmMS      int64
+	MaxSpreadTicks float64
 }
 
 type OrderEvent struct {

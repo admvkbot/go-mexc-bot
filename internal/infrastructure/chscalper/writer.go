@@ -31,6 +31,7 @@ func (w *Writer) InsertScalperSignalEvents(ctx context.Context, rows []scalper.S
 	for _, r := range rows {
 		out = append(out, chstore.ScalperSignalEventRow{
 			SessionID:      r.SessionID,
+			LadderID:       r.LadderID,
 			Mode:           r.Mode,
 			Symbol:         r.Symbol,
 			EventAt:        r.EventAt,
@@ -38,6 +39,8 @@ func (w *Writer) InsertScalperSignalEvents(ctx context.Context, rows []scalper.S
 			Side:           r.Side,
 			Score:          r.Score,
 			Reason:         r.Reason,
+			AllowEntry:     r.AllowEntry,
+			DenyReason:     r.DenyReason,
 			BestBidPx:      r.BestBidPx,
 			BestAskPx:      r.BestAskPx,
 			Spread:         r.Spread,
@@ -49,6 +52,9 @@ func (w *Writer) InsertScalperSignalEvents(ctx context.Context, rows []scalper.S
 			PressureDelta:  r.PressureDelta,
 			UpdateRate:     r.UpdateRate,
 			MicroPriceDiff: r.MicroPriceDiff,
+			ConfirmCount:   int32(r.ConfirmCount),
+			ConfirmMS:      r.ConfirmMS,
+			MaxSpreadTicks: r.MaxSpreadTicks,
 		})
 	}
 	return w.ch.InsertScalperSignalEventRows(ctx, out)

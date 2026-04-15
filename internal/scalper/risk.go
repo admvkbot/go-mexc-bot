@@ -20,7 +20,10 @@ func (g *RiskGuard) AllowEntry(now time.Time, features Features, ladder *LadderC
 		return false, "kill_switch", now
 	}
 	if features.VolatilityPause {
-		return false, "volatility_pause", now.Add(g.cfg.VolatilityPause)
+		// Pause is already active (BookState.volPauseUntil). Returning a non-zero
+		// pauseUntil would make LiveRuntime call PauseVolatility on every tick and
+		// push the deadline forward forever (now+VolatilityPause each time).
+		return false, "volatility_pause", time.Time{}
 	}
 	if features.Stale {
 		return false, "stale_book", now.Add(g.cfg.VolatilityPause)
@@ -30,12 +33,6 @@ func (g *RiskGuard) AllowEntry(now time.Time, features Features, ladder *LadderC
 	}
 	if features.Chaos {
 		return false, "update_rate_guard", now.Add(g.cfg.VolatilityPause)
-	}
-	if ladder != nil && ladder.HasInventory() {
-		markPx := exitReferencePrice(features.Snapshot, ladder.Side)
-		if ladder.NetQuantity*markPx >= g.cfg.MaxInventoryNotional {
-			return false, "inventory_limit", now
-		}
 	}
 	return true, "", time.Time{}
 }
@@ -56,14 +53,16 @@ func (g *RiskGuard) ShouldFlatten(now time.Time, features Features, ladder *Ladd
 	if features.Chaos {
 		return true, "churn_flatten"
 	}
-	if !ladder.EntryStartedAt.IsZero() && now.Sub(ladder.EntryStartedAt) >= g.cfg.TimeStop {
-		return true, "time_stop"
-	}
-	markPx := exitReferencePrice(features.Snapshot, ladder.Side)
-	if markPx > 0 {
-		pnl := pnlTicks(ladder.AvgEntryPrice, markPx, g.cfg.TickSize, ladder.Side)
-		if -pnl >= float64(g.cfg.StopLossTicks) {
-			return true, "stop_loss_ticks"
+	if !g.cfg.ExitUsesExchangeBracket() {
+		if !ladder.EntryStartedAt.IsZero() && now.Sub(ladder.EntryStartedAt) >= g.cfg.TimeStop {
+			return true, "time_stop"
+		}
+		markPx := exitReferencePrice(features.Snapshot, ladder.Side)
+		if markPx > 0 {
+			pnl := pnlTicks(ladder.AvgEntryPrice, markPx, g.cfg.TickSize, ladder.Side)
+			if -pnl >= float64(g.cfg.StopLossTicks) {
+				return true, "stop_loss_ticks"
+			}
 		}
 	}
 	return false, ""

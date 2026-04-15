@@ -18,7 +18,7 @@ The `mexcfutures` package is **not** importable from outside this module (under 
 |------|------|
 | `cmd/mexc-bot/main.go` | Loads `internal/config`, builds `internal/app.Bot`, runs until SIGINT/SIGTERM; on cancel, `ShutdownFlattenAll` (45s timeout) before exit when scalper is on |
 | `internal/app/bot.go` | `Bot`, `New`, `NewFromConfig`, `Run` (REST check, then WS market capture → ClickHouse until shutdown) |
-| `internal/app/shutdown_flatten.go` | `ShutdownFlattenAll`: cancel all futures orders, parse `open_positions`, submit market closes |
+| `internal/app/flatten_account.go` | `flattenAccountPositions`; `StartupFlattenOpenPositions` at scalper start; `ShutdownFlattenAll` on SIGINT: cancel-all + market-close from `open_positions` |
 | `internal/infrastructure/mexc/mexcfutures/positions_parse.go` | Typed parse of open_positions `data[]` for shutdown flatten |
 | `internal/scalper/order_manager.go` | Emits `[trade]` stdout logs alongside ClickHouse order events |
 | `internal/app/ws_market_clickhouse.go` | Contract WS per symbol in `MEXC_WS_SYMBOLS`: `sub.depth`, `sub.depth.full` 5/10/20, `sub.deal`; persists `push.depth*`, `push.deal` JSON to ClickHouse |

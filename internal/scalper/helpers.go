@@ -6,6 +6,8 @@ import (
 	"strings"
 	"sync/atomic"
 	"time"
+
+	"github.com/mexc-bot/go-mexc-bot/internal/config"
 )
 
 var sessionCounter atomic.Uint64
@@ -20,6 +22,39 @@ func normalizePrice(price, tick float64) float64 {
 		return price
 	}
 	return math.Round(price/tick) * tick
+}
+
+// tickDecimalPlaces returns n where tick*10^n is (approximately) an integer; used when MEXC priceScale is unknown.
+func tickDecimalPlaces(tick float64) int {
+	if tick <= 0 {
+		return 8
+	}
+	for n := 0; n <= 12; n++ {
+		v := tick * math.Pow10(n)
+		if math.Abs(v-math.Round(v)) < 1e-9 {
+			return n
+		}
+	}
+	return 8
+}
+
+// quantizeOrderPrice snaps to tick grid then to a fixed number of decimal places for REST JSON (MEXC code 2015).
+func quantizeOrderPrice(price, tick float64, priceDecimals int) float64 {
+	p := normalizePrice(price, tick)
+	if priceDecimals < 0 {
+		return p
+	}
+	f := math.Pow10(priceDecimals)
+	return math.Round(p*f) / f
+}
+
+// quantizeOrderVol rounds volume to volScale decimals (volScale 0 → integer contracts). If volScale < 0, trims float noise only.
+func quantizeOrderVol(vol float64, volScale int) float64 {
+	if volScale < 0 {
+		return math.Round(vol*1e8) / 1e8
+	}
+	f := math.Pow10(volScale)
+	return math.Round(vol*f) / f
 }
 
 func priceDeltaTicks(from, to, tick float64) int {
@@ -65,6 +100,23 @@ func trimRecent[T any](xs []T, keep int) []T {
 
 func sideToString(side Side) string {
 	return string(side)
+}
+
+// executionSide returns the exchange position side for a given signal side.
+// When InvertExecution is true, long/short are swapped for orders and ladder state only;
+// signal journals still use the original decision from SignalEngine.
+func executionSide(cfg config.Scalper, signal Side) Side {
+	if !cfg.InvertExecution || signal == SideNone {
+		return signal
+	}
+	switch signal {
+	case SideLong:
+		return SideShort
+	case SideShort:
+		return SideLong
+	default:
+		return signal
+	}
 }
 
 func reasonJoin(parts ...string) string {

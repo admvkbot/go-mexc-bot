@@ -1,6 +1,7 @@
 package scalper
 
 import (
+	"math"
 	"sort"
 	"strings"
 	"sync"
@@ -98,11 +99,12 @@ func (b *BookState) Features(now time.Time) Features {
 	current := b.snapshotLocked()
 	current.At = b.lastUpdate
 	features := Features{
-		Snapshot:        current,
-		BookAge:         now.UTC().Sub(b.lastUpdate),
-		Window:          b.cfg.FeatureLookback,
-		SpreadTicks:     current.Spread / maxFloat(b.cfg.TickSize, 1e-9),
-		MicroPriceDelta: microPriceDelta(current),
+		Snapshot:             current,
+		BookAge:              now.UTC().Sub(b.lastUpdate),
+		Window:               b.cfg.FeatureLookback,
+		SpreadTicks:          current.Spread / maxFloat(b.cfg.TickSize, 1e-9),
+		MaxRecentSpreadTicks: current.Spread / maxFloat(b.cfg.TickSize, 1e-9),
+		MicroPriceDelta:      microPriceDelta(current),
 	}
 	if !b.lastUpdate.IsZero() {
 		features.Stale = features.BookAge > b.cfg.MaxBookAge
@@ -134,10 +136,30 @@ func (b *BookState) Features(now time.Time) Features {
 			features.UpdateRate = float64(count) / b.cfg.FeatureLookback.Seconds()
 		}
 	}
+	if b.cfg.SpreadStabilityWindow > 0 {
+		features.MaxRecentSpreadTicks = b.maxSpreadTicksLocked(now.Add(-b.cfg.SpreadStabilityWindow))
+	}
+	if b.cfg.PriceCorridorWindow > 0 {
+		features.PriceMean, features.PriceUpperDeviation, features.PriceLowerDeviation, features.PriceCorridorSamples, features.HasPriceCorridor =
+			b.priceCorridorLocked(now)
+		if features.HasPriceCorridor {
+			features.PriceUpperBound = features.PriceMean + features.PriceUpperDeviation
+			features.PriceLowerBound = features.PriceMean - features.PriceLowerDeviation
+			multiplier := b.cfg.PriceCorridorMaxMultiplier
+			if multiplier <= 0 {
+				multiplier = 2
+			}
+			features.PriceMaxUpperBound = features.PriceMean + features.PriceUpperDeviation*multiplier
+			features.PriceMaxLowerBound = features.PriceMean - features.PriceLowerDeviation*multiplier
+		}
+	}
 	features.Chaos = b.cfg.MaxUpdateRate > 0 && features.UpdateRate > b.cfg.MaxUpdateRate
 	features.VolatilityPause = now.Before(b.volPauseUntil)
 	features.SignalImbalance = current.Imbalance5
 	features.SignalSide = dominantSide(current.Imbalance5, features.PressureDelta)
+	if features.SignalSide != SideNone && b.cfg.SignalConfirmWindow > 0 {
+		features.SignalConfirmCount, features.SignalConfirmAge = b.signalConfirmationLocked(now, features.SignalSide)
+	}
 	features.SignalConfidence = signalConfidence(features)
 	return features
 }
@@ -153,7 +175,7 @@ func (b *BookState) PauseVolatility(until time.Time) {
 func (b *BookState) captureSnapshotLocked() {
 	snap := b.snapshotLocked()
 	b.recent = append(b.recent, bookSnapshotEvent{at: b.lastUpdate, snapshot: snap})
-	cutoff := b.lastUpdate.Add(-2 * time.Second)
+	cutoff := b.lastUpdate.Add(-b.retentionWindowLocked())
 	start := 0
 	for start < len(b.recent) && b.recent[start].at.Before(cutoff) {
 		start++
@@ -264,6 +286,116 @@ func signalConfidence(f Features) float64 {
 	return score
 }
 
+func (b *BookState) maxSpreadTicksLocked(cutoff time.Time) float64 {
+	maxSpread := 0.0
+	for _, item := range b.recent {
+		if item.at.Before(cutoff) {
+			continue
+		}
+		spreadTicks := item.snapshot.Spread / maxFloat(b.cfg.TickSize, 1e-9)
+		if spreadTicks > maxSpread {
+			maxSpread = spreadTicks
+		}
+	}
+	if maxSpread == 0 {
+		return b.snapshotLocked().Spread / maxFloat(b.cfg.TickSize, 1e-9)
+	}
+	return maxSpread
+}
+
+func (b *BookState) signalConfirmationLocked(now time.Time, side Side) (int, time.Duration) {
+	if side == SideNone || len(b.recent) < 2 {
+		return 0, 0
+	}
+	cutoff := now.Add(-b.cfg.SignalConfirmWindow)
+	count := 0
+	var earliest time.Time
+	for i := len(b.recent) - 1; i >= 1; i-- {
+		cur := b.recent[i]
+		if cur.at.Before(cutoff) {
+			break
+		}
+		prev := b.recent[i-1]
+		if signalSideFromSnapshots(prev.snapshot, cur.snapshot) != side {
+			break
+		}
+		count++
+		earliest = prev.at
+	}
+	if count == 0 || earliest.IsZero() {
+		return 0, 0
+	}
+	return count, now.Sub(earliest)
+}
+
+func (b *BookState) priceCorridorLocked(now time.Time) (mean, upperDev, lowerDev float64, samples int, ok bool) {
+	if b.cfg.PriceCorridorWindow <= 0 {
+		return 0, 0, 0, 0, false
+	}
+	cutoff := now.Add(-b.cfg.PriceCorridorWindow)
+	mids := make([]float64, 0, len(b.recent))
+	for _, item := range b.recent {
+		if item.at.Before(cutoff) || item.snapshot.Mid <= 0 {
+			continue
+		}
+		mids = append(mids, item.snapshot.Mid)
+	}
+	samples = len(mids)
+	if samples < 2 {
+		return 0, 0, 0, samples, false
+	}
+	for _, mid := range mids {
+		mean += mid
+	}
+	mean /= float64(samples)
+	up := make([]float64, 0, samples)
+	down := make([]float64, 0, samples)
+	for _, mid := range mids {
+		delta := mid - mean
+		switch {
+		case delta > 0:
+			up = append(up, delta)
+		case delta < 0:
+			down = append(down, -delta)
+		}
+	}
+	if len(up) == 0 || len(down) == 0 {
+		return mean, 0, 0, samples, false
+	}
+	p := b.cfg.PriceCorridorPercentile
+	if p <= 0 {
+		p = 0.8
+	}
+	upperDev = percentileFloat64(up, p)
+	lowerDev = percentileFloat64(down, p)
+	if upperDev <= 0 || lowerDev <= 0 {
+		return mean, upperDev, lowerDev, samples, false
+	}
+	return mean, upperDev, lowerDev, samples, true
+}
+
+func (b *BookState) retentionWindowLocked() time.Duration {
+	maxWindow := 2 * time.Second
+	for _, d := range []time.Duration{
+		b.cfg.FeatureLookback,
+		b.cfg.SpreadStabilityWindow,
+		b.cfg.SignalConfirmWindow,
+		b.cfg.PriceCorridorWindow,
+	} {
+		if d > maxWindow {
+			maxWindow = d
+		}
+	}
+	if maxWindow <= 0 {
+		return 2 * time.Second
+	}
+	return maxWindow
+}
+
+func signalSideFromSnapshots(prev, current Snapshot) Side {
+	return dominantSide(current.Imbalance5, current.Imbalance5-prev.Imbalance5)
+}
+
 func absFloat(v float64) float64 {
 	if v < 0 {
 		return -v
@@ -276,4 +408,26 @@ func maxFloat(a, b float64) float64 {
 		return a
 	}
 	return b
+}
+
+func percentileFloat64(values []float64, p float64) float64 {
+	if len(values) == 0 {
+		return 0
+	}
+	cp := append([]float64(nil), values...)
+	sort.Float64s(cp)
+	if p <= 0 {
+		return cp[0]
+	}
+	if p >= 1 {
+		return cp[len(cp)-1]
+	}
+	pos := p * float64(len(cp)-1)
+	lo := int(math.Floor(pos))
+	hi := int(math.Ceil(pos))
+	if lo == hi {
+		return cp[lo]
+	}
+	weight := pos - float64(lo)
+	return cp[lo] + (cp[hi]-cp[lo])*weight
 }

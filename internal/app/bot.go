@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"strings"
+	"time"
 
 	"github.com/mexc-bot/go-mexc-bot/internal/config"
 	"github.com/mexc-bot/go-mexc-bot/internal/infrastructure/chstore"
@@ -59,6 +60,12 @@ func NewFromConfig(cfg config.Bot) (*Bot, error) {
 		return nil, fmt.Errorf("app: unsupported MEXC_BOT_MODE combination")
 	}
 
+	if cfg.Mode.Scalper && cli != nil {
+		ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+		enrichScalperOrderScalesFromContract(ctx, cli, &cfg.Scalper)
+		cancel()
+	}
+
 	return &Bot{cfg: cfg, client: cli, ch: chCli, wsSymbols: cfg.WSSymbols}, nil
 }
 
@@ -82,6 +89,27 @@ func (b *Bot) Run(ctx context.Context) error {
 			return fmt.Errorf("app: connectivity: %w", err)
 		}
 	}
+
+	// Before any capture/scalper WS: flatten account (scalper + trade REST only).
+	if b.cfg.Mode.Scalper && b.client != nil {
+		log.Printf("mexc-bot: startup: begin flatten (cancel all orders + market-close open positions)")
+		flatCtx, cancel := context.WithTimeout(ctx, 90*time.Second)
+		err := b.StartupFlattenOpenPositions(flatCtx)
+		cancel()
+		if err != nil {
+			return fmt.Errorf("app: startup flatten open positions: %w", err)
+		}
+		log.Printf("mexc-bot: startup: flatten finished OK")
+	}
+
+	if wd := scalperWarmupDuration(); b.cfg.Mode.Scalper && b.client != nil && wd > 0 {
+		warmCtx, cancel := context.WithTimeout(ctx, wd+45*time.Second)
+		if err := b.RunScalperWarmupMetrics(warmCtx, wd); err != nil {
+			log.Printf("mexc-bot: warmup: %v (продолжаем запуск)", err)
+		}
+		cancel()
+	}
+
 	if b.cfg.Mode.Scalper {
 		log.Printf("mexc-bot: MEXC REST OK (%s)", config.TradeWebKeyEnv)
 	} else if b.cfg.Mode.Capture {
@@ -102,4 +130,44 @@ func (b *Bot) Run(ctx context.Context) error {
 	}
 	<-ctx.Done()
 	return ctx.Err()
+}
+
+// enrichScalperOrderScalesFromContract fills OrderPriceScale / OrderVolScale from public GET /contract/detail
+// so submit JSON matches MEXC precision (avoids success=false code 2015).
+func enrichScalperOrderScalesFromContract(ctx context.Context, cli ports.FuturesREST, s *config.Scalper) {
+	if s == nil {
+		return
+	}
+	c, ok := cli.(*mexcfutures.Client)
+	if !ok {
+		return
+	}
+	raw, err := c.GetContractDetailContractPublic(ctx, s.Symbol)
+	if err != nil {
+		log.Printf("mexc-bot: contract/detail symbol=%s: %v", s.Symbol, err)
+		return
+	}
+	detail, err := mexcfutures.ParseContractDetailSummary(raw)
+	if err != nil {
+		log.Printf("mexc-bot: contract/detail parse symbol=%s: %v", s.Symbol, err)
+		return
+	}
+	if detail.Data == nil {
+		return
+	}
+	if s.OrderPriceScale == nil {
+		if _, ok := detail.Data["priceScale"]; ok {
+			ps := detail.PriceScale
+			s.OrderPriceScale = &ps
+		}
+	}
+	if s.OrderVolScale == nil {
+		if _, ok := detail.Data["volScale"]; ok {
+			vs := detail.VolScale
+			s.OrderVolScale = &vs
+		}
+	}
+	if s.OrderPriceScale != nil && s.OrderVolScale != nil {
+		log.Printf("mexc-bot: contract %s: order JSON price decimals=%d vol decimals=%d", s.Symbol, *s.OrderPriceScale, *s.OrderVolScale)
+	}
 }

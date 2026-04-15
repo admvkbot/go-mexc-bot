@@ -2,6 +2,7 @@ package scalper
 
 import (
 	"context"
+	"log"
 	"time"
 
 	"github.com/mexc-bot/go-mexc-bot/internal/config"
@@ -16,6 +17,7 @@ type LiveRuntime struct {
 	sessionID   string
 	current     *LadderContext
 	lastHandled time.Time
+	lastDiag    time.Time
 }
 
 func NewLiveRuntime(cfg config.Scalper, orders *OrderManager) *LiveRuntime {
@@ -43,8 +45,17 @@ func (r *LiveRuntime) tick(ctx context.Context, now time.Time) error {
 		return nil
 	}
 	if r.current != nil {
-		r.current.RecalculateExcursions(exitReferencePrice(features.Snapshot, r.current.Side), r.cfg.TickSize)
-		_ = r.orders.SyncLadder(ctx, r.current)
+		exitMark := exitReferencePrice(features.Snapshot, r.current.Side)
+		r.current.RecalculateExcursions(exitMark, r.cfg.TickSize)
+		_ = r.orders.SyncLadder(ctx, r.current, exitMark, now)
+		// Finish round-trip and drop ladder *before* Evaluate so we never overwrite a completed
+		// ladder with NewLadderContext on the same tick (DecisionEnter + ReadyForCleanup).
+		if r.current.ReadyForCleanup(now) {
+			r.orders.FlushRoundTrip(ctx, r.current)
+			r.current = nil
+		}
+	}
+	if r.current != nil {
 		if !r.current.HasInventory() && !hasOpenEntries(r.current) && r.current.Phase != PhaseCooldown {
 			r.current.Phase = PhaseCooldown
 			r.current.CooldownUntil = now.Add(r.cfg.Cooldown)
@@ -67,8 +78,22 @@ func (r *LiveRuntime) tick(ctx context.Context, now time.Time) error {
 	}
 
 	decision := r.signals.Evaluate(now, features, r.current)
-	r.orders.EmitSignal(ctx, decision)
 	allowed, denyReason, pauseUntil := r.risk.AllowEntry(now, features, r.current)
+	ladderID := ""
+	if r.current != nil {
+		ladderID = r.current.LadderID
+	}
+	r.orders.EmitSignal(ctx, decision, ladderID, allowed, denyReason)
+	if r.cfg.DiagLog && (r.lastDiag.IsZero() || now.Sub(r.lastDiag) >= 30*time.Second) {
+		r.lastDiag = now
+		inv := 0.0
+		if r.current != nil {
+			inv = r.current.NetQuantity
+		}
+		log.Printf("[scalper-diag] signal=%s action=%s score=%.3f chaos=%v upd/s=%.0f max_upd=%.0f spread_ticks=%.2f max_spread=%.1f stale=%v vol_pause=%v allow_entry=%v deny=%q inv=%.4f",
+			decision.Reason, decision.Action, decision.Score, features.Chaos, features.UpdateRate, r.cfg.MaxUpdateRate,
+			features.SpreadTicks, r.cfg.MaxSpreadTicks, features.Stale, features.VolatilityPause, allowed, denyReason, inv)
+	}
 	if !allowed && !pauseUntil.IsZero() {
 		r.book.PauseVolatility(pauseUntil)
 		_ = denyReason
@@ -77,14 +102,15 @@ func (r *LiveRuntime) tick(ctx context.Context, now time.Time) error {
 		switch decision.Action {
 		case DecisionEnter:
 			if r.current == nil || r.current.ReadyForCleanup(now) {
-				r.current = NewLadderContext(r.cfg, decision.Side, r.sessionID, now)
+				r.current = NewLadderContext(r.cfg, executionSide(r.cfg, decision.Side), r.sessionID, now)
 				r.current.LastSignalReason = decision.Reason
 				if err := r.placeNewStep(ctx, decision, features.Snapshot); err != nil {
 					return err
 				}
 			}
 		case DecisionAddLadder:
-			if r.current != nil && r.current.Side == decision.Side {
+			if r.current != nil && r.current.Side == executionSide(r.cfg, decision.Side) {
+				r.current.LastSignalReason = decision.Reason
 				if err := r.placeNewStep(ctx, decision, features.Snapshot); err != nil {
 					return err
 				}
@@ -105,18 +131,24 @@ func (r *LiveRuntime) placeNewStep(ctx context.Context, decision Decision, snaps
 	if r.current == nil {
 		return nil
 	}
-	price := entryReferencePrice(snapshot, decision.Side)
+	execSide := executionSide(r.cfg, decision.Side)
+	price := entryReferencePrice(snapshot, execSide)
 	if price <= 0 {
 		return nil
 	}
-	if price*r.cfg.StepVolume+r.current.NetQuantity*price > r.cfg.MaxInventoryNotional {
+	stepVol := r.cfg.EffectiveStepVolume()
+	order, err := r.orders.PlaceEntry(ctx, r.current, execSide, stepVol, price, decision.Reason)
+	if err != nil {
+		log.Printf("[scalper] placeNewStep PlaceEntry failed session=%s symbol=%s side=%s vol=%.8f err=%v",
+			r.sessionID, r.cfg.Symbol, execSide, stepVol, err)
 		return nil
 	}
-	order, err := r.orders.PlaceEntry(ctx, r.current, decision.Side, r.cfg.StepVolume, price, decision.Reason)
-	if err != nil {
-		return err
-	}
 	r.current.RegisterEntryOrder(order)
+	action := "entry_submit"
+	if r.current.StepCount > 1 {
+		action = "ladder_submit"
+	}
+	r.orders.EmitEntrySignal(ctx, decision, r.current.LadderID, action)
 	return nil
 }
 
@@ -157,8 +189,12 @@ func (r *ReplayRuntime) HandleMessage(ctx context.Context, messageJSON, symbol, 
 		}
 	}
 	decision := r.signals.Evaluate(now, features, r.current)
-	r.orders.EmitSignal(ctx, decision)
-	allowed, _, pauseUntil := r.risk.AllowEntry(now, features, r.current)
+	allowed, denyReason, pauseUntil := r.risk.AllowEntry(now, features, r.current)
+	ladderID := ""
+	if r.current != nil {
+		ladderID = r.current.LadderID
+	}
+	r.orders.EmitSignal(ctx, decision, ladderID, allowed, denyReason)
 	if !allowed && !pauseUntil.IsZero() {
 		r.book.PauseVolatility(pauseUntil)
 		return nil
@@ -166,12 +202,12 @@ func (r *ReplayRuntime) HandleMessage(ctx context.Context, messageJSON, symbol, 
 	switch decision.Action {
 	case DecisionEnter:
 		if r.current == nil || r.current.ReadyForCleanup(now) {
-			r.current = NewLadderContext(r.cfg, decision.Side, r.sessionID, now)
+			r.current = NewLadderContext(r.cfg, executionSide(r.cfg, decision.Side), r.sessionID, now)
 			r.current.LastSignalReason = decision.Reason
 			r.simulateEntry(decision, features, now)
 		}
 	case DecisionAddLadder:
-		if r.current != nil && r.current.Side == decision.Side && r.current.StepCount < r.current.MaxSteps {
+		if r.current != nil && r.current.Side == executionSide(r.cfg, decision.Side) && r.current.StepCount < r.current.MaxSteps {
 			r.simulateEntry(decision, features, now)
 		}
 	}
@@ -185,30 +221,38 @@ func (r *ReplayRuntime) simulateEntry(decision Decision, features Features, now 
 	if r.current == nil {
 		return
 	}
-	price := entryReferencePrice(features.Snapshot, decision.Side)
+	execSide := executionSide(r.cfg, decision.Side)
+	price := entryReferencePrice(features.Snapshot, execSide)
 	if price <= 0 {
 		return
 	}
+	stepVol := r.cfg.EffectiveStepVolume()
 	order := &ManagedOrder{
-		Class:       OrderClassEntry,
-		Side:        decision.Side,
-		ExternalOID: newSessionID("replay-entry"),
-		Price:       price,
-		Quantity:    r.cfg.StepVolume,
-		FilledQty:   r.cfg.StepVolume,
-		AvgFillPx:   price,
-		StateCode:   3,
-		SubmittedAt: now,
-		LastUpdate:  now,
-		Reason:      decision.Reason,
+		Class:         OrderClassEntry,
+		Side:          execSide,
+		ExternalOID:   newSessionID("replay-entry"),
+		Price:         price,
+		Quantity:      stepVol,
+		FilledQty:     stepVol,
+		AvgFillPx:     price,
+		StateCode:     3,
+		SubmittedAt:   now,
+		LastUpdate:    now,
+		LastRepriceAt: now,
+		Reason:        decision.Reason,
 	}
 	r.current.RegisterEntryOrder(order)
 	r.current.ApplyEntryFill(order, order.Quantity, order.Quantity*price, now)
+	action := "entry_submit"
+	if r.current.StepCount > 1 {
+		action = "ladder_submit"
+	}
+	r.orders.EmitEntrySignal(context.Background(), decision, r.current.LadderID, action)
 	r.orders.EmitReplayCandidate(context.Background(), ReplayCandidate{
 		SessionID:     r.sessionID,
 		Symbol:        r.cfg.Symbol,
 		SignalAt:      now,
-		Side:          sideToString(decision.Side),
+		Side:          sideToString(execSide),
 		Score:         decision.Score,
 		Reason:        decision.Reason,
 		EntryPx:       price,
@@ -252,17 +296,18 @@ func (r *ReplayRuntime) flushSimExit(ctx context.Context, now time.Time, feature
 	}
 	mark := exitReferencePrice(features.Snapshot, r.current.Side)
 	exitOrder := &ManagedOrder{
-		Class:       OrderClassExit,
-		Side:        r.current.Side,
-		ExternalOID: newSessionID("replay-exit"),
-		Price:       mark,
-		Quantity:    r.current.NetQuantity,
-		FilledQty:   r.current.NetQuantity,
-		AvgFillPx:   mark,
-		StateCode:   3,
-		SubmittedAt: now,
-		LastUpdate:  now,
-		Reason:      r.current.ExitReason,
+		Class:         OrderClassExit,
+		Side:          r.current.Side,
+		ExternalOID:   newSessionID("replay-exit"),
+		Price:         mark,
+		Quantity:      r.current.NetQuantity,
+		FilledQty:     r.current.NetQuantity,
+		AvgFillPx:     mark,
+		StateCode:     3,
+		SubmittedAt:   now,
+		LastUpdate:    now,
+		LastRepriceAt: now,
+		Reason:        r.current.ExitReason,
 	}
 	r.current.UpsertExitOrder(exitOrder)
 	r.current.ApplyExitFill(r.current.NetQuantity, mark, now, r.cfg.TickSize)
