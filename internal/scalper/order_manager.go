@@ -338,44 +338,6 @@ func (m *OrderManager) SyncLadder(ctx context.Context, ladder *LadderContext, ex
 	return nil
 }
 
-func (m *OrderManager) RepriceEntries(ctx context.Context, ladder *LadderContext, snapshot Snapshot, now time.Time) error {
-	for i, order := range ladder.EntryOrders {
-		if order == nil || isTerminalState(order.StateCode) {
-			continue
-		}
-		if order.Reprices >= m.cfg.MaxReprices {
-			continue
-		}
-		// Throttle by local placement time, not LastUpdate (exchange polls may not bump LastUpdate → cancel churn).
-		if now.Sub(order.SubmittedAt) < m.cfg.EntryTTL {
-			continue
-		}
-		if now.Sub(order.LastRepriceAt) < m.cfg.RepriceInterval {
-			continue
-		}
-		remaining := order.Quantity - order.FilledQty
-		if remaining <= 0 {
-			continue
-		}
-		refPx := quantizeOrderPrice(entryReferencePrice(snapshot, ladder.Side), m.cfg.TickSize, orderPriceDecimalsFromCfg(m.cfg))
-		if refPx > 0 && order.Price > 0 && refPx == order.Price {
-			// Same limit price as now: cancel+resubmit would only churn; wait for book to move or fill.
-			continue
-		}
-		_ = m.cancelByExternalID(ctx, order.ExternalOID)
-		repriced, err := m.PlaceEntry(ctx, ladder, ladder.Side, remaining, entryReferencePrice(snapshot, ladder.Side), "entry_reprice")
-		if err != nil {
-			log.Printf("[trade] entry_reprice PlaceEntry failed symbol=%s slot=%d ext_oid_was=%s err=%v",
-				m.cfg.Symbol, i, order.ExternalOID, err)
-			return nil
-		}
-		repriced.Reprices = order.Reprices + 1
-		ladder.RepricesCount++
-		ladder.EntryOrders[i] = repriced
-	}
-	return nil
-}
-
 func (m *OrderManager) EnsureExit(ctx context.Context, ladder *LadderContext, snapshot Snapshot, now time.Time) error {
 	if ladder == nil || ladder.NetQuantity <= 0 {
 		return nil

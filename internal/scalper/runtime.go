@@ -74,7 +74,6 @@ func (r *LiveRuntime) tick(ctx context.Context, now time.Time) error {
 				_ = r.orders.EnsureExit(ctx, r.current, features.Snapshot, now)
 			}
 		}
-		_ = r.orders.RepriceEntries(ctx, r.current, features.Snapshot, now)
 	}
 
 	decision := r.signals.Evaluate(now, features, r.current)

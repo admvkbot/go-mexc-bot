@@ -57,8 +57,6 @@ type Scalper struct {
 	MaxLadderSteps int
 	// Минимум времени между шагами лестницы. Связка: MaxLadderSteps, сигнал DecisionAddLadder.
 	MinStepInterval time.Duration
-	// TTL заявки входа (лимит/рынок — отмена и репрайс в OrderManager). Связка: RepriceInterval, MaxReprices.
-	EntryTTL time.Duration
 	// TTL лимитного выхода (режим limit). В bracket почти не используется.
 	ExitTTL time.Duration
 	// Тайм-стоп удержания (для не-bracket выходов/логики риска). Связка: ExitMode=limit vs bracket.
@@ -67,10 +65,8 @@ type Scalper struct {
 	Cooldown time.Duration
 	// Период опроса позиций/ордеров REST. Связка: bracket-синх, fill tracking.
 	PollInterval time.Duration
-	// Как часто можно переставлять лимиты входа. Связка: EntryTTL, MaxReprices.
+	// Минимальный интервал между перевыставлениями лимитного выхода (EnsureExit, не bracket).
 	RepriceInterval time.Duration
-	// Лимит переставлений одной заявки входа. Связка: RepriceInterval.
-	MaxReprices int
 	// Take-profit в тиках от входа (×TickSize). Связка: StopLossTicks, ExitMode=bracket → takeProfitPrice на бирже.
 	ProfitTargetTicks int
 	// Stop-loss в тиках от входа. Связка: ProfitTargetTicks, bracket → stopLossPrice.
@@ -254,13 +250,11 @@ func ScalperFromEnv() Scalper {
 		StepVolume:                 getenvFloat("MEXC_SCALPER_STEP_VOLUME", 3),                                   // базовый объём шага; ×Leverage в заявку
 		MaxLadderSteps:             getenvInt("MEXC_SCALPER_MAX_LADDER_STEPS", 1),                                // глубина лестницы
 		MinStepInterval:            getenvDuration("MEXC_SCALPER_MIN_STEP_INTERVAL", 150*time.Millisecond),       // пауза между шагами лестницы
-		EntryTTL:                   getenvDuration("MEXC_SCALPER_ENTRY_TTL", 5*time.Second),                      // TTL входа (рынок/лимит — отмена/репрайс в ордерах)
 		ExitTTL:                    getenvDuration("MEXC_SCALPER_EXIT_TTL", 900*time.Millisecond),                // жизнь лимита выхода (не bracket)
 		TimeStop:                   getenvDuration("MEXC_SCALPER_TIME_STOP", 5*time.Second),                      // тайм-стоп удержания (не bracket SL)
 		Cooldown:                   getenvDuration("MEXC_SCALPER_COOLDOWN", 300*time.Millisecond),                // пауза перед новым циклом
 		PollInterval:               getenvDuration("MEXC_SCALPER_POLL_INTERVAL", 200*time.Millisecond),           // REST опрос позиций/ордеров
-		RepriceInterval:            getenvDuration("MEXC_SCALPER_REPRICE_INTERVAL", 1000*time.Millisecond),       // троттлинг перевыставления входа
-		MaxReprices:                getenvInt("MEXC_SCALPER_MAX_REPRICES", 5),                                    // лимит переставлений входа
+		RepriceInterval:            getenvDuration("MEXC_SCALPER_REPRICE_INTERVAL", 1000*time.Millisecond),       // троттлинг перевыставления лимитного выхода
 		ProfitTargetTicks:          getenvInt("MEXC_SCALPER_PROFIT_TARGET_TICKS", 5),                             // TP в тиках; с TickSize и bracket
 		StopLossTicks:              getenvInt("MEXC_SCALPER_STOP_LOSS_TICKS", 2),                                 // SL в тиках; с ProfitTargetTicks
 		MaxSpreadTicks:             getenvFloat("MEXC_SCALPER_MAX_SPREAD_TICKS", 2),                              // макс. спред «сейчас» (тиках)
