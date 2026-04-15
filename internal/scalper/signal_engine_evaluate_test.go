@@ -293,7 +293,7 @@ func TestEvaluate_rejectsPriceOutsideRangeExtension(t *testing.T) {
 	}
 }
 
-func TestEvaluate_priceCorridorUsesExecutedSideWhenInverted(t *testing.T) {
+func TestEvaluate_priceCorridorUsesSignalSideWhenInverted(t *testing.T) {
 	cfg := config.Scalper{
 		TickSize:                   0.01,
 		MinSignalScore:             0.2,
@@ -325,11 +325,50 @@ func TestEvaluate_priceCorridorUsesExecutedSideWhenInverted(t *testing.T) {
 		PriceMaxUpperBound: 100.20,
 	}
 	dec := e.Evaluate(time.Now(), f, nil)
-	if dec.Action != DecisionHold {
-		t.Fatalf("want DecisionHold, got %s", dec.Action)
+	if dec.Action != DecisionEnter {
+		t.Fatalf("want DecisionEnter, got %s (reason=%s)", dec.Action, dec.Reason)
 	}
-	if dec.Reason != "price_not_at_upper_band" {
-		t.Fatalf("want price_not_at_upper_band, got %s", dec.Reason)
+	if dec.Side != SideLong {
+		t.Fatalf("want SideLong (коридор по сигналу книги), got %s", dec.Side)
+	}
+}
+
+func TestEvaluate_allowsShortAtUpperBand(t *testing.T) {
+	cfg := config.Scalper{
+		TickSize:                   0.01,
+		MinSignalScore:             0.2,
+		MinImbalance:               0.01,
+		MinPressureDelta:           -1,
+		MinImbalanceDelta:          -1,
+		MinPulseTicks:              0,
+		PriceCorridorWindow:        15 * time.Second,
+		PriceCorridorMaxMultiplier: 2,
+	}
+	e := NewSignalEngine(cfg)
+	f := Features{
+		Snapshot: Snapshot{
+			HasBook: true, Imbalance5: -0.5, BestBidPx: 100.09, BestAskPx: 100.11, Mid: 100.10,
+			BidVol5: 40, AskVol5: 60,
+		},
+		HasLookback:        true,
+		Previous:           Snapshot{Imbalance5: -0.3},
+		PressureDelta:      -0.2,
+		MicroPriceDelta:    -0.001,
+		SignalConfirmCount: 2,
+		SignalConfirmAge:   300 * time.Millisecond,
+		HasPriceCorridor:   true,
+		PriceMean:          100,
+		PriceLowerBound:    99.90,
+		PriceUpperBound:    100.10,
+		PriceMaxLowerBound: 99.80,
+		PriceMaxUpperBound: 100.20,
+	}
+	dec := e.Evaluate(time.Now(), f, nil)
+	if dec.Action != DecisionEnter {
+		t.Fatalf("want DecisionEnter, got %s (reason=%s)", dec.Action, dec.Reason)
+	}
+	if dec.Side != SideShort {
+		t.Fatalf("want SideShort, got %s", dec.Side)
 	}
 }
 

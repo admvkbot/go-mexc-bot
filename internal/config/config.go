@@ -97,6 +97,10 @@ type Scalper struct {
 	PriceCorridorPercentile float64
 	// Насколько далеко от границы ещё «допустимо» для входа. Связка: Percentile, коридор в SignalEngine.
 	PriceCorridorMaxMultiplier float64
+	// Минимум отсчётов mid в окне коридора; меньше 2 приводится к 2.
+	PriceCorridorMinSamples int
+	// Период полураспада веса отсчётов при средней по коридору; 0 = равные веса.
+	PriceCorridorMeanHalfLife time.Duration
 	// Мин. |имбаланс5| для вклада в скоринг. Связка: MinImbalanceDelta, MinSignalScore.
 	MinImbalance float64
 	// Мин. изменение имбаланса между последним и текущим снимком (LastSnapshot). Связка: MinSignalScore.
@@ -280,6 +284,8 @@ func ScalperFromEnv() Scalper {
 		PriceCorridorWindow:        getenvDuration("MEXC_SCALPER_PRICE_CORRIDOR_WINDOW", 15*time.Second),         // окно коридора mid; 0 = выкл.
 		PriceCorridorPercentile:    getenvFloat("MEXC_SCALPER_PRICE_CORRIDOR_PERCENTILE", 0.80),                  // ширина коридора по квантилю
 		PriceCorridorMaxMultiplier: getenvFloat("MEXC_SCALPER_PRICE_CORRIDOR_MAX_MULTIPLIER", 2.0),               // допуск от границы коридора
+		PriceCorridorMinSamples:    getenvInt("MEXC_SCALPER_PRICE_CORRIDOR_MIN_SAMPLES", 5),                        // минимум точек mid в окне
+		PriceCorridorMeanHalfLife:  getenvDuration("MEXC_SCALPER_PRICE_CORRIDOR_MEAN_HALF_LIFE", 0),                 // 0 = среднее без убывания веса по времени
 		MinImbalance:               getenvFloat("MEXC_SCALPER_MIN_IMBALANCE", 0.14),                              // порог имбаланса в скоре
 		MinImbalanceDelta:          getenvFloat("MEXC_SCALPER_MIN_IMBALANCE_DELTA", 0.055),                       // порог Δимбаланса
 		MinPressureDelta:           getenvFloat("MEXC_SCALPER_MIN_PRESSURE_DELTA", 0.09),                         // порог давления

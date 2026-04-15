@@ -216,25 +216,5 @@ func (e *SignalEngine) rejectPriceCorridor(signalSide Side, f Features) string {
 	if !f.HasPriceCorridor || f.Snapshot.Mid <= 0 {
 		return "price_range_unavailable"
 	}
-	price := f.Snapshot.Mid
-	if price > f.PriceLowerBound && price < f.PriceUpperBound {
-		return "price_inside_range"
-	}
-	switch executionSide(e.cfg, signalSide) {
-	case SideLong:
-		if price > f.PriceLowerBound {
-			return "price_not_at_lower_band"
-		}
-		if f.PriceMaxLowerBound > 0 && price < f.PriceMaxLowerBound {
-			return "price_below_range_extension"
-		}
-	case SideShort:
-		if price < f.PriceUpperBound {
-			return "price_not_at_upper_band"
-		}
-		if f.PriceMaxUpperBound > 0 && price > f.PriceMaxUpperBound {
-			return "price_above_range_extension"
-		}
-	}
-	return ""
+	return priceCorridorReject(e.cfg, signalSide, f)
 }

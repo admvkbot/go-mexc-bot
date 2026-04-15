@@ -416,26 +416,49 @@ func (b *BookState) priceCorridorLocked(now time.Time) (mean, upperDev, lowerDev
 	if b.cfg.PriceCorridorWindow <= 0 {
 		return 0, 0, 0, 0, false
 	}
+	minSamples := b.cfg.PriceCorridorMinSamples
+	if minSamples < 2 {
+		minSamples = 2
+	}
 	cutoff := now.Add(-b.cfg.PriceCorridorWindow)
-	mids := make([]float64, 0, len(b.recent))
+	type midPoint struct {
+		mid float64
+		w   float64
+	}
+	points := make([]midPoint, 0, len(b.recent))
 	for _, item := range b.recent {
 		if item.at.Before(cutoff) || item.snapshot.Mid <= 0 {
 			continue
 		}
-		mids = append(mids, item.snapshot.Mid)
+		w := 1.0
+		if hl := b.cfg.PriceCorridorMeanHalfLife; hl > 0 {
+			ageSec := now.Sub(item.at).Seconds()
+			if ageSec < 0 {
+				ageSec = 0
+			}
+			w = math.Exp(-math.Ln2 * ageSec / hl.Seconds())
+		}
+		points = append(points, midPoint{mid: item.snapshot.Mid, w: w})
 	}
-	samples = len(mids)
-	if samples < 2 {
+	samples = len(points)
+	if samples < minSamples {
 		return 0, 0, 0, samples, false
 	}
-	for _, mid := range mids {
-		mean += mid
+	wsum := 0.0
+	for _, pt := range points {
+		wsum += pt.w
 	}
-	mean /= float64(samples)
+	if wsum <= 0 {
+		return 0, 0, 0, samples, false
+	}
+	for _, pt := range points {
+		mean += pt.w * pt.mid
+	}
+	mean /= wsum
 	up := make([]float64, 0, samples)
 	down := make([]float64, 0, samples)
-	for _, mid := range mids {
-		delta := mid - mean
+	for _, pt := range points {
+		delta := pt.mid - mean
 		switch {
 		case delta > 0:
 			up = append(up, delta)
@@ -443,15 +466,31 @@ func (b *BookState) priceCorridorLocked(now time.Time) (mean, upperDev, lowerDev
 			down = append(down, -delta)
 		}
 	}
-	if len(up) == 0 || len(down) == 0 {
-		return mean, 0, 0, samples, false
-	}
 	p := b.cfg.PriceCorridorPercentile
 	if p <= 0 {
 		p = 0.8
 	}
-	upperDev = percentileFloat64(up, p)
-	lowerDev = percentileFloat64(down, p)
+	switch {
+	case len(up) == 0 && len(down) == 0:
+		return mean, 0, 0, samples, false
+	case len(up) == 0:
+		lowerDev = percentileFloat64(down, p)
+		upperDev = lowerDev
+	case len(down) == 0:
+		upperDev = percentileFloat64(up, p)
+		lowerDev = upperDev
+	default:
+		upperDev = percentileFloat64(up, p)
+		lowerDev = percentileFloat64(down, p)
+	}
+	// Когда с одной стороны остались лишь микроскопические отклонения от средней (веса почти нулевые),
+	// квантиль даёт «пыль»; зеркалим ширину по доминирующей стороне, как при пустом наборе.
+	const devAsymmetryRatio = 1e-3
+	if lowerDev > 0 && upperDev < lowerDev*devAsymmetryRatio {
+		upperDev = lowerDev
+	} else if upperDev > 0 && lowerDev < upperDev*devAsymmetryRatio {
+		lowerDev = upperDev
+	}
 	if upperDev <= 0 || lowerDev <= 0 {
 		return mean, upperDev, lowerDev, samples, false
 	}

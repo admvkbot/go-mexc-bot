@@ -119,6 +119,45 @@ func executionSide(cfg config.Scalper, signal Side) Side {
 	}
 }
 
+// priceCorridorReject возвращает причину отказа по полосам коридора или пустую строку, если пропускать.
+// Сравнение в целых шагах цены устраняет ошибки двоичной дроби на границе; сторона — как у сигнала книги
+// (согласовано с микроценой и проверкой направления); при перевороте исполнения фильтр не меняет полосу.
+func priceCorridorReject(cfg config.Scalper, signalSide Side, f Features) string {
+	if signalSide == SideNone {
+		return ""
+	}
+	tick := maxFloat(cfg.TickSize, 1e-12)
+	midU := int64(math.Round(f.Snapshot.Mid / tick))
+	lowU := int64(math.Round(f.PriceLowerBound / tick))
+	upU := int64(math.Round(f.PriceUpperBound / tick))
+	if midU > lowU && midU < upU {
+		return "price_inside_range"
+	}
+	switch signalSide {
+	case SideLong:
+		if midU > lowU {
+			return "price_not_at_lower_band"
+		}
+		if f.PriceMaxLowerBound > 0 {
+			mlU := int64(math.Round(f.PriceMaxLowerBound / tick))
+			if midU < mlU {
+				return "price_below_range_extension"
+			}
+		}
+	case SideShort:
+		if midU < upU {
+			return "price_not_at_upper_band"
+		}
+		if f.PriceMaxUpperBound > 0 {
+			muU := int64(math.Round(f.PriceMaxUpperBound / tick))
+			if midU > muU {
+				return "price_above_range_extension"
+			}
+		}
+	}
+	return ""
+}
+
 func reasonJoin(parts ...string) string {
 	out := make([]string, 0, len(parts))
 	for _, p := range parts {
