@@ -65,6 +65,8 @@ type Scalper struct {
 	Cooldown time.Duration
 	// Период опроса позиций/ордеров REST. Связка: bracket-синх, fill tracking.
 	PollInterval time.Duration
+	// Сколько держать несработавшие лимитные входы по коридору, затем отмена. Связка: коридорный вход.
+	EntryLimitPendingTTL time.Duration
 	// Минимальный интервал между перевыставлениями лимитного выхода (EnsureExit, не bracket).
 	RepriceInterval time.Duration
 	// Take-profit в тиках от входа (×TickSize). Связка: StopLossTicks, ExitMode=bracket → takeProfitPrice на бирже.
@@ -267,7 +269,8 @@ func ScalperFromEnv() Scalper {
 		ExitTTL:                    getenvDuration("MEXC_SCALPER_EXIT_TTL", 900*time.Millisecond),                // жизнь лимита выхода (не bracket)
 		TimeStop:                   getenvDuration("MEXC_SCALPER_TIME_STOP", 5*time.Second),                      // тайм-стоп удержания (не bracket SL)
 		Cooldown:                   getenvDuration("MEXC_SCALPER_COOLDOWN", 300*time.Millisecond),                // пауза перед новым циклом
-		PollInterval:               getenvDuration("MEXC_SCALPER_POLL_INTERVAL", 200*time.Millisecond),           // REST опрос позиций/ордеров
+		PollInterval:               getenvDuration("MEXC_SCALPER_POLL_INTERVAL", 500*time.Millisecond),           // REST опрос позиций/ордеров
+		EntryLimitPendingTTL:       getenvDuration("MEXC_SCALPER_ENTRY_LIMIT_TTL", 12*time.Second),                 // отмена висящих лимитов входа по коридору
 		RepriceInterval:            getenvDuration("MEXC_SCALPER_REPRICE_INTERVAL", 1000*time.Millisecond),       // троттлинг перевыставления лимитного выхода
 		ProfitTargetTicks:          getenvInt("MEXC_SCALPER_PROFIT_TARGET_TICKS", 5),                             // TP в тиках; с TickSize и bracket
 		StopLossTicks:              getenvInt("MEXC_SCALPER_STOP_LOSS_TICKS", 2),                                 // SL в тиках; с ProfitTargetTicks
@@ -284,8 +287,8 @@ func ScalperFromEnv() Scalper {
 		PriceCorridorWindow:        getenvDuration("MEXC_SCALPER_PRICE_CORRIDOR_WINDOW", 15*time.Second),         // окно коридора mid; 0 = выкл.
 		PriceCorridorPercentile:    getenvFloat("MEXC_SCALPER_PRICE_CORRIDOR_PERCENTILE", 0.80),                  // ширина коридора по квантилю
 		PriceCorridorMaxMultiplier: getenvFloat("MEXC_SCALPER_PRICE_CORRIDOR_MAX_MULTIPLIER", 2.0),               // допуск от границы коридора
-		PriceCorridorMinSamples:    getenvInt("MEXC_SCALPER_PRICE_CORRIDOR_MIN_SAMPLES", 5),                        // минимум точек mid в окне
-		PriceCorridorMeanHalfLife:  getenvDuration("MEXC_SCALPER_PRICE_CORRIDOR_MEAN_HALF_LIFE", 0),                 // 0 = среднее без убывания веса по времени
+		PriceCorridorMinSamples:    getenvInt("MEXC_SCALPER_PRICE_CORRIDOR_MIN_SAMPLES", 5),                      // минимум точек mid в окне
+		PriceCorridorMeanHalfLife:  getenvDuration("MEXC_SCALPER_PRICE_CORRIDOR_MEAN_HALF_LIFE", 0),              // 0 = среднее без убывания веса по времени
 		MinImbalance:               getenvFloat("MEXC_SCALPER_MIN_IMBALANCE", 0.14),                              // порог имбаланса в скоре
 		MinImbalanceDelta:          getenvFloat("MEXC_SCALPER_MIN_IMBALANCE_DELTA", 0.055),                       // порог Δимбаланса
 		MinPressureDelta:           getenvFloat("MEXC_SCALPER_MIN_PRESSURE_DELTA", 0.09),                         // порог давления
@@ -293,11 +296,11 @@ func ScalperFromEnv() Scalper {
 		MinPulseTicks:              getenvInt("MEXC_SCALPER_MIN_PULSE_TICKS", 1),                                 // мин. импульс bid/ask в тиках
 		MinMicroPriceTicks:         getenvFloat("MEXC_SCALPER_MIN_MICROPRICE_TICKS", 0.02),                       // выравнивание microprice
 		MaxMicroPriceTicks:         getenvFloat("MEXC_SCALPER_MAX_MICROPRICE_TICKS", 2.0),                        // потолок microprice
-		MaxMicroPriceScoreTicks:    getenvFloat("MEXC_SCALPER_MAX_MICROPRICE_SCORE_TICKS", 5),                     // вклад microprice в скор (тиках); 0 = без капа
-		StaleBookVolatilityPause:   getenvDuration("MEXC_SCALPER_STALE_BOOK_PAUSE", 400*time.Millisecond),       // 0s в env → полная VolatilityPause (см. RiskGuard)
+		MaxMicroPriceScoreTicks:    getenvFloat("MEXC_SCALPER_MAX_MICROPRICE_SCORE_TICKS", 5),                    // вклад microprice в скор (тиках); 0 = без капа
+		StaleBookVolatilityPause:   getenvDuration("MEXC_SCALPER_STALE_BOOK_PAUSE", 400*time.Millisecond),        // 0s в env → полная VolatilityPause (см. RiskGuard)
 		EntryDealFilterEnabled:     getenvBool("MEXC_SCALPER_ENTRY_DEAL_FILTER", false),                          // сделки buy−sell за окно согласованы с сигналом
 		EntryDealWindow:            getenvDuration("MEXC_SCALPER_ENTRY_DEAL_WINDOW", time.Second),                // окно ленты сделок
-		EntryDealMinSignedVol:      getenvFloat("MEXC_SCALPER_ENTRY_DEAL_MIN_SIGNED_VOL", 0),                       // мин. объём для направления; 0 = только строгий знак
+		EntryDealMinSignedVol:      getenvFloat("MEXC_SCALPER_ENTRY_DEAL_MIN_SIGNED_VOL", 0),                     // мин. объём для направления; 0 = только строгий знак
 		AllowEmergencyMarket:       getenvBool("MEXC_SCALPER_EMERGENCY_MARKET", true),                            // рынок при emergency flatten
 		KillSwitch:                 getenvBool("MEXC_SCALPER_KILL_SWITCH", false),                                // стоп всех новых входов
 		DiagLog:                    getenvBool("MEXC_SCALPER_DIAG", false),                                       // расширенный лог тика

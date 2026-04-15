@@ -167,6 +167,8 @@ type LadderContext struct {
 	WasEmergencyExit   bool
 	LastSignalReason   string
 	RoundTripWritten   bool
+	// EntryWaveStartedAt — момент выставления последней волны лимитных входов по коридору (для TTL отмены).
+	EntryWaveStartedAt time.Time
 }
 
 func (c *LadderContext) HasInventory() bool {

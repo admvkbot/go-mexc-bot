@@ -34,6 +34,7 @@ func TestEvaluate_addLadderWhenCooldownUntilUnset(t *testing.T) {
 	ladder := &LadderContext{
 		Phase:         PhaseInventoryOpen,
 		Side:          SideLong,
+		NetQuantity:   1,
 		StepCount:     1,
 		LastStepAt:    last,
 		CooldownUntil: time.Time{},
@@ -96,6 +97,7 @@ func TestEvaluate_addLadder_whenInvertExecution_matchesExecutedSide(t *testing.T
 	ladder := &LadderContext{
 		Phase:         PhaseInventoryOpen,
 		Side:          SideShort,
+		NetQuantity:   1,
 		StepCount:     1,
 		LastStepAt:    last,
 		CooldownUntil: time.Time{},

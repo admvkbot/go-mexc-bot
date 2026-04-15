@@ -30,6 +30,23 @@ func (c *LadderContext) RegisterEntryOrder(order *ManagedOrder) {
 	c.Phase = PhaseEntryPending
 }
 
+// RegisterEntryWave добавляет несколько лимитов одной волной входа по коридору (один шаг StepCount).
+func (c *LadderContext) RegisterEntryWave(orders []*ManagedOrder) {
+	if c == nil || len(orders) == 0 {
+		return
+	}
+	for _, o := range orders {
+		if o != nil {
+			c.EntryOrders = append(c.EntryOrders, o)
+		}
+	}
+	c.StepCount++
+	if last := orders[len(orders)-1]; last != nil {
+		c.LastStepAt = last.SubmittedAt
+	}
+	c.Phase = PhaseEntryPending
+}
+
 func (c *LadderContext) UpsertExitOrder(order *ManagedOrder) {
 	if c == nil || order == nil {
 		return

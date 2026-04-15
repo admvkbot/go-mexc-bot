@@ -78,6 +78,14 @@ func (r *LiveRuntime) tick(ctx context.Context, now time.Time) error {
 
 	decision := r.signals.Evaluate(now, features, r.current)
 	allowed, denyReason, pauseUntil := r.risk.AllowEntry(now, features, r.current)
+	entryLimitsCancelled := false
+	if r.current != nil && !r.current.HasInventory() && hasOpenEntries(r.current) {
+		if shouldCancelPendingCorridorEntries(r.cfg, r.current, now, features, decision, allowed) {
+			_ = r.orders.cancelOpenEntryOrders(ctx, r.current, "entry_limits_cancelled")
+			r.current.EntryWaveStartedAt = time.Time{}
+			entryLimitsCancelled = true
+		}
+	}
 	ladderID := ""
 	if r.current != nil {
 		ladderID = r.current.LadderID
@@ -97,20 +105,20 @@ func (r *LiveRuntime) tick(ctx context.Context, now time.Time) error {
 		r.book.PauseVolatility(pauseUntil)
 		_ = denyReason
 	}
-	if allowed {
+	if allowed && !(entryLimitsCancelled && decision.Side == SideNone) {
 		switch decision.Action {
 		case DecisionEnter:
 			if r.current == nil || r.current.ReadyForCleanup(now) {
 				r.current = NewLadderContext(r.cfg, executionSide(r.cfg, decision.Side), r.sessionID, now)
 				r.current.LastSignalReason = decision.Reason
-				if err := r.placeNewStep(ctx, decision, features.Snapshot); err != nil {
+				if err := r.placeNewStep(ctx, decision, features); err != nil {
 					return err
 				}
 			}
 		case DecisionAddLadder:
 			if r.current != nil && r.current.Side == executionSide(r.cfg, decision.Side) {
 				r.current.LastSignalReason = decision.Reason
-				if err := r.placeNewStep(ctx, decision, features.Snapshot); err != nil {
+				if err := r.placeNewStep(ctx, decision, features); err != nil {
 					return err
 				}
 			}
@@ -126,23 +134,37 @@ func (r *LiveRuntime) tick(ctx context.Context, now time.Time) error {
 	return nil
 }
 
-func (r *LiveRuntime) placeNewStep(ctx context.Context, decision Decision, snapshot Snapshot) error {
+func (r *LiveRuntime) placeNewStep(ctx context.Context, decision Decision, features Features) error {
 	if r.current == nil {
 		return nil
 	}
 	execSide := executionSide(r.cfg, decision.Side)
-	price := entryReferencePrice(snapshot, execSide)
-	if price <= 0 {
-		return nil
-	}
 	stepVol := r.cfg.EffectiveStepVolume()
-	order, err := r.orders.PlaceEntry(ctx, r.current, execSide, stepVol, price, decision.Reason)
-	if err != nil {
-		log.Printf("[scalper] placeNewStep PlaceEntry failed session=%s symbol=%s side=%s vol=%.8f err=%v",
-			r.sessionID, r.cfg.Symbol, execSide, stepVol, err)
+	switch decision.Action {
+	case DecisionEnter:
+		if hasOpenEntries(r.current) {
+			return nil
+		}
+		if err := r.orders.PlaceCorridorEntryWave(ctx, r.current, execSide, stepVol, features, decision.Reason); err != nil {
+			log.Printf("[scalper] placeNewStep PlaceCorridorEntryWave failed session=%s symbol=%s side=%s vol=%.8f err=%v",
+				r.sessionID, r.cfg.Symbol, execSide, stepVol, err)
+			return nil
+		}
+	case DecisionAddLadder:
+		edge, ok := corridorEdgeLimitPrice(execSide, features)
+		if !ok {
+			return nil
+		}
+		order, err := r.orders.PlaceEntryLimit(ctx, r.current, execSide, stepVol, edge, features.Snapshot, decision.Reason)
+		if err != nil {
+			log.Printf("[scalper] placeNewStep PlaceEntryLimit (ladder) failed session=%s symbol=%s side=%s vol=%.8f err=%v",
+				r.sessionID, r.cfg.Symbol, execSide, stepVol, err)
+			return nil
+		}
+		r.current.RegisterEntryOrder(order)
+	default:
 		return nil
 	}
-	r.current.RegisterEntryOrder(order)
 	action := "entry_submit"
 	if r.current.StepCount > 1 {
 		action = "ladder_submit"
@@ -221,7 +243,11 @@ func (r *ReplayRuntime) simulateEntry(decision Decision, features Features, now 
 		return
 	}
 	execSide := executionSide(r.cfg, decision.Side)
-	price := entryReferencePrice(features.Snapshot, execSide)
+	prices := corridorEntryLimitPrices(execSide, features, r.cfg.TickSize, r.cfg.MaxLadderSteps)
+	if len(prices) == 0 {
+		return
+	}
+	price := prices[len(prices)-1]
 	if price <= 0 {
 		return
 	}
@@ -313,6 +339,31 @@ func (r *ReplayRuntime) flushSimExit(ctx context.Context, now time.Time, feature
 	r.current.ExitFilledAt = now
 	r.orders.FlushRoundTrip(ctx, r.current)
 	r.current.CooldownUntil = now.Add(r.cfg.Cooldown)
+}
+
+func shouldCancelPendingCorridorEntries(cfg config.Scalper, ladder *LadderContext, now time.Time, f Features, d Decision, allowed bool) bool {
+	if !allowed {
+		return true
+	}
+	if d.Side == SideNone {
+		return true
+	}
+	if executionSide(cfg, d.Side) != ladder.Side {
+		return true
+	}
+	if cfg.PriceCorridorWindow > 0 && !f.HasPriceCorridor {
+		return true
+	}
+	if ttl := cfg.EntryLimitPendingTTL; ttl > 0 && !ladder.EntryWaveStartedAt.IsZero() && now.Sub(ladder.EntryWaveStartedAt) >= ttl {
+		return true
+	}
+	if ladder.Side == SideLong && f.HasPriceCorridor && f.Snapshot.Mid > f.PriceUpperBound {
+		return true
+	}
+	if ladder.Side == SideShort && f.HasPriceCorridor && f.Snapshot.Mid < f.PriceLowerBound {
+		return true
+	}
+	return false
 }
 
 func stopPrice(ladder *LadderContext, cfg config.Scalper) float64 {

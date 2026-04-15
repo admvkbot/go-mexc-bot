@@ -81,7 +81,7 @@ func (e *SignalEngine) Evaluate(now time.Time, features Features, ladder *Ladder
 		decision.Action = DecisionEnter
 		return decision
 	}
-	if ladder.Side == executionSide(e.cfg, decision.Side) && ladder.StepCount < ladder.MaxSteps && now.Sub(ladder.LastStepAt) >= e.cfg.MinStepInterval {
+	if ladder.Side == executionSide(e.cfg, decision.Side) && ladder.HasInventory() && ladder.StepCount < ladder.MaxSteps && now.Sub(ladder.LastStepAt) >= e.cfg.MinStepInterval {
 		decision.Action = DecisionAddLadder
 		decision.Reason = reasonJoin(decision.Reason, "ladder_extend")
 		return decision

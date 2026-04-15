@@ -104,21 +104,28 @@ func orderVolScaleFromCfg(cfg config.Scalper) int {
 	return -1
 }
 
-func (m *OrderManager) PlaceEntry(ctx context.Context, ladder *LadderContext, side Side, quantity, price float64, reason string) (*ManagedOrder, error) {
-	priceOut := quantizeOrderPrice(price, m.cfg.TickSize, orderPriceDecimalsFromCfg(m.cfg))
+// PlaceEntryLimit отправляет лимитный вход (с биржевым bracket SL/TP при включённом режиме).
+func (m *OrderManager) PlaceEntryLimit(ctx context.Context, ladder *LadderContext, side Side, quantity, limitPx float64, snap Snapshot, reason string) (*ManagedOrder, error) {
+	dec := orderPriceDecimalsFromCfg(m.cfg)
+	raw := quantizeOrderPrice(limitPx, m.cfg.TickSize, dec)
+	raw = clampPassiveLimitEntry(side, raw, snap, m.cfg.TickSize)
+	priceOut := quantizeOrderPrice(raw, m.cfg.TickSize, dec)
 	volOut := quantizeOrderVol(quantity, orderVolScaleFromCfg(m.cfg))
+	if volOut <= 0 {
+		return nil, fmt.Errorf("scalper: entry vol zero after quantize")
+	}
 	req := mexcfutures.SubmitOrderRequest{
 		Symbol:        m.cfg.Symbol,
 		Price:         priceOut,
 		Vol:           volOut,
 		Side:          entryOrderSide(side),
-		Type:          mexcfutures.OrderTypeMarket,
+		Type:          mexcfutures.OrderTypeLimit,
 		OpenType:      m.cfg.OpenType,
 		Leverage:      m.cfg.Leverage,
 		ExternalOid:   newSessionID("entry"),
 		PositionMode:  m.cfg.PositionMode,
 		STPMode:       0,
-		MarketCeiling: true,
+		MarketCeiling: false,
 	}
 	if m.cfg.ExitUsesExchangeBracket() {
 		sl, tp, berr := bracketSLTPQuantized(side, priceOut, m.cfg.TickSize, m.cfg.ProfitTargetTicks, m.cfg.StopLossTicks, orderPriceDecimalsFromCfg(m.cfg))
@@ -127,10 +134,10 @@ func (m *OrderManager) PlaceEntry(ctx context.Context, ladder *LadderContext, si
 		}
 		req.StopLossPrice = sl
 		req.TakeProfitPrice = tp
-		log.Printf("[trade] entry with exchange bracket symbol=%s side=%s entry_px=%.8f sl=%.8f tp=%.8f ticks_stop=%d ticks_tp=%d",
+		log.Printf("[trade] entry limit+bracket symbol=%s side=%s limit_px=%.8f sl=%.8f tp=%.8f ticks_stop=%d ticks_tp=%d",
 			m.cfg.Symbol, sideToString(side), priceOut, sl, tp, m.cfg.StopLossTicks, m.cfg.ProfitTargetTicks)
 	}
-	raw, err := m.trader.SubmitOrder(ctx, req)
+	respBody, err := m.trader.SubmitOrder(ctx, req)
 	t := time.Now().UTC()
 	order := &ManagedOrder{
 		Class:         OrderClassEntry,
@@ -147,9 +154,9 @@ func (m *OrderManager) PlaceEntry(ctx context.Context, ladder *LadderContext, si
 		m.emitOrderEvent(ctx, ladder, order, "submit_error", reason, "")
 		return nil, err
 	}
-	rawTrim := bytes.TrimPrefix(bytes.TrimSpace(raw), []byte{0xEF, 0xBB, 0xBF})
+	rawTrim := bytes.TrimPrefix(bytes.TrimSpace(respBody), []byte{0xEF, 0xBB, 0xBF})
 	if apiErr := futuresSubmitAPIError(rawTrim); apiErr != nil {
-		log.Printf("[trade] submit REJECTED kind=entry symbol=%s ext_oid=%s side=%s vol=%.8f @ %.8f ladder_reason=%q: %v",
+		log.Printf("[trade] submit REJECTED kind=entry_limit symbol=%s ext_oid=%s side=%s vol=%.8f @ %.8f ladder_reason=%q: %v",
 			m.cfg.Symbol, order.ExternalOID, sideToString(side), volOut, order.Price, reason, apiErr)
 		m.emitOrderEvent(ctx, ladder, order, "submit_error", fmt.Sprintf("%s: %v", reason, apiErr), string(rawTrim))
 		return nil, apiErr
@@ -692,7 +699,7 @@ func (m *OrderManager) syncExchangeBracketClose(ctx context.Context, ladder *Lad
 	m.emitOrderEvent(ctx, ladder, exitOrder, "fill", reason, "")
 	ladder.ApplyExitFill(closedQty, fillPx, now, m.cfg.TickSize)
 	if remaining <= 1e-6 {
-		if err := m.cancelOpenEntryOrders(ctx, ladder); err != nil {
+		if err := m.cancelOpenEntryOrders(ctx, ladder, "entry_cancel_after_bracket_close"); err != nil {
 			log.Printf("[trade] cancel_open_entries_after_bracket_close symbol=%s ladder=%s err=%v", m.cfg.Symbol, ladder.LadderID, err)
 		}
 	}
@@ -753,7 +760,7 @@ func (m *OrderManager) ensureSyntheticBracketExitOrder(ladder *LadderContext, no
 	return exitOrder
 }
 
-func (m *OrderManager) cancelOpenEntryOrders(ctx context.Context, ladder *LadderContext) error {
+func (m *OrderManager) cancelOpenEntryOrders(ctx context.Context, ladder *LadderContext, cancelReason string) error {
 	if ladder == nil {
 		return nil
 	}
@@ -768,9 +775,45 @@ func (m *OrderManager) cancelOpenEntryOrders(ctx context.Context, ladder *Ladder
 		}
 		order.StateCode = mexcfutures.OrderStateCanceled
 		order.LastUpdate = time.Now().UTC()
-		m.emitOrderEvent(ctx, ladder, order, "cancelled", "entry_cancel_after_bracket_close", "")
+		m.emitOrderEvent(ctx, ladder, order, "cancelled", cancelReason, "")
 	}
 	return firstErr
+}
+
+// PlaceCorridorEntryWave выставляет до MaxLadderSteps лимитов между средней коридора и границей входа (низ для лонга, верх для шорта).
+func (m *OrderManager) PlaceCorridorEntryWave(ctx context.Context, ladder *LadderContext, side Side, totalVol float64, features Features, reason string) error {
+	if ladder == nil {
+		return fmt.Errorf("scalper: nil ladder")
+	}
+	n := m.cfg.MaxLadderSteps
+	if n < 1 {
+		n = 1
+	}
+	prices := corridorEntryLimitPrices(side, features, m.cfg.TickSize, n)
+	if len(prices) == 0 {
+		return fmt.Errorf("scalper: no corridor entry prices")
+	}
+	vols := splitOrderVolume(totalVol, len(prices), orderVolScaleFromCfg(m.cfg))
+	var placed []*ManagedOrder
+	for i, px := range prices {
+		if vols[i] <= 0 {
+			continue
+		}
+		o, err := m.PlaceEntryLimit(ctx, ladder, side, vols[i], px, features.Snapshot, reason)
+		if err != nil {
+			for _, p := range placed {
+				_ = m.cancelByExternalID(ctx, p.ExternalOID)
+			}
+			return err
+		}
+		placed = append(placed, o)
+	}
+	if len(placed) == 0 {
+		return fmt.Errorf("scalper: all entry volumes quantized to zero")
+	}
+	ladder.RegisterEntryWave(placed)
+	ladder.EntryWaveStartedAt = time.Now().UTC()
+	return nil
 }
 
 func bracketSLTPQuantized(side Side, entryPx, tickSize float64, profitTicks, stopTicks, priceDecimals int) (sl, tp float64, err error) {
@@ -851,6 +894,104 @@ func inferBracketExitReason(side Side, avgEntry, exitMark, tickSize float64, pro
 		}
 	}
 	return "bracket_exit"
+}
+
+// corridorEdgeLimitPrice — граница коридора для дополнительного шага лестницы (лонг → нижняя, шорт → верхняя).
+func corridorEdgeLimitPrice(side Side, f Features) (float64, bool) {
+	if f.HasPriceCorridor {
+		switch side {
+		case SideLong:
+			if f.PriceLowerBound <= 0 {
+				return 0, false
+			}
+			return f.PriceLowerBound, true
+		case SideShort:
+			if f.PriceUpperBound <= 0 {
+				return 0, false
+			}
+			return f.PriceUpperBound, true
+		default:
+			return 0, false
+		}
+	}
+	if f.Snapshot.Mid <= 0 {
+		return 0, false
+	}
+	return f.Snapshot.Mid, true
+}
+
+func corridorEntryLimitPrices(side Side, f Features, _ float64, n int) []float64 {
+	if n < 1 {
+		n = 1
+	}
+	if f.HasPriceCorridor {
+		switch side {
+		case SideLong:
+			w := f.PriceMean - f.PriceLowerBound
+			if w <= 0 {
+				return nil
+			}
+			out := make([]float64, 0, n)
+			for k := 1; k <= n; k++ {
+				out = append(out, f.PriceMean-w*float64(k)/float64(n))
+			}
+			return out
+		case SideShort:
+			w := f.PriceUpperBound - f.PriceMean
+			if w <= 0 {
+				return nil
+			}
+			out := make([]float64, 0, n)
+			for k := 1; k <= n; k++ {
+				out = append(out, f.PriceMean+w*float64(k)/float64(n))
+			}
+			return out
+		default:
+			return nil
+		}
+	}
+	if f.Snapshot.Mid <= 0 {
+		return nil
+	}
+	return []float64{f.Snapshot.Mid}
+}
+
+func splitOrderVolume(total float64, parts int, volScale int) []float64 {
+	if parts < 1 {
+		return nil
+	}
+	out := make([]float64, parts)
+	base := total / float64(parts)
+	var sum float64
+	for i := 0; i < parts; i++ {
+		out[i] = quantizeOrderVol(base, volScale)
+		sum += out[i]
+	}
+	if rem := total - sum; rem > 1e-9 && parts > 0 {
+		out[parts-1] = quantizeOrderVol(out[parts-1]+rem, volScale)
+	}
+	return out
+}
+
+func clampPassiveLimitEntry(side Side, raw float64, snap Snapshot, tickSize float64) float64 {
+	t := maxFloat(tickSize, 1e-12)
+	switch side {
+	case SideLong:
+		if snap.BestAskPx > 0 {
+			cap := snap.BestAskPx - t
+			if raw > cap {
+				raw = cap
+			}
+		}
+	case SideShort:
+		if snap.BestBidPx > 0 {
+			floor := snap.BestBidPx + t
+			if raw < floor {
+				raw = floor
+			}
+		}
+	}
+	return raw
 }
 
 func entryOrderSide(side Side) int {
